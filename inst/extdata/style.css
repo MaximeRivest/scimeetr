@@ -1,0 +1,19 @@
+/*
+	RESET & BASIC SETUP
+*/
+
+tr { 
+	vertical-align: top;
+}
+
+/*
+	STRUCTURE
+*/
+.post { 
+	width: 500px; 
+}
+
+/*
+	TYPOGRAPHY
+*/
+p { font-size: 1.2em; margin: 0 0 15px 0; }
