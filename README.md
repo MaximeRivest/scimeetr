@@ -1,0 +1,2 @@
+# scimeetr
+Scientometric Meet R
