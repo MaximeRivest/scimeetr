@@ -1,3 +1,8 @@
 # scimeetr
-Scientometric Meet R
+Scientometric Meet R is a package in developpment. With scimeetr you can detect your scientific community and generate a relevant reading list. This is especially usefull when doing interdisciplinary work or joining a new field.
+## Install
+it can now be installed directly from the R console using the following lines :
+if (!require("devtools")) install.packages("devtools")
+devtools::install_github(MaximeRivest/scimeetr)
+
 ![example_scimeetr](scimeetr_html_example.png)
