@@ -9,4 +9,6 @@ Scientometric Meet R is a package in developpment. With scimeetr you can detect 
 
 >devtools::install_github(MaximeRivest/scimeetr)
 
+## Example of scimeetr's output
+
 ![example_scimeetr](scimeetr_html_example.png)
