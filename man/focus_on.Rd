@@ -13,7 +13,7 @@ focus_on(scimeetr_list, grab)
 which to focus on}
 }
 \value{
-scimeetr_list of length 1
+a scimeetr object
 }
 \description{
 Focus on only one community

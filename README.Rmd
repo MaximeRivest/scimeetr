@@ -98,16 +98,49 @@ Biliometric data can be obtained from either *Scopus* or the *Web of Science*. M
 ### Retrieving data from Scopus
 
 ![](./vignettes/scopus.png)
+
+*Scopus home page.*
+
 ![](./vignettes/scopus1.png)
+
+*Select all and export*
+
 ![](./vignettes/scopus2.png)
 
-Following the previous steps will get you one or several .csv files. Then, to import this/these file(s) in `R`, you need to put it/them in a seperate a **new folder which contains only the files to import into `R`**
+*Export as CSV file and select all fields for exportation*
+
+
+Following the previous steps will get you one or several .csv files. Then, to import this/these file(s) in `R`, you need to put it/them in a **new folder which contains only the files to import into `R`**
 
 ### Retrieving data from Web of Science
 
 ![Web of Science home page. Make sure that Select a database corresponds to Web of Science Core Collection](./vignettes/wos.png)
+
+*Web of Science home page. Make sure that Select a database corresponds to Web of Science Core Collection*
+
 ![Save to Other Files Formats](./vignettes/wos1.png)
+
+*Save to Other Files Formats*
+
 ![You can download only 500 items at a time. You should select Full Record and Cited References. And select the Tab-delimeted (UTF-8) as file format.](./vignettes/wos2.png)
 
-Following the previous steps will get you one or several .txt files. Then, to import this/these file(s) in `R`, you need to put it/them in a seperate a **new folder which contains only the files to import into `R`**
+*You can download only 500 items at a time. You should select Full Record and Cited References. And select the Tab-delimeted (UTF-8) as file format.*
+
+
+Following the previous steps will get you one or several .txt files. Then, to import this/these file(s) in `R`, you need to put it/them in a **new folder which contains only the files to import into `R`**
+
+## How to upload bibliometric data into R
+
+The bibliometric data obtained from Scopus or Web of science are either in .csv or .txt format. These are standard file formats and you most likely know them. There are built in function in `R` that let you import .csv and .txt files. So why does scimeetr provide you with `import_scopus_files` and `import_wos_files`? There are four reasons. The main one is that bibliometric data contains author names from around the world, which means that all alphabets are used and this leads to problems with file encoding. Scimeetr's import functions solves that problem. Second, Scopus do not provide standard, uniform and consisten cited reference list. Thus, `import_scopus_files` has to standardize it at import. This explains the additional time required to load scopus files versus wos files. Third, Scopus and Web of Science do not use the same column names so they have to be homogenized at import. Finally, the data can be transformed into a scimeetr object so that `summary`, `plot` and `print` will know what to do with it.
+
+```{r, eval=FALSE}
+scimeetr_list <- import_wos_files(files_directory = "/path/to/folder/")
+scimeetr_list <- import_scopus_files(files_directory = "/path/to/folder/")
+```
+Do not forget that this function take in a path to a folder not a file. Thus, it need a slash at the end of the folder path.
+
+## Exploring scimeetr data
+
+The data that we just imported with `import_scopus_files` or `import_wos_files` can be  
+
 
