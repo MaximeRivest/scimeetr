@@ -1,13 +1,13 @@
 ---
-title: "Introduction to scimeetr"
-author: "Maxime Rivest"
-date: "`r Sys.Date()`"
-output: md_document
-vignette: >
-  %\VignetteIndexEntry{Introduction to scimeetr}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output: github_document
 ---
+
+## Install
+`scimeetr` can now be installed directly from the R console using the following lines :
+
+>if (!require("devtools")) install.packages("devtools")
+
+>devtools::install_github("MaximeRivest/scimeetr")
 
 #Introduction
 
@@ -93,10 +93,10 @@ Biliometric data can be obtained from either *Scopus* or the *Web of Science*. M
 ## Retrieving data from Scopus
 
 ```{r, echo = FALSE, out.width = "800px"}
-knitr::include_graphics("scopus.png")
+knitr::include_graphics("./vignettes/scopus.png")
 ```
 
-![](scopus1.png)
-![](scopus2.png)
+![](./vignettes/scopus1.png)
+![](./vignettes/scopus2.png)
 
 Following the previous step will give you one or several .csv files.  
