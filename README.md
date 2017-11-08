@@ -1,6 +1,17 @@
+Scimeetr
+================
+
+-   [Install](#install)
+-   [Introduction](#introduction)
+-   [From data to reading list](#from-data-to-reading-list)
+    -   [loading and exploring bibliometric data](#loading-and-exploring-bibliometric-data)
+    -   [Mapping scientific community](#mapping-scientific-community)
+    -   [Automatically generating a reading list of seminal papers](#automatically-generating-a-reading-list-of-seminal-papers)
+-   [In depth description of each steps](#in-depth-description-of-each-steps)
+    -   [How to get bibliometric data?](#how-to-get-bibliometric-data)
 
 Install
--------
+=======
 
 `scimeetr` can be installed directly from the R console using the following lines :
 
@@ -258,13 +269,15 @@ reading_list$com1
 | BULL JW, 2013, ORYX, V47, P369, DOI 10.1017/S003060531200172X                                            |           25|    0.0011785|
 | WALKER S, 2009, CONSERV LETT, V2, P149, DOI 10.1111/J.1755-263X.2009.00061.X                             |           25|    0.0011785|
 
+In depth description of each steps
+==================================
+
 How to get bibliometric data?
-=============================
+-----------------------------
 
 Biliometric data can be obtained from either *Scopus* or the *Web of Science*. Most university library have access to either one and some have access to both.
 
-Retrieving data from Scopus
----------------------------
+### Retrieving data from Scopus
 
 <img src="./vignettes/scopus.png" width="800px" />
 

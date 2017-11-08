@@ -1,8 +1,12 @@
 ---
-output: github_document
+title: Scimeetr
+output: 
+  github_document:
+    toc: true
+    toc_depth: 2
 ---
 
-## Install
+# Install
 `scimeetr` can be installed directly from the R console using the following lines :
 
 >if (!require("devtools")) install.packages("devtools")
@@ -86,11 +90,12 @@ reading_list <- scilist(scimap_result)
 knitr::kable(reading_list$com1)
 ```
 
-#How to get bibliometric data?
+# In depth description of each steps
+##How to get bibliometric data?
 
 Biliometric data can be obtained from either *Scopus* or the *Web of Science*. Most university library have access to either one and some have access to both.
 
-## Retrieving data from Scopus
+### Retrieving data from Scopus
 
 ```{r, echo = FALSE, out.width = "800px"}
 knitr::include_graphics("./vignettes/scopus.png")
