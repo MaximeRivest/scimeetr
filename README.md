@@ -2,7 +2,7 @@
 Install
 -------
 
-`scimeetr` can now be installed directly from the R console using the following lines :
+`scimeetr` can be installed directly from the R console using the following lines :
 
 > if (!require("devtools")) install.packages("devtools")
 
