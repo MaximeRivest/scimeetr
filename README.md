@@ -279,8 +279,12 @@ Biliometric data can be obtained from either *Scopus* or the *Web of Science*. M
 
 ### Retrieving data from Scopus
 
-<img src="./vignettes/scopus.png" width="800px" />
+![](./vignettes/scopus.png) ![](./vignettes/scopus1.png) ![](./vignettes/scopus2.png)
 
-![](./vignettes/scopus1.png) ![](./vignettes/scopus2.png)
+Following the previous steps will get you one or several .csv files. Then, to import this/these file(s) in `R`, you need to put it/them in a seperate a **new folder which contains only the files to import into `R`**
 
-Following the previous step will give you one or several .csv files.
+### Retrieving data from Web of Science
+
+![Web of Science home page. Make sure that Select a database corresponds to Web of Science Core Collection](./vignettes/wos.png) ![Save to Other Files Formats](./vignettes/wos1.png) ![You can download only 500 items at a time. You should select Full Record and Cited References. And select the Tab-delimeted (UTF-8) as file format.](./vignettes/wos2.png)
+
+Following the previous steps will get you one or several .txt files. Then, to import this/these file(s) in `R`, you need to put it/them in a seperate a **new folder which contains only the files to import into `R`**
