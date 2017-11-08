@@ -1,24 +1,34 @@
 Package: scimeetr
 Title: Scientometrics Meet R
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: c(person("Maxime", "Rivest",
     email = "mrive052@gmail.com", role = c("aut", "cre")))
 Author: Maxime Rivest [aut, cre]
 Maintainer: Maxime Rivest <mrive052@gmail.com>
-Description: This package helps identifying and analysing scientific
-    communities through the comparaison of paper's reference list, which ultimately help to make reading list for new comers into a given scientific community. In simple 
-    terms, this package contain a suit of functions that permit you to 
+Description: A toolkit to map the scientific literature. The package contains
+ functions to upload bibliometric data, to build a network of scientific paper,
+ to find communities of research, to characterise the communities and to
+ generate reading list of seminal papers for each communities of research. 
+ With this package a researcher can b
+ automatically generate reading lists.
+ communities through the comparaison of paper's reference list, which ultimately
+ help to make reading list for new comers into a given scientific community. In simple 
+    terms, this package contains a suit of functions that permit you to 
     generate a must read list of papers in your research community.
     To achieve this, the package takes in a list of records (also called:
     papers or scientific articles) and their associated references (in other 
     words; the list of articles cited by each records in the list) and find
     how many references does each record pair have in common. This operation is
     often called bibliometric coupling. 
-Depends: R (>= 3.3.0), data.table, bigmemory, bigalgebra
-Imports: igraph, plyr, stringr, pander, rmarkdown, knitr
+Depends: 
+Imports: igraph, dplyr, stringr,
+    mgcv
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Date: 2016-05-28
 URL: http://www.maximerivest.com
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
