@@ -1,0 +1,102 @@
+---
+title: "Introduction to scimeetr"
+author: "Maxime Rivest"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to scimeetr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+#Introduction
+
+Scimeetr helps explore the scholarly literature. It contains a suit of function that let someone:
+
+- load bibliometric data into R
+- make a map of peer reviewed papers by creating various networks
+- find research community
+- characterise the research communities
+- generate reading list
+
+This tutorial is composed of two self-contained section. The first section show case the whole process with all the default parameters. The second section describes each function in more detail by presenting the rational for the function, the algorithms used and the options.
+
+#From data to reading list
+
+You can automatically generate a reading list of seminal papers in a research litterature by using only those three functions: `ìmport_wos_files`, `scimap`, and `scilist`. This first section describes this process in more details.
+
+##loading and exploring bibliometric data
+
+The first step in exploring the literature is to retrieve bibliometric data from the *Web of Science* or *Scopus*. In this first tutorial I use a dataset from the *Web of Science* about ecological networks.
+
+```{r, include=FALSE}
+library(scimeetr)
+```
+
+
+```{r, eval=FALSE}
+library(scimeetr)
+scimeetr_list <- import_wos_files("path/to/folder/")
+```
+
+Then,`summary` can be used to get a quick characterisation of the data.
+
+```{r}
+summary(scimeetr_list)
+```
+
+From this summary, we see that there is 396 papers in my data set which overal cites 16567 different elements. On average, each paper cites 53 elements. 
+
+Than we learn that, in this research community, 25% of the papers are cited less than 2 times, 50% are cited less than 9 times and 75% are cited less than ~23 times. There are papers that are cited up to 1333 times. The average citation per paper is ~25. This is much higher than the median (9), thus most paper are cited only a few times and a few papers are profusely cited. When correcting for the age of the paper, we learn that papers are cited 2 times per year on average.
+
+By looking at the most frequent keyword and journals, we learn that this community of research is about biodiversity, agriculture, ecosystem services and policy. Keyword and journal frequency tables efficiently reveal the theme of a scientific community.
+
+##Mapping scientific community
+
+The previous characterisation is great, but it is limited if your dataset contains many different scientific communities. By detecting the scientific communities present within a dataset a map of science can be drawn and each cluster can be characterised on its own. The function `scimap` can be used for this task.
+
+```{r, error=FALSE}
+scimap_result <- scimap(scimeetr_list)
+```
+
+The function returns all the data that scimeetr_list contained and more. For example communities have been identified and now if the function `summary` is used on scim_result. In addition of the previous information. The descriminant keywords of each communities constituating the main community are listed.
+
+```{r}
+summary(scimap_result)
+```
+
+Except for the last tables, all of the output is identical to the `summary` output above. Those last tables now reveals that the papers in our database can be clustered in two communities. One that is about x and the other that is about y.
+
+The function `plot` can be used on the output of the function summary for a graphical representation of the sub-communities. 
+
+```{r, fig.height = 7, fig.width=7}
+plot(summary(scimap_result, com_size = 30))
+```
+
+##Automatically generating a reading list of seminal papers
+
+Now that we have characterise the main community and seen of which community it is constituted, we can decide if it is the community that we wish to join / review. If it is, we use the function `scilist` to get reading lists. The defaul readin list will find the seminal papers of each communitiy.
+
+```{r, eval=FALSE}
+reading_list <- scilist(scimap_result)
+reading_list$com1
+```
+```{r, echo = FALSE}
+reading_list <- scilist(scimap_result)
+knitr::kable(reading_list$com1)
+```
+
+#How to get bibliometric data?
+
+Biliometric data can be obtained from either *Scopus* or the *Web of Science*. Most university library have access to either one and some have access to both.
+
+## Retrieving data from Scopus
+
+```{r, echo = FALSE, out.width = "800px"}
+knitr::include_graphics("scopus.png")
+```
+
+![](scopus1.png)
+![](scopus2.png)
+
+Following the previous step will give you one or several .csv files.  
