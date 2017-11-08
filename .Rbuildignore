@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^/\.gitattributes$
+^README\.Rmd$
+^README-.*\.png$
