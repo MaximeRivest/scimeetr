@@ -26,6 +26,9 @@ Scimeetr
             -   [Connectness](#connectness)
             -   [Page rank](#page-rank)
             -   [Cite most others](#cite-most-others)
+    -   [Finding the main communities of research](#finding-the-main-communities-of-research)
+    -   [Focusing on a sub-community](#focusing-on-a-sub-community)
+    -   [Dive to a sub-community](#dive-to-a-sub-community)
 
 Install
 =======
@@ -1091,5 +1094,475 @@ scilist(scimeetr_list, reading_list = "cite_most_others", k = 5)
 </tr>
 </tbody>
 </table>
+
+<a href="#top">Back to top</a>
+
+Finding the main communities of research
+----------------------------------------
+
+In the previous sections we have looked at only the main research community. But, splitting the main community in sub-communities can provide a more detail picture of the litterature. It can also help identify and then remove irrelevant sub-communities. To achieve any of this, the sub-communities have to be identified and characterized. The function `scimap`, as in science map, was developped for this task. By default, the graph use bibliographic coupling to calculate connections between papers, but coupling can also be done based on abstract words (abc), title words (tic) or keywords (kec).
+
+``` r
+summary(scimap(scimeetr_list, coupling_by = 'bic', community_algorithm = 'louvain', min_com_size = 100))
+```
+
+    ## 
+    ##  # Summary of Scimeetr #
+    ## -----------------------
+    ##     Number of papers:  742
+    ##     Number of different reference:  28526
+    ## 
+    ##     Average number of reference per paper:  51
+    ## 
+    ##     Quantiles of total citation per paper: 
+    ## 
+    ##      0%     25%     50%     75%    100% 
+    ##    0.00    2.00    7.00   19.75 1333.00 
+    ## 
+    ##     Mean number of citation per paper:  19.81536
+    ## 
+    ##     Average number of citation per paper per year:  1.666667
+    ## 
+    ## 
+    ##   Table of the 10 most mentionned keywords 
+    ## 
+    ##                       Keyword    Frequency
+    ## 1                BIODIVERSITY           57
+    ## 2                 AGRICULTURE           46
+    ## 3  COMMON AGRICULTURAL POLICY           32
+    ## 4          ECOSYSTEM SERVICES           31
+    ## 5                CONSERVATION           28
+    ## 6    AGRI-ENVIRONMENT SCHEMES           27
+    ## 7     AGRI-ENVIRONMENT SCHEME           20
+    ## 8  AGRI-ENVIRONMENTAL SCHEMES           19
+    ## 9         AGRICULTURAL POLICY           18
+    ## 10              WATER QUALITY           18
+    ## 
+    ## 
+    ## 
+    ##   Table of the 10 most productive journal 
+    ## 
+    ##                                             Journal    Frequency
+    ## 1                                   LAND USE POLICY           84
+    ## 2              AGRICULTURE ECOSYSTEMS & ENVIRONMENT           37
+    ## 3               JOURNAL OF ENVIRONMENTAL MANAGEMENT           33
+    ## 4                           BIOLOGICAL CONSERVATION           24
+    ## 5                        JOURNAL OF APPLIED ECOLOGY           21
+    ## 6                              ECOLOGICAL ECONOMICS           17
+    ## 7                          JOURNAL OF RURAL STUDIES           17
+    ## 8                              AGRICULTURAL SYSTEMS           14
+    ## 9  JOURNAL OF ENVIRONMENTAL PLANNING AND MANAGEMENT           14
+    ## 10                     LANDSCAPE AND URBAN PLANNING           14
+    ## 
+    ## 
+    ## 
+    ##   Table of the most descriminant keywords 
+    ## 
+    ##           comID                        tag
+    ## 1    com1 (742)                           
+    ## 2                             BIODIVERSITY
+    ## 3                             CONSERVATION
+    ## 4                               MANAGEMENT
+    ## 5                              AGRICULTURE
+    ## 6                 AGRI-ENVIRONMENT SCHEMES
+    ## 7                       ECOSYSTEM SERVICES
+    ## 8  com1_1 (202)                           
+    ## 9                            PARTICIPATION
+    ## 10                             AGRICULTURE
+    ## 11                                 FARMERS
+    ## 12                               ATTITUDES
+    ## 13              AGRI-ENVIRONMENTAL SCHEMES
+    ## 14                                  POLICY
+    ## 15 com1_8 (132)                           
+    ## 16                                ADOPTION
+    ## 17                             AGRICULTURE
+    ## 18                                  POLICY
+    ## 19                           WATER QUALITY
+    ## 20                               AUSTRALIA
+    ## 21                                 FARMERS
+    ## 22 com1_3 (292)                           
+    ## 23                            BIODIVERSITY
+    ## 24                AGRI-ENVIRONMENT SCHEMES
+    ## 25                            CONSERVATION
+    ## 26                              MANAGEMENT
+    ## 27                               DIVERSITY
+    ## 28                 AGRICULTURAL LANDSCAPES
+
+``` r
+summary(scimap(scimeetr_list, coupling_by = 'abc', community_algorithm = 'louvain', min_com_size = 100))
+```
+
+    ## 
+    ##  # Summary of Scimeetr #
+    ## -----------------------
+    ##     Number of papers:  742
+    ##     Number of different reference:  28526
+    ## 
+    ##     Average number of reference per paper:  51
+    ## 
+    ##     Quantiles of total citation per paper: 
+    ## 
+    ##      0%     25%     50%     75%    100% 
+    ##    0.00    2.00    7.00   19.75 1333.00 
+    ## 
+    ##     Mean number of citation per paper:  19.81536
+    ## 
+    ##     Average number of citation per paper per year:  1.666667
+    ## 
+    ## 
+    ##   Table of the 10 most mentionned keywords 
+    ## 
+    ##                       Keyword    Frequency
+    ## 1                BIODIVERSITY           57
+    ## 2                 AGRICULTURE           46
+    ## 3  COMMON AGRICULTURAL POLICY           32
+    ## 4          ECOSYSTEM SERVICES           31
+    ## 5                CONSERVATION           28
+    ## 6    AGRI-ENVIRONMENT SCHEMES           27
+    ## 7     AGRI-ENVIRONMENT SCHEME           20
+    ## 8  AGRI-ENVIRONMENTAL SCHEMES           19
+    ## 9         AGRICULTURAL POLICY           18
+    ## 10              WATER QUALITY           18
+    ## 
+    ## 
+    ## 
+    ##   Table of the 10 most productive journal 
+    ## 
+    ##                                             Journal    Frequency
+    ## 1                                   LAND USE POLICY           84
+    ## 2              AGRICULTURE ECOSYSTEMS & ENVIRONMENT           37
+    ## 3               JOURNAL OF ENVIRONMENTAL MANAGEMENT           33
+    ## 4                           BIOLOGICAL CONSERVATION           24
+    ## 5                        JOURNAL OF APPLIED ECOLOGY           21
+    ## 6                              ECOLOGICAL ECONOMICS           17
+    ## 7                          JOURNAL OF RURAL STUDIES           17
+    ## 8                              AGRICULTURAL SYSTEMS           14
+    ## 9  JOURNAL OF ENVIRONMENTAL PLANNING AND MANAGEMENT           14
+    ## 10                     LANDSCAPE AND URBAN PLANNING           14
+    ## 
+    ## 
+    ## 
+    ##   Table of the most descriminant keywords 
+    ## 
+    ##           comID                        tag
+    ## 1    com1 (742)                           
+    ## 2                             BIODIVERSITY
+    ## 3                             CONSERVATION
+    ## 4                               MANAGEMENT
+    ## 5                              AGRICULTURE
+    ## 6                 AGRI-ENVIRONMENT SCHEMES
+    ## 7                       ECOSYSTEM SERVICES
+    ## 8  com1_3 (255)                           
+    ## 9                                 ADOPTION
+    ## 10                                  POLICY
+    ## 11                                 FARMERS
+    ## 12                      ECOSYSTEM SERVICES
+    ## 13                               AUSTRALIA
+    ## 14                              INCENTIVES
+    ## 15 com1_2 (237)                           
+    ## 16                             AGRICULTURE
+    ## 17                           PARTICIPATION
+    ## 18                                  POLICY
+    ## 19                                 SCHEMES
+    ## 20              COMMON AGRICULTURAL POLICY
+    ## 21              AGRI-ENVIRONMENTAL SCHEMES
+    ## 22 com1_1 (249)                           
+    ## 23                            BIODIVERSITY
+    ## 24                AGRI-ENVIRONMENT SCHEMES
+    ## 25                            CONSERVATION
+    ## 26                              MANAGEMENT
+    ## 27                               DIVERSITY
+    ## 28                 AGRICULTURAL LANDSCAPES
+
+``` r
+summary(scimap(scimeetr_list, coupling_by = 'tic', community_algorithm = 'louvain', min_com_size = 100))
+```
+
+    ## 
+    ##  # Summary of Scimeetr #
+    ## -----------------------
+    ##     Number of papers:  742
+    ##     Number of different reference:  28526
+    ## 
+    ##     Average number of reference per paper:  51
+    ## 
+    ##     Quantiles of total citation per paper: 
+    ## 
+    ##      0%     25%     50%     75%    100% 
+    ##    0.00    2.00    7.00   19.75 1333.00 
+    ## 
+    ##     Mean number of citation per paper:  19.81536
+    ## 
+    ##     Average number of citation per paper per year:  1.666667
+    ## 
+    ## 
+    ##   Table of the 10 most mentionned keywords 
+    ## 
+    ##                       Keyword    Frequency
+    ## 1                BIODIVERSITY           57
+    ## 2                 AGRICULTURE           46
+    ## 3  COMMON AGRICULTURAL POLICY           32
+    ## 4          ECOSYSTEM SERVICES           31
+    ## 5                CONSERVATION           28
+    ## 6    AGRI-ENVIRONMENT SCHEMES           27
+    ## 7     AGRI-ENVIRONMENT SCHEME           20
+    ## 8  AGRI-ENVIRONMENTAL SCHEMES           19
+    ## 9         AGRICULTURAL POLICY           18
+    ## 10              WATER QUALITY           18
+    ## 
+    ## 
+    ## 
+    ##   Table of the 10 most productive journal 
+    ## 
+    ##                                             Journal    Frequency
+    ## 1                                   LAND USE POLICY           84
+    ## 2              AGRICULTURE ECOSYSTEMS & ENVIRONMENT           37
+    ## 3               JOURNAL OF ENVIRONMENTAL MANAGEMENT           33
+    ## 4                           BIOLOGICAL CONSERVATION           24
+    ## 5                        JOURNAL OF APPLIED ECOLOGY           21
+    ## 6                              ECOLOGICAL ECONOMICS           17
+    ## 7                          JOURNAL OF RURAL STUDIES           17
+    ## 8                              AGRICULTURAL SYSTEMS           14
+    ## 9  JOURNAL OF ENVIRONMENTAL PLANNING AND MANAGEMENT           14
+    ## 10                     LANDSCAPE AND URBAN PLANNING           14
+    ## 
+    ## 
+    ## 
+    ##   Table of the most descriminant keywords 
+    ## 
+    ##           comID                          tag
+    ## 1    com1 (742)                             
+    ## 2                               BIODIVERSITY
+    ## 3                               CONSERVATION
+    ## 4                                 MANAGEMENT
+    ## 5                                AGRICULTURE
+    ## 6                   AGRI-ENVIRONMENT SCHEMES
+    ## 7                         ECOSYSTEM SERVICES
+    ## 8  com1_1 (176)                             
+    ## 9                               CONSERVATION
+    ## 10                                    POLICY
+    ## 11                                   FARMERS
+    ## 12                                  ADOPTION
+    ## 13                                 AUSTRALIA
+    ## 14                                LANDSCAPES
+    ## 15 com1_3 (127)                             
+    ## 16                              BIODIVERSITY
+    ## 17                                   SCHEMES
+    ## 18                                    POLICY
+    ## 19                   AGRICULTURAL LANDSCAPES
+    ## 20                        ECOSYSTEM SERVICES
+    ## 21                             PARTICIPATION
+    ## 22 com1_5 (128)                             
+    ## 23                                MANAGEMENT
+    ## 24                        ECOSYSTEM SERVICES
+    ## 25                               AGRICULTURE
+    ## 26                                  ADOPTION
+    ## 27                 BIODIVERSITY CONSERVATION
+    ## 28                                    POLICY
+    ## 29 com1_4 (160)                             
+    ## 30                              BIODIVERSITY
+    ## 31                              CONSERVATION
+    ## 32                  AGRI-ENVIRONMENT SCHEMES
+    ## 33                                MANAGEMENT
+    ## 34                   AGRICULTURAL LANDSCAPES
+    ## 35              AGRICULTURAL INTENSIFICATION
+    ## 36 com1_2 (134)                             
+    ## 37                              BIODIVERSITY
+    ## 38                                  LAND-USE
+    ## 39                       AGRICULTURAL POLICY
+    ## 40                             PARTICIPATION
+    ## 41                                   SCHEMES
+    ## 42                                   FARMERS
+
+``` r
+summary(scimap(scimeetr_list, coupling_by = 'kec', community_algorithm = 'louvain', min_com_size = 100))
+```
+
+    ## 
+    ##  # Summary of Scimeetr #
+    ## -----------------------
+    ##     Number of papers:  742
+    ##     Number of different reference:  28526
+    ## 
+    ##     Average number of reference per paper:  51
+    ## 
+    ##     Quantiles of total citation per paper: 
+    ## 
+    ##      0%     25%     50%     75%    100% 
+    ##    0.00    2.00    7.00   19.75 1333.00 
+    ## 
+    ##     Mean number of citation per paper:  19.81536
+    ## 
+    ##     Average number of citation per paper per year:  1.666667
+    ## 
+    ## 
+    ##   Table of the 10 most mentionned keywords 
+    ## 
+    ##                       Keyword    Frequency
+    ## 1                BIODIVERSITY           57
+    ## 2                 AGRICULTURE           46
+    ## 3  COMMON AGRICULTURAL POLICY           32
+    ## 4          ECOSYSTEM SERVICES           31
+    ## 5                CONSERVATION           28
+    ## 6    AGRI-ENVIRONMENT SCHEMES           27
+    ## 7     AGRI-ENVIRONMENT SCHEME           20
+    ## 8  AGRI-ENVIRONMENTAL SCHEMES           19
+    ## 9         AGRICULTURAL POLICY           18
+    ## 10              WATER QUALITY           18
+    ## 
+    ## 
+    ## 
+    ##   Table of the 10 most productive journal 
+    ## 
+    ##                                             Journal    Frequency
+    ## 1                                   LAND USE POLICY           84
+    ## 2              AGRICULTURE ECOSYSTEMS & ENVIRONMENT           37
+    ## 3               JOURNAL OF ENVIRONMENTAL MANAGEMENT           33
+    ## 4                           BIOLOGICAL CONSERVATION           24
+    ## 5                        JOURNAL OF APPLIED ECOLOGY           21
+    ## 6                              ECOLOGICAL ECONOMICS           17
+    ## 7                          JOURNAL OF RURAL STUDIES           17
+    ## 8                              AGRICULTURAL SYSTEMS           14
+    ## 9  JOURNAL OF ENVIRONMENTAL PLANNING AND MANAGEMENT           14
+    ## 10                     LANDSCAPE AND URBAN PLANNING           14
+    ## 
+    ## 
+    ## 
+    ##   Table of the most descriminant keywords 
+    ## 
+    ##           comID                          tag
+    ## 1    com1 (742)                             
+    ## 2                               BIODIVERSITY
+    ## 3                               CONSERVATION
+    ## 4                                 MANAGEMENT
+    ## 5                                AGRICULTURE
+    ## 6                   AGRI-ENVIRONMENT SCHEMES
+    ## 7                         ECOSYSTEM SERVICES
+    ## 8  com1_3 (297)                             
+    ## 9                                AGRICULTURE
+    ## 10                                  ADOPTION
+    ## 11                                    POLICY
+    ## 12                             PARTICIPATION
+    ## 13                                   FARMERS
+    ## 14                AGRI-ENVIRONMENTAL SCHEMES
+    ## 15 com1_2 (151)                             
+    ## 16                              BIODIVERSITY
+    ## 17                              CONSERVATION
+    ## 18                  AGRI-ENVIRONMENT SCHEMES
+    ## 19                                MANAGEMENT
+    ## 20              AGRICULTURAL INTENSIFICATION
+    ## 21                                 DIVERSITY
+    ## 22 com1_5 (112)                             
+    ## 23                                MANAGEMENT
+    ## 24                        ECOSYSTEM SERVICES
+    ## 25                 BIODIVERSITY CONSERVATION
+    ## 26                                 LANDSCAPE
+    ## 27                                    POLICY
+    ## 28                                   SYSTEMS
+    ## 29 com1_1 (127)                             
+    ## 30                              CONSERVATION
+    ## 31                  AGRI-ENVIRONMENT SCHEMES
+    ## 32                   AGRICULTURAL LANDSCAPES
+    ## 33                                 DIVERSITY
+    ## 34                                     BIRDS
+    ## 35                                  LAND-USE
+
+<a href="#top">Back to top</a>
+
+Focusing on a sub-community
+---------------------------
+
+With the function `focus_on`, it is possible to change focus on a sub-community.
+
+``` r
+scil <- scimap(scimeetr_list)
+scil
+```
+
+    ## 
+    ## # A scimeetr object #
+    ## ---------------------
+    ## Number of papers:  742
+    ## Number of communities:  5
+    ## Names of communities:  com1 com1_1 com1_8 com1_4 com1_3
+    ## 
+    ## Table of the 5 most mentionned words 
+    ## 
+    ##                  key_words  title_words abstract_words
+    ## 1             BIODIVERSITY CONSERVATION        FARMERS
+    ## 2             CONSERVATION AGRICULTURAL   CONSERVATION
+    ## 3               MANAGEMENT   MANAGEMENT   AGRICULTURAL
+    ## 4              AGRICULTURE       POLICY     MANAGEMENT
+    ## 5 AGRI-ENVIRONMENT SCHEMES      FARMERS         POLICY
+
+``` r
+subscil <- focus_on(scil, grab = 'com1_1')
+subscil
+```
+
+    ## 
+    ## # A scimeetr object #
+    ## ---------------------
+    ## Number of papers:  202
+    ## Number of communities:  1
+    ## Names of communities:  com1_1
+    ## 
+    ## Table of the 5 most mentionned words 
+    ## 
+    ##       key_words       title_words abstract_words
+    ## 1 PARTICIPATION           FARMERS        FARMERS
+    ## 2   AGRICULTURE            POLICY         POLICY
+    ## 3  CONSERVATION AGRIENVIRONMENTAL  ENVIRONMENTAL
+    ## 4       FARMERS      AGRICULTURAL   AGRICULTURAL
+    ## 5    MANAGEMENT           SCHEMES           FARM
+
+<a href="#top">Back to top</a>
+
+Dive to a sub-community
+-----------------------
+
+With the function `dive_to`, it is possible to move down to a sub-community and keep it's sub-communities.
+
+``` r
+scil <- scimap(scimap(scimeetr_list))
+scil
+```
+
+    ## 
+    ## # A scimeetr object #
+    ## ---------------------
+    ## Number of papers:  742
+    ## Number of communities:  13
+    ## Names of communities:  com1 com1_1 com1_1_2 com1_1_1 com1_1_3 com1_8 com1_8_3 com1_8_4 com1_4 com1_3 com1_3_4 com1_3_1 com1_3_5
+    ## 
+    ## Table of the 5 most mentionned words 
+    ## 
+    ##                  key_words  title_words abstract_words
+    ## 1             BIODIVERSITY CONSERVATION        FARMERS
+    ## 2             CONSERVATION AGRICULTURAL   CONSERVATION
+    ## 3               MANAGEMENT   MANAGEMENT   AGRICULTURAL
+    ## 4              AGRICULTURE       POLICY     MANAGEMENT
+    ## 5 AGRI-ENVIRONMENT SCHEMES      FARMERS         POLICY
+
+``` r
+subscil <- dive_to(scil, aim_at = 'com1_1')
+subscil
+```
+
+    ## 
+    ## # A scimeetr object #
+    ## ---------------------
+    ## Number of papers:  202
+    ## Number of communities:  4
+    ## Names of communities:  com1_1 com1_1_2 com1_1_1 com1_1_3
+    ## 
+    ## Table of the 5 most mentionned words 
+    ## 
+    ##       key_words       title_words abstract_words
+    ## 1 PARTICIPATION           FARMERS        FARMERS
+    ## 2   AGRICULTURE            POLICY         POLICY
+    ## 3  CONSERVATION AGRIENVIRONMENTAL  ENVIRONMENTAL
+    ## 4       FARMERS      AGRICULTURAL   AGRICULTURAL
+    ## 5    MANAGEMENT           SCHEMES           FARM
 
 <a href="#top">Back to top</a>
