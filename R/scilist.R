@@ -12,7 +12,7 @@
 #' @return df. A reading list
 #' @export
 #' @import dplyr purrr
-scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers', k = 8, m = 3) {
+scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
   if(reading_list == 'core_papers') {
     rl <- map(lsci, 'cr') %>%
       map(function(x, k){
@@ -25,9 +25,7 @@ scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers'
       }, k)
   } else if (reading_list == 'core_yr') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    # parent_com <- map_df(lsci, 'dfsci')
-    # parent_com <- unique(parent_com)
-    # splt_cr <- split_cr(parent_com) 
+    splt_cr <- split_cr(lsci) 
     rl <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID')) %>%
       map(function(x, k) {
         x <- x %>%
@@ -42,9 +40,7 @@ scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers'
     names(rl) <- names(lsci)
   } else if (reading_list == 'core_residual') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    # parent_com <- map_df(lsci, 'dfsci')
-    # parent_com <- unique(parent_com)
-    # splt_cr <- split_cr(parent_com) 
+    splt_cr <- split_cr(lsci) 
     rl <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID')) %>%
       map(function(x,k) {
         x <- x %>%
@@ -61,9 +57,7 @@ scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers'
     names(rl) <- names(lsci)
   } else if (reading_list == 'by_expert_LC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    # parent_com <- map_df(lsci, 'dfsci')
-    # parent_com <- unique(parent_com)
-    # splt_cr <- split_cr(parent_com) 
+    splt_cr <- split_cr(lsci) 
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -111,9 +105,7 @@ scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers'
     names(rl) <- names(lsci)
   } else if (reading_list == 'by_expert_TC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    # parent_com <- map_df(lsci, 'dfsci')
-    # parent_com <- unique(parent_com)
-    # splt_cr <- split_cr(parent_com) 
+    splt_cr <- split_cr(lsci) 
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -161,9 +153,7 @@ scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers'
     names(rl) <- names(lsci)
   } else if (reading_list == 'group_of_experts_LC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    # parent_com <- map_df(lsci, 'dfsci')
-    # parent_com <- unique(parent_com)
-    # splt_cr <- split_cr(parent_com) 
+    splt_cr <- split_cr(lsci) 
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -201,16 +191,14 @@ scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers'
           right_join(audf, by = 'AU') %>%
           filter(!is.na(HL)) %>%
           group_by(RECID) %>%
-          summarise(AuS = mean(HL)) %>% #could change the mean for sum...
+          summarise(AuS = sum(HL/1:length(HL))) %>% #could change the mean for sum...
           top_n(n = k, wt = AuS) %>%
           arrange(desc(AuS))
       }, k)
     names(rl) <- names(lsci)
   } else if (reading_list == 'group_of_experts_TC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    # parent_com <- map_df(lsci, 'dfsci')
-    # parent_com <- unique(parent_com)
-    # splt_cr <- split_cr(parent_com) 
+    splt_cr <- split_cr(lsci) 
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -248,16 +236,14 @@ scilist <- function(lsci = lsci, splt_cr = splt_cr, reading_list = 'core_papers'
           right_join(audf, by = 'AU') %>%
           filter(!is.na(HL)) %>%
           group_by(RECID) %>%
-          summarise(AuS = mean(HL)) %>%
+          summarise(AuS = sum(HL/1:length(HL))) %>%
           top_n(n = k, wt = AuS) %>%
           arrange(desc(AuS))
       }, k)
     names(rl) <- names(lsci)
   } else if (reading_list == 'cite_most_others') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    # parent_com <- map_df(lsci, 'dfsci')
-    # parent_com <- unique(parent_com)
-    # splt_cr <- split_cr(parent_com)
+    splt_cr <- split_cr(lsci)
     rl <- map(lsci, 'dfsci') %>%
       map(function(dfsci, splt_cr, k) {
       cr_list <- strsplit(dfsci$CR, split="; ")
