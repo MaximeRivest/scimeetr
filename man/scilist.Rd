@@ -4,8 +4,7 @@
 \alias{scilist}
 \title{Make reading lists}
 \usage{
-scilist(lsci = lsci, splt_cr = splt_cr, reading_list = "core_papers",
-  k = 8, m = 3)
+scilist(lsci = lsci, reading_list = "core_papers", k = 8, m = 3)
 }
 \arguments{
 \item{reading_list}{A vector of length one. Equal to either: 

@@ -2,13 +2,12 @@
 title: "Introduction to scimeetr"
 author: "Maxime Rivest"
 date: "`r Sys.Date()`"
-output: md_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to scimeetr}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
 #Introduction
 
 Scimeetr helps explore the scholarly literature. It contains a suit of function that let someone:
@@ -21,9 +20,13 @@ Scimeetr helps explore the scholarly literature. It contains a suit of function 
 
 This tutorial is composed of two self-contained section. The first section show case the whole process with all the default parameters. The second section describes each function in more detail by presenting the rational for the function, the algorithms used and the options.
 
+<a href="#top">Back to top</a>
+
 #From data to reading list
 
 You can automatically generate a reading list of seminal papers in a research litterature by using only those three functions: `ìmport_wos_files`, `scimap`, and `scilist`. This first section describes this process in more details.
+
+<a href="#top">Back to top</a>
 
 ##loading and exploring bibliometric data
 
@@ -32,8 +35,6 @@ The first step in exploring the literature is to retrieve bibliometric data from
 ```{r, include=FALSE}
 library(scimeetr)
 ```
-
-
 ```{r, eval=FALSE}
 library(scimeetr)
 scimeetr_list <- import_wos_files("path/to/folder/")
@@ -50,6 +51,8 @@ From this summary, we see that there is 396 papers in my data set which overal c
 Than we learn that, in this research community, 25% of the papers are cited less than 2 times, 50% are cited less than 9 times and 75% are cited less than ~23 times. There are papers that are cited up to 1333 times. The average citation per paper is ~25. This is much higher than the median (9), thus most paper are cited only a few times and a few papers are profusely cited. When correcting for the age of the paper, we learn that papers are cited 2 times per year on average.
 
 By looking at the most frequent keyword and journals, we learn that this community of research is about biodiversity, agriculture, ecosystem services and policy. Keyword and journal frequency tables efficiently reveal the theme of a scientific community.
+
+<a href="#top">Back to top</a>
 
 ##Mapping scientific community
 
@@ -73,6 +76,8 @@ The function `plot` can be used on the output of the function summary for a grap
 plot(summary(scimap_result, com_size = 30))
 ```
 
+<a href="#top">Back to top</a>
+
 ##Automatically generating a reading list of seminal papers
 
 Now that we have characterise the main community and seen of which community it is constituted, we can decide if it is the community that we wish to join / review. If it is, we use the function `scilist` to get reading lists. The defaul readin list will find the seminal papers of each communitiy.
@@ -86,17 +91,311 @@ reading_list <- scilist(scimap_result)
 knitr::kable(reading_list$com1)
 ```
 
-#How to get bibliometric data?
+<a href="#top">Back to top</a>
+
+# In depth description of each steps
+##How to get bibliometric data?
 
 Biliometric data can be obtained from either *Scopus* or the *Web of Science*. Most university library have access to either one and some have access to both.
 
-## Retrieving data from Scopus
+<a href="#top">Back to top</a>
 
-```{r, echo = FALSE, out.width = "800px"}
-knitr::include_graphics("scopus.png")
-```
+### Retrieving data from Scopus
+
+![](scopus.png)
+
+*Scopus home page.*
 
 ![](scopus1.png)
+
+*Select all and export*
+
 ![](scopus2.png)
 
-Following the previous step will give you one or several .csv files.  
+*Export as CSV file and select all fields for exportation*
+
+
+Following the previous steps will get you one or several .csv files. Then, to import this/these file(s) in `R`, you need to put it/them in a **new folder which contains only the files to import into `R`**
+
+<a href="#top">Back to top</a>
+
+### Retrieving data from Web of Science
+
+![Web of Science home page. Make sure that Select a database corresponds to Web of Science Core Collection](wos.png)
+
+*Web of Science home page. Make sure that Select a database corresponds to Web of Science Core Collection*
+
+![Save to Other Files Formats](wos1.png)
+
+*Save to Other Files Formats*
+
+![You can download only 500 items at a time. You should select Full Record and Cited References. And select the Tab-delimeted (UTF-8) as file format.](wos2.png)
+
+*You can download only 500 items at a time. You should select Full Record and Cited References. And select the Tab-delimeted (UTF-8) as file format.*
+
+
+Following the previous steps will get you one or several .txt files. Then, to import this/these file(s) in `R`, you need to put it/them in a **new folder which contains only the files to import into `R`**
+
+<a href="#top">Back to top</a>
+
+## How to upload bibliometric data into R
+
+The bibliometric data obtained from Scopus or Web of science are either in .csv or .txt format. These are standard file formats and you most likely know them. There are built in function in `R` that let you import .csv and .txt files. So why does scimeetr provide you with `import_scopus_files` and `import_wos_files`? There are four reasons. The main one is that bibliometric data contains author names from around the world, which means that all alphabets are used and this leads to problems with file encoding. Scimeetr's import functions solves that problem. Second, Scopus do not provide standard, uniform and consisten cited reference list. Thus, `import_scopus_files` has to standardize it at import. This explains the additional time required to load scopus files versus wos files. Third, Scopus and Web of Science do not use the same column names so they have to be homogenized at import. Finally, the data can be transformed into a scimeetr object so that `summary`, `plot` and `print` will know what to do with it.
+
+```{r, eval=FALSE}
+scimeetr_list <- import_wos_files(files_directory = "/path/to/folder/")
+scimeetr_list <- import_scopus_files(files_directory = "/path/to/folder/")
+```
+Do not forget that this function take in a path to a folder not a file. Thus, it need a slash at the end of the folder path.
+
+<a href="#top">Back to top</a>
+
+## Exploring scimeetr data
+
+Printing `scimeetr_list` that we just created will provide some informations about it, but `summary` will provide more.
+
+```{r}
+scimeetr_list
+summary(scimeetr_list)
+```
+
+A scimeetr object such as `scimeetr_list` contains more data than what can be seen with `print` and `summary`. A scimeetr object is in fact a list of communities list which are themselves list of up to 9 elements. Each communities contain a data.frame called `dfsci`. This dataframe contains all the bibliometric data that was importedinto `R`.
+
+```{r, eval=FALSE}
+scimeetr_list$com1$dfsci
+```
+```{r, echo=FALSE}
+knitr::kable(subset(scimeetr_list$com1$dfsci[1,],select = c(-AB, -CR, -FX)), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+## Making reading lists
+
+If we are confident that the papers contained in `scimeetr_list` are those for which we want a reading list we can used the function `scilist` to find various lists of papers. The default list given by `scilist` contains the seminal papers for the community analysed. That is, it rank the paper by the number of times they were cited by all the papers and list them by citation frequency.
+
+```{r, eval=FALSE}
+scilist(scimeetr_list)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list), format = "markdown")
+```
+
+With the parameter `k`, we can control the length of the reading list.
+
+```{r, eval=FALSE}
+scilist(scimeetr_list, k = 3)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, k = 3), format = "markdown")
+```
+
+With the parameter `reading_list`, we can get any of the following 12 reading lists that fits into three categories:
+
+* Core
+    - core_papers
+    - core_yr
+    - core_residual
+* Experts
+    - by_expert_LC
+    - by_expert_TC
+    - group_of_experts_TC
+    - group_of_experts_LC
+* Centrality
+    - cite_most_others
+    - betweeness
+    - closeness
+    - connectness
+    - page_rank
+    
+The default reading list is `core_papers`.
+
+<a href="#top">Back to top</a>
+
+### Core
+
+I categorise the reading lists as **core** because they are reading lists of core papers as they are all a variation of the number of times papers within our community of interest refers to the paper listed. Although the number of citation is not a perfect measure of a papers importance for a community it should be a good proxy. A weekness of the number of citation as a measure of papers importance is that not all citations are equal. For example, sometimes a paper is cited because it is criticized or because it contrasts with other findings. This as been realised by others before and some have attempted to fix it by creating the concept of influential citation. Influential citation is a great concept by to be calculated it requires advance text processing and access to the full text of each papers. As it is notoriosly time consuming to get full text and even harder to get it in the right format, we are left with citation count.
+
+#### Most cited per year
+
+Using `scilist` with `reading_list = "core_yr"` will list the most cited paper for each year from three years before present to ten years before present. The parameter `k` controls the number of paper per year to list.
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "core_yr", k = 2)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "core_yr", k = 2), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+#### More cited than expected
+
+Using `scilist` with `reading_list = "core_residual"` will list the papers that diverge most from the expected number of citation for this particular paper. This can be visualised in the figure below. The point that have the biggest difference between their frequency value and the fitted blue lines are listed in the `core_residual` reading list.
+
+```{r, message=FALSE, echo=FALSE}
+splt_cr <- split_cr(scimeetr_list) 
+cr_df <- dplyr::inner_join(splt_cr, scimeetr_list$com1$cr, by = 'ID')
+library(dplyr, quietly = T)
+x <- cr_df %>%
+      mutate(age=as.integer(stringr::str_extract(Sys.Date(), '^[0-9]{4}')) - as.integer(as.character(cr_df$year))) %>%
+      filter(age <= 40 & age > 2) %>% 
+      group_by(age) %>%
+      top_n(n = 10, wt = Frequency.x) %>%
+      select(record, Frequency.x, age) %>%
+      arrange(age, desc(Frequency.x)) %>%
+      ungroup()
+library(ggplot2)
+ggplot(x, aes(x = age, y = Frequency.x)) +
+  geom_point()+
+  geom_smooth(method = "gam", formula = y ~ s(x, k=10), se = FALSE)
+```
+
+Here is an example of the code and its result.
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "core_residual", k = 3)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "core_residual", k = 3), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+### Experts
+The reading lists that I categorise as **expert** are built from authors information. Experts within a community are identified based on the number of papers they published and the number of times each of their papers are cited. 
+
+#### Recent paper of a few experts
+
+Using `scilist` with `reading_list = "by_expert_LC"` we will get a list of recent papers by one or a few experts in the community. For the option `by_expert_LC`, authors are ranked based on their *harmonic local H-index*. The H-index is a measure of an other productivity and impact. An author with an H-index of 10 means that he has published at least 10 papers with 10 or more citation each. A local H-index means that only citations from other papers in the community are counted. A harmonic local H-index means that authors do not get the full credit for each citation their paper received. It is corrected depending on the authos position in the authors list. First authors gets most of the credit, then the last author gets the second most, and the authors gets credit as a proportion of their position. Once the authors harmonic-local-H-index is found they are ranked and the `m` most recent publication of the `k` most 'expert' authors are listed as a reading list.
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "by_expert_LC", k = 2, m = 2)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "by_expert_LC", k = 2, m = 2), format = "markdown")
+```
+
+Using `scilist` with `reading_list = "by_expert_TC"` instead of `reading_list = "by_expert_LC"`, notice the `_TC` instead of the `_LC` will based the ranking calculation on **t**otal citation of it's publications instead of only the **l**ocal citations.
+
+<a href="#top">Back to top</a>
+
+#### Paper of experts group
+
+Using `scilist` with `reading_list = "group_of_experts_LC"` we will get a list of papers for which many authors are experts in the community. For this option, authors are assigned a *harmonic local H-index* like described in the previous section. But this time, a weighted sum of the harmonic-local-H-index of each authors of a paper is calculated. 
+
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "group_of_experts_LC", k = 5)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "group_of_experts_LC", k = 5), format = "markdown")
+```
+
+Using `scilist` with `reading_list = "group_of_experts_TC"` instead of `reading_list = "group_of_experts_LC"`, notice the `_TC` instead of the `_LC` will based the ranking calculation on **t**otal citation of it's publications instead of only the **l**ocal citations.
+
+<a href="#top">Back to top</a>
+
+### Centrality
+
+Their are several measures of [nodes centrality in graph theory](https://en.wikipedia.org/wiki/Centrality). The most central papers of a community of papers can be found with `scilist`.
+
+#### Betweeness
+
+Betweeness measures the importance of a paper in connecting two clusters of papers. Papers with a high betweeness would therefore be a paper that tend to be more interdisciplinary.
+
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "betweeness", k = 5)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "betweeness", k = 5), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+#### Closeness
+
+Closeness measures the average number of link between a paper and all other papers. Papers with a high closeness would therefore be a paper that tend to have a large and wide list of citations.
+
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "closeness", k = 5)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "closeness", k = 5), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+#### Connectness
+
+Connectness measures the number of links a paper has. Papers with a high connectness would therefore be a paper that tend to have cited what most other studies cited.
+
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "connectness", k = 5)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "connectness", k = 5), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+#### Page rank
+
+[Page rank](https://en.wikipedia.org/wiki/PageRank) was developped by Larry Page at google and it's a way to measure web page importance. The algorithm was applied to directed graph, so I am not sure of the consequence of applying it on the undirected graph that we have here.
+
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "page_rank", k = 5)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "page_rank", k = 5), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+#### Cite most others
+
+With the option `cite_most_others`, the papers that cite most other papers of the community can be found. This is not a centrality measure but it is also based on papers connection to each other. It should tend to find litterature review and recent papers that have an especially good grasp on the community.
+
+```{r, eval=FALSE}
+scilist(scimeetr_list, reading_list = "cite_most_others", k = 5)
+```
+```{r, echo=FALSE}
+knitr::kable(scilist(scimeetr_list, reading_list = "cite_most_others", k = 5), format = "markdown")
+```
+
+<a href="#top">Back to top</a>
+
+## Finding the main communities of research
+
+In the previous sections we have looked at only the main research community. But, splitting the main community in sub-communities can provide a more detail picture of the litterature. It can also help identify and then remove irrelevant sub-communities. To achieve any of this, the sub-communities have to be identified and characterized. The function `scimap`, as in science map, was developped for this task. By default, the graph use bibliographic coupling to calculate connections between papers, but coupling can also be done based on abstract words (abc), title words (tic) or keywords (kec).
+
+```{r}
+summary(scimap(scimeetr_list, coupling_by = 'bic', community_algorithm = 'louvain', min_com_size = 100))
+summary(scimap(scimeetr_list, coupling_by = 'abc', community_algorithm = 'louvain', min_com_size = 100))
+summary(scimap(scimeetr_list, coupling_by = 'tic', community_algorithm = 'louvain', min_com_size = 100))
+summary(scimap(scimeetr_list, coupling_by = 'kec', community_algorithm = 'louvain', min_com_size = 100))
+```
+
+<a href="#top">Back to top</a>
+
+## Focusing on a sub-community
+
+With the function `focus_on`, it is possible to change focus on a sub-community.
+
+```{r}
+scil <- scimap(scimeetr_list)
+scil
+subscil <- focus_on(scil, grab = 'com1_1')
+subscil
+```
+
+<a href="#top">Back to top</a>
+
+## Dive to a sub-community
+
+With the function `dive_to`, it is possible to move down to a sub-community and keep it's sub-communities.
+
+```{r}
+scil <- scimap(scimap(scimeetr_list))
+scil
+subscil <- dive_to(scil, aim_at = 'com1_1')
+subscil
+```
+
+<a href="#top">Back to top</a>

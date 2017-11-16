@@ -9,23 +9,24 @@ Description: A toolkit to map the scientific literature. The package contains
  functions to upload bibliometric data, to build a network of scientific paper,
  to find communities of research, to characterise the communities and to
  generate reading list of seminal papers for each communities of research.
-Depends: 
+Depends:
     R (>= 3.1)
-Imports: 
+Imports:
     igraph, 
     dplyr, 
     stringr,
     mgcv,
     purrr,
     tm,
-    tidyr
+    tidyr,
+    text2vec
 License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Date: 2016-05-28
 URL: http://www.maximerivest.com
-Suggests: 
+Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
