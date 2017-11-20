@@ -9,8 +9,8 @@ scilist(lsci = lsci, reading_list = "core_papers", k = 8, m = 3)
 \arguments{
 \item{reading_list}{A vector of length one. Equal to either: 
 'core_papers', 'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC',
-'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others',
-'betweeness', 'closeness', 'connectness', 'page_rank'}
+'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others', 'direct_cite_eigen',
+'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank'}
 
 \item{k}{length of list per community}
 

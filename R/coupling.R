@@ -1,6 +1,6 @@
 #' Make graph based on coupling
 #'
-#' @param biblio_df A data.frame of class scimeetr created from importing files
+#' @param dfsci A data.frame of class scimeetr created from importing files
 #' with import_bib_file or a list of class scimeetr created from the
 #' function scimap.
 #' @param coupling_by A vector of length one. Equal to either:
@@ -36,25 +36,32 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
       select(UT.x, UT.y, w_ij)
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
     couple_df <- filter(couple_df, w_ij != 0)
-    #m <- sum(couple_df$w_ij)
-    #k_i <- purrr::map_dbl(as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))[1:10], function(x, couple_df) {
-    #  sum(c(filter(couple_df, UT.x == x)$w_ij, filter(couple_df, UT.y == x)$w_ij))
-    #}, couple_df)
-    #names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
-    #couple_df <- couple_df %>%
-    #  mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
+    m <- sum(couple_df$w_ij)
+    coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
+                        w_ij = rep(couple_df$w_ij,2))
+    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
+    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
+      sum(filter(coup2, wos_id == x)$w_ij)
+    }, coup2)
+    names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
+    couple_df <- couple_df %>%
+      mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
 
     names(couple_df) <- c("rec1",
                           "rec2",
-                          "bc"#,
-    #                     "weight"
+                          "bc",
+                         "weight"
     )
     couple_df <- ungroup(couple_df)
-    #missing_df <- data.frame('rec1' = biblio_df$UT[which(!(biblio_df$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
-     #                        'rec2' = biblio_df$UT[1],
-      #                       'weight' = 0,
-       #                      stringsAsFactors = F)
-    #couple_df <- rbind(couple_df, missing_df)
+    tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))]
+    if(length(tmp) >= 1){
+      missing_df <- data.frame('rec1' = dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
+                               'rec2' = dfsci$UT[1],
+                               'bc' = 0,
+                               'weight' = 0,
+                               stringsAsFactors = F)
+      couple_df <- rbind(couple_df, missing_df)
+    }
     graph <- igraph::graph_from_data_frame(d=couple_df, directed= F)
 
   } else if(coupling_by == 'kec'){
@@ -85,9 +92,12 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
     couple_df <- filter(couple_df, w_ij != 0)
     m <- sum(couple_df$w_ij)
-    k_i <- purrr::map_dbl(as.list(unique(c(couple_df$UT.x, couple_df$UT.y))), function(x, couple_df) {
-      sum(c(filter(couple_df, UT.x == x)$w_ij, filter(couple_df, UT.y == x)$w_ij))
-    }, couple_df)
+    coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
+                        w_ij = rep(couple_df$w_ij,2))
+    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
+    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
+      sum(filter(coup2, wos_id == x)$w_ij)
+    }, coup2)
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
@@ -98,11 +108,14 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
                           "weight"
     )
     couple_df <- ungroup(couple_df)
-   # missing_df <- data.frame('rec1' = biblio_df$UT[which(!(biblio_df$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
-    #                         'rec2' = biblio_df$UT[1],
-     #                        'weight' = 0,
-      #                       stringsAsFactors = F)
-   # couple_df <- rbind(couple_df, missing_df)
+    if(length(tmp) >= 1){
+      missing_df <- data.frame('rec1' = dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
+                               'rec2' = dfsci$UT[1],
+                               'bc' = 0,
+                               'weight' = 0,
+                               stringsAsFactors = F)
+      couple_df <- rbind(couple_df, missing_df)
+    }
     graph <- igraph::graph_from_data_frame(d=couple_df, directed= F)
   } else if(coupling_by == 'tic'){
     documents <- tolower(dfsci$TI)
@@ -145,9 +158,12 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
     couple_df <- filter(couple_df, w_ij != 0)
     m <- sum(couple_df$w_ij)
-    k_i <- purrr::map_dbl(as.list(unique(c(couple_df$UT.x, couple_df$UT.y))), function(x, couple_df) {
-      sum(c(filter(couple_df, UT.x == x)$w_ij, filter(couple_df, UT.y == x)$w_ij))
-    }, couple_df)
+    coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
+                        w_ij = rep(couple_df$w_ij,2))
+    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
+    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
+      sum(filter(coup2, wos_id == x)$w_ij)
+    }, coup2)
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
@@ -201,9 +217,12 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
     couple_df <- filter(couple_df, w_ij != 0)
     m <- sum(couple_df$w_ij)
-    k_i <- purrr::map_dbl(as.list(unique(c(couple_df$UT.x, couple_df$UT.y))), function(x, couple_df) {
-      sum(c(filter(couple_df, UT.x == x)$w_ij, filter(couple_df, UT.y == x)$w_ij))
-    }, couple_df)
+    coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
+                        w_ij = rep(couple_df$w_ij,2))
+    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
+    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
+      sum(filter(coup2, wos_id == x)$w_ij)
+    }, coup2)
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))

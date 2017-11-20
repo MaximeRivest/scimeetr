@@ -7,13 +7,13 @@
 coupling(dfsci = dfsci, coupling_by = "bic")
 }
 \arguments{
-\item{coupling_by}{A vector of length one. Equal to either: 
-'bc'/'bibliographic coupling', 'kc'/'keyword coupling', 'tc'/'title coupling', 
-'ac'/'abstract coupling', 'jc'/'journal coupling', 'ac'/'author coupling'.}
-
-\item{biblio_df}{A data.frame of class scimeetr created from importing files
-with import_bib_file or a list of class scimeetr created from the 
+\item{dfsci}{A data.frame of class scimeetr created from importing files
+with import_bib_file or a list of class scimeetr created from the
 function scimap.}
+
+\item{coupling_by}{A vector of length one. Equal to either:
+'bc'/'bibliographic coupling', 'kc'/'keyword coupling', 'tc'/'title coupling',
+'ac'/'abstract coupling', 'jc'/'journal coupling', 'ac'/'author coupling'.}
 }
 \value{
 graph object

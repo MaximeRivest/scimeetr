@@ -5,8 +5,8 @@
 #' function scimap.
 #' @param reading_list A vector of length one. Equal to either: 
 #' 'core_papers', 'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC',
-#' 'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others',
-#' 'betweeness', 'closeness', 'connectness', 'page_rank'
+#' 'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others', 'direct_cite_eigen',
+#' 'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank'
 #' 
 #' @param k length of list per community
 #' @return df. A reading list
@@ -260,6 +260,26 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
       rl <- rl[1:k,]
       return(rl)
     }, splt_cr, k)
+  } else if (reading_list == 'direct_cite_eigen') {
+    lev_com <- stringr::str_count(names(lsci), '_')
+    splt_cr <- split_cr(lsci)
+    rl <- map(lsci, 'dfsci') %>%
+      map(function(dfsci, splt_cr, k) {
+        cr_list <- strsplit(dfsci$CR, split="; ")
+        cr_df <- data.frame('RECID' = rep(dfsci$RECID, sapply(cr_list, length)),
+                            'DOI' = rep(dfsci$DI, sapply(cr_list, length)),
+                            'CR' = toupper(unlist(cr_list)), 
+                            stringsAsFactors = F)
+        cit_graph <- inner_join(cr_df, splt_cr, by = c('CR' = 'record')) %>%
+          inner_join(dfsci, by = c('RECID.y' = 'RECID')) %>%
+          select('RECID.x', 'RECID.y') 
+        names(cit_graph) <- c('from', 'to')
+        cit_graph <- igraph::graph_from_data_frame(cit_graph, directed = T)
+        centr <- igraph::eigen_centrality(cit_graph)
+        rl <- data.frame('paper' = names(sort(centr$vector, decreasing = T)[1:k]),
+                         'eigen_centrality' = as.vector(sort(centr$vector, decreasing = T)[1:k]))
+        return(rl)
+      }, splt_cr, k)
   } else if (reading_list == 'betweeness') {
     rl <- map(lsci, function(com_i, k){
       if(!any(names(com_i) == 'graph')){
@@ -284,6 +304,15 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
         com_i$graph <- coupling(com_i$dfsci, 'bic')
       }
       bet <- igraph::degree(com_i$graph, normalized = T)
+      return(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID'])
+    }, k)
+    names(rl) <-  names(lsci)
+  } else if (reading_list == 'link_strength') {
+    rl <- map(lsci, function(com_i, k){
+      if(!any(names(com_i) == 'graph')){
+        com_i$graph <- coupling(com_i$dfsci, 'bic')
+      }
+      bet <- igraph::strength(com_i$graph, mode = 'all', weights = log(igraph::E(com_i$graph)$weight + 1, 10))
       return(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID'])
     }, k)
     names(rl) <-  names(lsci)

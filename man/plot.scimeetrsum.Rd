@@ -4,7 +4,7 @@
 \alias{plot.scimeetrsum}
 \title{Plot scimeetr summary}
 \usage{
-\method{plot}{scimeetrsum}(object, node_names = "tag", ...)
+\method{plot}{scimeetrsum}(object, node_names = "tag", node_size = 1, ...)
 }
 \arguments{
 \item{object}{}
