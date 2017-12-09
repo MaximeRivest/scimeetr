@@ -4,10 +4,10 @@
 \alias{scilist}
 \title{Make reading lists}
 \usage{
-scilist(lsci = lsci, reading_list = "core_papers", k = 8, m = 3)
+scilist(lsci = lsci, reading_list = "core_papers", k = 5, m = 3)
 }
 \arguments{
-\item{reading_list}{A vector of length one. Equal to either: 
+\item{reading_list}{A vector of length one. Equal to either:
 'core_papers', 'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC',
 'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others', 'direct_cite_eigen',
 'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank'}
@@ -15,7 +15,7 @@ scilist(lsci = lsci, reading_list = "core_papers", k = 8, m = 3)
 \item{k}{length of list per community}
 
 \item{biblio_df}{A data.frame of class scimeetr created from importing files
-with import_bib_file or a list of class scimeetr created from the 
+with import_bib_file or a list of class scimeetr created from the
 function scimap.}
 }
 \value{

@@ -1,18 +1,18 @@
 #' Make reading lists
-#' 
+#'
 #' @param biblio_df A data.frame of class scimeetr created from importing files
-#' with import_bib_file or a list of class scimeetr created from the 
+#' with import_bib_file or a list of class scimeetr created from the
 #' function scimap.
-#' @param reading_list A vector of length one. Equal to either: 
+#' @param reading_list A vector of length one. Equal to either:
 #' 'core_papers', 'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC',
 #' 'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others', 'direct_cite_eigen',
 #' 'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank'
-#' 
+#'
 #' @param k length of list per community
 #' @return df. A reading list
 #' @export
 #' @import dplyr purrr
-scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
+scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 5, m = 3) {
   if(reading_list == 'core_papers') {
     rl <- map(lsci, 'cr') %>%
       map(function(x, k){
@@ -21,31 +21,44 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
         } else {
           x <- select(x[1:k,], ID:Pourcentage)
         }
+        x$ID <- stringr::str_replace_all(x$ID, ', DOI.*', '')
+        x$ID <- stringr::str_replace_all(x$ID, 'V(?=[0-9]{1,6})', '')
+        x$ID <- stringr::str_replace_all(x$ID, 'P(?=[0-9]{1,6})', '')
+        x <- x[,1:2]
+        names(x) <- c("publication", "metric")
+        x$list_type <- 'core_papers'
         return(x)
       }, k)
+
   } else if (reading_list == 'core_yr') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    splt_cr <- split_cr(lsci) 
+    splt_cr <- split_cr(lsci)
     rl <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID')) %>%
       map(function(x, k) {
         x <- x %>%
           mutate(age=as.integer(stringr::str_extract(Sys.Date(), '^[0-9]{4}')) - as.integer(as.character(x$year))) %>%
-          filter(age <= 10 & age > 2) %>% 
+          filter(age <= 6 & age > 1) %>%
           group_by(age) %>%
           top_n(n = k, wt = Frequency.x) %>%
           select(record, Frequency.x, age) %>%
           arrange(age, desc(Frequency.x)) %>%
           ungroup()
-        return(x)}, k) 
+        x$record <- stringr::str_replace_all(x$record, ', DOI.*', '')
+        x$record  <- stringr::str_replace_all(x$record , 'V(?=[0-9]{1,6})', '')
+        x$record  <- stringr::str_replace_all(x$record , 'P(?=[0-9]{1,6})', '')
+        x <- x[,1:2]
+        names(x) <- c("publication", "metric")
+        x$list_type <- 'core_yr'
+        return(x)}, k)
     names(rl) <- names(lsci)
   } else if (reading_list == 'core_residual') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    splt_cr <- split_cr(lsci) 
+    splt_cr <- split_cr(lsci)
     rl <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID')) %>%
       map(function(x,k) {
         x <- x %>%
           mutate(age=as.integer(stringr::str_extract(Sys.Date(), '^[0-9]{4}')) - as.integer(as.character(x$year))) %>%
-          filter(age <= 40 & age > 2) %>% 
+          filter(age <= 40 & age > 2) %>%
           group_by(age) %>%
           top_n(n = 10, wt = Frequency.x) %>%
           select(record, Frequency.x, age) %>%
@@ -53,11 +66,17 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           ungroup()
         res <- mgcv::gam(Frequency.x~s(age, k=10), data = x, family = "poisson")$residuals
         x <- x[which(res >= sort(res, decreasing = T)[k]),]
+        x$record <- stringr::str_replace_all(x$record, ', DOI.*', '')
+        x$record  <- stringr::str_replace_all(x$record , 'V(?=[0-9]{1,6})', '')
+        x$record  <- stringr::str_replace_all(x$record , 'P(?=[0-9]{1,6})', '')
+        x <- x[,1:2]
+        names(x) <- c("publication", "metric")
+        x$list_type <- 'core_residual'
         return(x)}, k)
     names(rl) <- names(lsci)
   } else if (reading_list == 'by_expert_LC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    splt_cr <- split_cr(lsci) 
+    splt_cr <- split_cr(lsci)
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -74,7 +93,7 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           return(z)
         }) %>%
           unlist()
-        audf <- data.frame('AU' = unlist(au_list), 
+        audf <- data.frame('AU' = unlist(au_list),
                            'UT' = rep(dfsci_mod$UT, sapply(au_list, length)),
                            'TC' = rep(dfsci_mod$TC, sapply(au_list, length)),
                            'RECID' = rep(dfsci_mod$RECID, sapply(au_list, length)),
@@ -100,12 +119,18 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           top_n(n = m, wt = PY.y) %>%
           arrange(desc(HL), AU.x, desc(PY.y)) %>%
           select(AU = AU.x, HL, PAPER = RECID.x)
+        audf1 <- audf1 %>%
+          mutate(metric = paste(AU,'  h-index :', HL)) %>%
+          ungroup() %>%
+          select(PAPER:metric)
+        names(audf1) <- c('publication', 'metric')
+        audf1$list_type <- 'by_expert_LC'
         return(audf1)
       }, k, m)
     names(rl) <- names(lsci)
   } else if (reading_list == 'by_expert_TC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    splt_cr <- split_cr(lsci) 
+    splt_cr <- split_cr(lsci)
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -122,7 +147,7 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           return(z)
         }) %>%
           unlist()
-        audf <- data.frame('AU' = unlist(au_list), 
+        audf <- data.frame('AU' = unlist(au_list),
                            'UT' = rep(dfsci_mod$UT, sapply(au_list, length)),
                            'TC' = rep(dfsci_mod$TC, sapply(au_list, length)),
                            'RECID' = rep(dfsci_mod$RECID, sapply(au_list, length)),
@@ -148,12 +173,18 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           top_n(n = m, wt = PY.y) %>%
           arrange(desc(HL), AU.x, desc(PY.y)) %>%
           select(AU = AU.x, HL, PAPER = RECID.x)
+        audf1 <- audf1 %>%
+          mutate(metric = paste(AU,'  h-index :', HL)) %>%
+          ungroup() %>%
+          select(PAPER:metric)
+        names(audf1) <- c('publication', 'metric')
+        audf1$list_type <- 'by_expert_TC'
         return(audf1)
       }, k, m)
     names(rl) <- names(lsci)
   } else if (reading_list == 'group_of_experts_LC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    splt_cr <- split_cr(lsci) 
+    splt_cr <- split_cr(lsci)
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -170,7 +201,7 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           return(z)
         }) %>%
           unlist()
-        audf <- data.frame('AU' = unlist(au_list), 
+        audf <- data.frame('AU' = unlist(au_list),
                            'UT' = rep(dfsci_mod$UT, sapply(au_list, length)),
                            'TC' = rep(dfsci_mod$TC, sapply(au_list, length)),
                            'RECID' = rep(dfsci_mod$RECID, sapply(au_list, length)),
@@ -194,11 +225,14 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           summarise(AuS = sum(HL/1:length(HL))) %>% #could change the mean for sum...
           top_n(n = k, wt = AuS) %>%
           arrange(desc(AuS))
+        names(audf1) <- c('publication', 'metric')
+        audf1$list_type <- 'group_of_experts_LC'
+        return(audf1)
       }, k)
     names(rl) <- names(lsci)
   } else if (reading_list == 'group_of_experts_TC') {
     lev_com <- stringr::str_count(names(lsci), '_')
-    splt_cr <- split_cr(lsci) 
+    splt_cr <- split_cr(lsci)
     splt_cr_freq <- map2(rep(list(splt_cr), length(lsci)), map(lsci, 'cr'), inner_join, by = c('ID'))
     rl <- map2(map(lsci, 'dfsci'), splt_cr_freq, left_join, by = c('RECID')) %>%
       map(function(dfsci_mod, k, m){
@@ -215,7 +249,7 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           return(z)
         }) %>%
           unlist()
-        audf <- data.frame('AU' = unlist(au_list), 
+        audf <- data.frame('AU' = unlist(au_list),
                            'UT' = rep(dfsci_mod$UT, sapply(au_list, length)),
                            'TC' = rep(dfsci_mod$TC, sapply(au_list, length)),
                            'RECID' = rep(dfsci_mod$RECID, sapply(au_list, length)),
@@ -239,6 +273,9 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
           summarise(AuS = sum(HL/1:length(HL))) %>%
           top_n(n = k, wt = AuS) %>%
           arrange(desc(AuS))
+        names(audf1) <- c('publication', 'metric')
+        audf1$list_type <- 'group_of_experts_TC'
+        return(audf1)
       }, k)
     names(rl) <- names(lsci)
   } else if (reading_list == 'cite_most_others') {
@@ -249,7 +286,7 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
       cr_list <- strsplit(dfsci$CR, split="; ")
       cr_df <- data.frame('RECID' = rep(dfsci$RECID, sapply(cr_list, length)),
                           'DOI' = rep(dfsci$DI, sapply(cr_list, length)),
-                          'CR' = toupper(unlist(cr_list)), 
+                          'CR' = toupper(unlist(cr_list)),
                           stringsAsFactors = F)
       rl <- inner_join(cr_df, splt_cr, by = c('CR' = 'record')) %>%
         inner_join(dfsci, by = c('RECID.y' = 'RECID')) %>%
@@ -257,7 +294,9 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
         summarise('DOI' = DOI[1],
                   'Nb_of_ref_within_com' = n()) %>%
         arrange(desc(Nb_of_ref_within_com))
-      rl <- rl[1:k,]
+      rl <- rl[1:k,c(1,3)]
+      names(rl) <- c('publication', 'metric')
+      rl$list_type <- 'cite_most_others'
       return(rl)
     }, splt_cr, k)
   } else if (reading_list == 'direct_cite_eigen') {
@@ -268,16 +307,18 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
         cr_list <- strsplit(dfsci$CR, split="; ")
         cr_df <- data.frame('RECID' = rep(dfsci$RECID, sapply(cr_list, length)),
                             'DOI' = rep(dfsci$DI, sapply(cr_list, length)),
-                            'CR' = toupper(unlist(cr_list)), 
+                            'CR' = toupper(unlist(cr_list)),
                             stringsAsFactors = F)
         cit_graph <- inner_join(cr_df, splt_cr, by = c('CR' = 'record')) %>%
           inner_join(dfsci, by = c('RECID.y' = 'RECID')) %>%
-          select('RECID.x', 'RECID.y') 
+          select('RECID.x', 'RECID.y')
         names(cit_graph) <- c('from', 'to')
         cit_graph <- igraph::graph_from_data_frame(cit_graph, directed = T)
         centr <- igraph::eigen_centrality(cit_graph)
         rl <- data.frame('paper' = names(sort(centr$vector, decreasing = T)[1:k]),
                          'eigen_centrality' = as.vector(sort(centr$vector, decreasing = T)[1:k]))
+        names(rl) <- c('publication', 'metric')
+        rl$list_type <- 'direct_cite_eigen'
         return(rl)
       }, splt_cr, k)
   } else if (reading_list == 'betweeness') {
@@ -286,7 +327,11 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
         com_i$graph <- coupling(com_i$dfsci, 'bic')
       }
       bet <- igraph::betweenness(com_i$graph, directed = F, normalized = T)
-      return(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID'])
+      publication <- com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID']
+      metric <- sort(bet, decreasing = T)[1:k]
+      x <- data.frame(publication, metric, row.names = NULL)
+      x$list_type <- 'betweeness'
+      return(x)
     }, k)
     names(rl) <-  names(lsci)
   } else if (reading_list == 'closeness') {
@@ -295,7 +340,11 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
         com_i$graph <- coupling(com_i$dfsci, 'bic')
       }
       bet <- igraph::closeness(com_i$graph, normalized = T)
-      return(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID'])
+      publication <- com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID']
+      metric <- sort(bet, decreasing = T)[1:k]
+      x <- data.frame(publication, metric, row.names = NULL)
+      x$list_type <- 'closeness'
+      return(x)
     }, k)
     names(rl) <-  names(lsci)
   } else if (reading_list == 'connectness') {
@@ -303,8 +352,12 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
       if(!any(names(com_i) == 'graph')){
         com_i$graph <- coupling(com_i$dfsci, 'bic')
       }
-      bet <- igraph::degree(com_i$graph, normalized = T)
-      return(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID'])
+      bet <- igraph::degree(com_i$graph, normalized = F)
+      publication <- com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID']
+      metric <- sort(bet, decreasing = T)[1:k]
+      x <- data.frame(publication, metric, row.names = NULL)
+      x$list_type <- 'connectness'
+      return(x)
     }, k)
     names(rl) <-  names(lsci)
   } else if (reading_list == 'link_strength') {
@@ -312,8 +365,12 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
       if(!any(names(com_i) == 'graph')){
         com_i$graph <- coupling(com_i$dfsci, 'bic')
       }
-      bet <- igraph::strength(com_i$graph, mode = 'all', weights = log(igraph::E(com_i$graph)$weight + 1, 10))
-      return(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID'])
+      bet <- igraph::strength(com_i$graph, mode = 'all', weights = igraph::E(com_i$graph)$weight)
+      publication <- com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID']
+      metric <- sort(bet, decreasing = T)[1:k]
+      x <- data.frame(publication, metric, row.names = NULL)
+      x$list_type <- 'link_strength'
+      return(x)
     }, k)
     names(rl) <-  names(lsci)
   } else if (reading_list == 'page_rank') {
@@ -322,7 +379,11 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 8, m = 3) {
         com_i$graph <- coupling(com_i$dfsci, 'bic')
       }
       bet <- igraph::page_rank(com_i$graph, directed = F)
-      return(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet$vector, decreasing = T)[1:k]), 'RECID'])
+      publication <- com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet$vector, decreasing = T)[1:k]), 'RECID']
+      metric <- sort(bet$vector, decreasing = T)[1:k]
+      x <- data.frame(publication, metric, row.names = NULL)
+      x$list_type <- 'page_rank'
+      return(x)
     }, k)
     names(rl) <-  names(lsci)
   }

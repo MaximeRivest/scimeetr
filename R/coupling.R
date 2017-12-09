@@ -39,10 +39,10 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
     m <- sum(couple_df$w_ij)
     coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
                         w_ij = rep(couple_df$w_ij,2))
-    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
-    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
-      sum(filter(coup2, wos_id == x)$w_ij)
-    }, coup2)
+    k_i <- coup2 %>%
+      group_by(wos_id) %>%
+      summarise(k_i = sum(w_ij))
+    k_i <- k_i$k_i
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
@@ -94,10 +94,10 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
     m <- sum(couple_df$w_ij)
     coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
                         w_ij = rep(couple_df$w_ij,2))
-    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
-    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
-      sum(filter(coup2, wos_id == x)$w_ij)
-    }, coup2)
+    k_i <- coup2 %>%
+      group_by(wos_id) %>%
+      summarise(k_i = sum(w_ij))
+    k_i <- k_i$k_i
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
@@ -160,10 +160,10 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
     m <- sum(couple_df$w_ij)
     coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
                         w_ij = rep(couple_df$w_ij,2))
-    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
-    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
-      sum(filter(coup2, wos_id == x)$w_ij)
-    }, coup2)
+    k_i <- coup2 %>%
+      group_by(wos_id) %>%
+      summarise(k_i = sum(w_ij))
+    k_i <- k_i$k_i
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
@@ -219,10 +219,10 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
     m <- sum(couple_df$w_ij)
     coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
                         w_ij = rep(couple_df$w_ij,2))
-    wosid <- as.list(unique(c(couple_df$UT.x, couple_df$UT.y)))
-    k_i <- purrr::map_dbl(wosid, function(x, coup2) {
-      sum(filter(coup2, wos_id == x)$w_ij)
-    }, coup2)
+    k_i <- coup2 %>%
+      group_by(wos_id) %>%
+      summarise(k_i = sum(w_ij))
+    k_i <- k_i$k_i
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))

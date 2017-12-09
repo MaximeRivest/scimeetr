@@ -1,5 +1,5 @@
 #' Make frequencies table
-#' 
+#'
 #' @param lsci An object of class scimeetr
 #' @return An object of class scimeetr
 #' @export
@@ -32,13 +32,31 @@ add_table_freq <- function(lsci){
             mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
             arrange(desc(Frequency.x), desc(Relative_frequency))
           #Descriminant words
-          i_lsci$tag <- filter(kwdf[1:25,],
-                               Relative_frequency > 1.05)$ID[1:6]
+          i_lsci$tag <-arrange(kwdf[1:25,], desc(Relative_frequency * Frequency.x))$ID[1:6]
         } else {
           i_lsci$tag <- kwdf$ID[1:6]
         }
         i_lsci$kw <- kwdf
-        
+      }
+      if(!any(names(i_lsci) == "de")){
+        DE_list <- strsplit(i_lsci$dfsci$DE, "[;][ ]")
+        kwdf <- data.frame('ID' = toupper(unlist(DE_list)),
+                           stringsAsFactors=F)
+        kwdf <- kwdf %>%
+          group_by(ID) %>%
+          summarise("Frequency.x" = n()) %>%
+          ungroup() %>%
+          mutate("Pourcentage" = Frequency.x / sum(Frequency.x)) %>%
+          arrange(desc(Frequency.x))
+        if(!purrr::is_empty(i_lsci$parent_com)) {
+          kwdf$comsize <- nrow(i_lsci$dfsci)
+          kwdf$parentsize <- nrow(lsci[[i_lsci$parent_com]]$dfsci)
+          kwdf <- kwdf %>%
+            left_join(select(lsci[[i_lsci$parent_com]]$kw,ID, Frequency = Frequency.x), by = "ID") %>%
+            mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
+            arrange(desc(Frequency.x), desc(Relative_frequency))
+        }
+        i_lsci$de <- kwdf
       }
       if (!any(names(i_lsci) == "ti")) {
         documents <- tolower(i_lsci$dfsci$TI)
@@ -64,7 +82,7 @@ add_table_freq <- function(lsci){
           paste(rep(names(x), x), collapse=" ")
         })
         TI_list <- strsplit(dtm2list, "[ ]")
-        
+
         tidf <- data.frame('ID' =  toupper(unlist(TI_list)),
                            stringsAsFactors=F)
         tidf <- tidf %>%
@@ -107,7 +125,7 @@ add_table_freq <- function(lsci){
           paste(rep(names(x), x), collapse=" ")
         })
         AB_list <- strsplit(dtm2list, "[ ]")
-        
+
         abdf <- data.frame('ID' =  toupper(unlist(AB_list)),
                            stringsAsFactors=F)
         abdf <- abdf %>%

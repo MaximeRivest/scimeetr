@@ -1,6 +1,6 @@
 #' Finds research communities
 #' 
-#' @param biblio_df A data.frame of class scimeetr created from importing files
+#' @param scimeetr_list A list of class scimeetr. Objects of class scimeetr are return by 
 #' with import_bib_file or a list of class scimeetr created from the 
 #' function scimap.
 #' @param coupling A vector of length one. Equal to either: 
@@ -14,20 +14,21 @@
 #' @export
 #' @import dplyr purrr
 
-scimap <- function(lsci = lsci, 
+scimap <- function(scimeetr_list = scimeetr_list, 
                    coupling_by = 'bic',
                    community_algorithm = 'louvain',
                    min_com_size = 30) {
-  names_lsci <- names(lsci)
+  names_lsci <- names(scimeetr_list)
   lsci_temp <- list()
-  for(i in 1:length(lsci)){
-    i_lsci <- lsci[[i]]
+  for(i in 1:length(scimeetr_list)){
+    i_lsci <- scimeetr_list[[i]]
     if(sum(stringr::str_detect(names(i_lsci), 'graph')) >= 1){
       i_lsci <- list(i_lsci)
       names(i_lsci) <- names_lsci[i]
       lsci_temp <- c(lsci_temp, i_lsci)
     } else {
       graph_object = coupling(i_lsci$dfsci, coupling_by)
+      igraph::E(graph_object)$weight <- log(igraph::E(graph_object)$weight + 1, 100)
       coms = clusterize(graph_object, community_algorithm)
       utcom <- data.frame(UT = names(igraph::membership(coms)),
                           MB = as.vector(igraph::membership(coms)),

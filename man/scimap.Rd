@@ -4,15 +4,15 @@
 \alias{scimap}
 \title{Finds research communities}
 \usage{
-scimap(lsci = lsci, coupling_by = "bic", community_algorithm = "louvain",
-  min_com_size = 30)
+scimap(scimeetr_list = scimeetr_list, coupling_by = "bic",
+  community_algorithm = "louvain", min_com_size = 30)
 }
 \arguments{
-\item{community_algorithm}{A vector of length one. 'louvain', 'fast greedy'...}
-
-\item{biblio_df}{A data.frame of class scimeetr created from importing files
+\item{scimeetr_list}{A list of class scimeetr. Objects of class scimeetr are return by 
 with import_bib_file or a list of class scimeetr created from the 
 function scimap.}
+
+\item{community_algorithm}{A vector of length one. 'louvain', 'fast greedy'...}
 
 \item{coupling}{A vector of length one. Equal to either: 
 'bc'/'bibliographic coupling', 'kc'/'keyword coupling', 'tc'/'title coupling', 
