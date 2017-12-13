@@ -326,7 +326,7 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 5, m = 3) {
       if(!any(names(com_i) == 'graph')){
         com_i$graph <- coupling(com_i$dfsci, 'bic')
       }
-      bet <- igraph::betweenness(com_i$graph, directed = F, normalized = T)
+      bet <- igraph::betweenness(com_i$graph, directed = F, normalized = T, weights = igraph::E(com_i$graph)$weight + 0.0000001)
       publication <- com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID']
       metric <- sort(bet, decreasing = T)[1:k]
       x <- data.frame(publication, metric, row.names = NULL)

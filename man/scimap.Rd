@@ -4,26 +4,30 @@
 \alias{scimap}
 \title{Finds research communities}
 \usage{
-scimap(scimeetr_list = scimeetr_list, coupling_by = "bic",
-  community_algorithm = "louvain", min_com_size = 30)
+scimap(scimeetr_list, coupling_by = "bic", community_algorithm = "louvain",
+  min_com_size = 30)
 }
 \arguments{
-\item{scimeetr_list}{A list of class scimeetr. Objects of class scimeetr are return by 
-with import_bib_file or a list of class scimeetr created from the 
+\item{scimeetr_list}{A list of class scimeetr. Objects of class scimeetr are 
+return by with import_bib_file or a list of class scimeetr created from the
 function scimap.}
 
-\item{community_algorithm}{A vector of length one. 'louvain', 'fast greedy'...}
+\item{coupling_by}{A character vector of length one. Equal to either: 
+'bic'/'bibliographic coupling', 'kec'/'keyword coupling', 'tic'/'title 
+coupling', 'abc'/'abstract coupling', 'joc'/'journal coupling', 
+'auc'/'author coupling', 'woc'/'word coupling'.}
 
-\item{coupling}{A vector of length one. Equal to either: 
-'bc'/'bibliographic coupling', 'kc'/'keyword coupling', 'tc'/'title coupling', 
-'ac'/'abstract coupling', 'jc'/'journal coupling', 'ac'/'author coupling'.}
+\item{community_algorithm}{A vector of length one. 'louvain', 'fast 
+greedy'...}
 
-\item{inclusive_com}{TRUE or FALSE. Tells wheter to include within the subcommunities
-all the frontier nodes that were not originally included in the subcommunities.}
+\item{inclusive_com}{TRUE or FALSE. Tells wheter to include within the 
+subcommunities all the frontier nodes that were not originally included in 
+the subcommunities.}
 }
 \value{
-biblio_list. A list of the communities, including the global community,
- with all their associated graph object, community object and biblio_df object.
+biblio_list. A list of the communities, including the global 
+  community, with all their associated graph object, community object and 
+  biblio_df object.
 }
 \description{
 Finds research communities

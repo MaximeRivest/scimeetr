@@ -8,9 +8,9 @@
 #' 'ac'/'abstract coupling', 'jc'/'journal coupling', 'ac'/'author coupling'.
 #' @return graph object
 #' @export
-#' @import dplyr
+#' @import dplyr stringr
 
-coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
+coupling <- function(dfsci = dfsci, coupling_by = 'bic', kw = 1, ti = 1, ab = 1){
   # Change factors to characters to allow text manipulation
   for(i in 1:ncol(dfsci)){
     if(is.factor(dfsci[,i])){
@@ -28,11 +28,9 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
       filter(UT.x > UT.y) %>%
       group_by(UT.x, UT.y) %>%
       summarise(count = n()) %>%
-      left_join(dfsci[,c('UT', 'CR')], by = c('UT.x' = 'UT'))%>%
-      left_join(dfsci[,c('UT', 'CR')], by = c('UT.y' = 'UT'))%>%
-      mutate(NR.x = stringr::str_count(CR.x, "; "),
-             NR.y = stringr::str_count(CR.y, "; "),
-             w_ij = count/sqrt(NR.x * NR.y)) %>%
+      left_join(dfsci[,c('UT', 'NR')], by = c('UT.x' = 'UT'))%>%
+      left_join(dfsci[,c('UT', 'NR')], by = c('UT.y' = 'UT'))%>%
+      mutate(w_ij = count/sqrt(NR.x * NR.y)) %>%
       select(UT.x, UT.y, w_ij)
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
     couple_df <- filter(couple_df, w_ij != 0)
@@ -108,6 +106,7 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
                           "weight"
     )
     couple_df <- ungroup(couple_df)
+    tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))]
     if(length(tmp) >= 1){
       missing_df <- data.frame('rec1' = dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
                                'rec2' = dfsci$UT[1],
@@ -151,8 +150,8 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
       summarise(count = n()) %>%
       left_join(dfsci[,c('UT', 'TI')], by = c('UT.x' = 'UT'))%>%
       left_join(dfsci[,c('UT', 'TI')], by = c('UT.y' = 'UT'))%>%
-      mutate(NR.x = stringr::str_count(TI.x, " "),
-             NR.y = stringr::str_count(TI.y, " "),
+      mutate(NR.x = str_count(TI.x, " "),
+             NR.y = str_count(TI.y, " "),
              w_ij = count/sqrt(NR.x * NR.y)) %>%
       select(UT.x, UT.y, w_ij)
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
@@ -173,6 +172,16 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
                           "bc",
                           "weight"
     )
+    couple_df <- ungroup(couple_df)
+    tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))]
+    if(length(tmp) >= 1){
+      missing_df <- data.frame('rec1' = dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
+                               'rec2' = dfsci$UT[1],
+                               'bc' = 0,
+                               'weight' = 0,
+                               stringsAsFactors = F)
+      couple_df <- rbind(couple_df, missing_df)
+    }
     graph <- igraph::graph_from_data_frame(d=couple_df, directed= F)
 
   } else if(coupling_by == 'abc'){
@@ -210,10 +219,10 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
       summarise(count = n()) %>%
       left_join(dfsci[,c('UT', 'AB')], by = c('UT.x' = 'UT'))%>%
       left_join(dfsci[,c('UT', 'AB')], by = c('UT.y' = 'UT'))%>%
-      mutate(NR.x = stringr::str_count(AB.x, " "),
-             NR.y = stringr::str_count(AB.y, " "),
+      mutate(NR.x = str_count(AB.x, " "),
+             NR.y = str_count(AB.y, " "),
              w_ij = count/sqrt(NR.x * NR.y)) %>%
-      select(UT.x, UT.y, w_ij)
+      select(UT.x, UT.y, w_ij) 
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
     couple_df <- filter(couple_df, w_ij != 0)
     m <- sum(couple_df$w_ij)
@@ -232,13 +241,68 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic'){
                           "bc",
                           "weight"
     )
+    couple_df <- ungroup(couple_df)
+    tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))]
+    if(length(tmp) >= 1){
+      missing_df <- data.frame('rec1' = dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
+                               'rec2' = dfsci$UT[1],
+                               'bc' = 0,
+                               'weight' = 0,
+                               stringsAsFactors = F)
+      couple_df <- rbind(couple_df, missing_df)
+    }
     graph <- igraph::graph_from_data_frame(d=couple_df, directed= F)
   } else if(coupling_by == 'joc'){
 
   } else if(coupling_by == 'auc'){
-
+    cr_list <- strsplit(dfsci$AU, split="; ")
+    names(cr_list) <- dfsci$UT
+    crutdf <- data.frame('UT'= rep(names(cr_list), sapply(cr_list, length)),
+                         'CR' = unlist(cr_list),
+                         stringsAsFactors=F)
+    couple_df <- inner_join(crutdf, crutdf, by = 'CR') %>%
+      filter(UT.x > UT.y) %>%
+      group_by(UT.x, UT.y) %>%
+      summarise(count = n()) %>%
+      left_join(dfsci[,c('UT', 'AU')], by = c('UT.x' = 'UT'))%>%
+      left_join(dfsci[,c('UT', 'AU')], by = c('UT.y' = 'UT'))%>%
+      mutate(NR.x = stringr::str_count(AU.x, "; "),
+             NR.y = stringr::str_count(AU.y, "; "),
+             w_ij = count/sqrt(NR.x * NR.y)) %>%
+      select(UT.x, UT.y, w_ij) 
+    couple_df$w_ij[couple_df$w_ij == Inf] <- 0
+    couple_df <- filter(couple_df, w_ij != 0)
+    m <- sum(couple_df$w_ij)
+    coup2 <- data.frame(wos_id = c(as.vector(couple_df$UT.x), as.vector(couple_df$UT.y)),
+                        w_ij = rep(couple_df$w_ij,2))
+    k_i <- coup2 %>%
+      group_by(wos_id) %>%
+      summarise(k_i = sum(w_ij))
+    k_i <- k_i$k_i
+    names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
+    couple_df <- couple_df %>%
+      mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
+    
+    names(couple_df) <- c("rec1",
+                          "rec2",
+                          "bc",
+                          "weight"
+    )
+    couple_df <- ungroup(couple_df)
+    tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))]
+    if(length(tmp) >= 1){
+      missing_df <- data.frame('rec1' = dfsci$UT[which(!(dfsci$UT %in% unique(c(couple_df$rec2, couple_df$rec1))))],
+                               'rec2' = dfsci$UT[1],
+                               'bc' = 0,
+                               'weight' = 0,
+                               stringsAsFactors = F)
+      couple_df <- rbind(couple_df, missing_df)
+    }
+    graph <- igraph::graph_from_data_frame(d=couple_df, directed= F)
+    
+    
   } else if(coupling_by == 'woc'){
-    couple_df <- wcoupling()
+    couple_df <- wcoupling(dfsci, kw, ti , ab)
     graph <- igraph::graph_from_data_frame(d=couple_df, directed= F)
   }
   return(graph)
