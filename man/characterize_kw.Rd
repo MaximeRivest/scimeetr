@@ -4,7 +4,7 @@
 \alias{characterize_kw}
 \title{Make a list of dataframe of keyword frequency}
 \usage{
-characterize_kw(scimeetr_data)
+characterize_kw(scimeetr_data, n = 10)
 }
 \arguments{
 \item{scimeetr_data}{A scimeetr object}

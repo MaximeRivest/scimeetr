@@ -4,10 +4,10 @@
 \alias{get_synonyms}
 \title{Find similar words}
 \usage{
-get_synonyms(scimeetr_list, synonymous_to, n_gram = c(1L, 1L))
+get_synonyms(scimeetr_data, synonymous_to, n_gram = c(1L, 3L))
 }
 \arguments{
-\item{scimeetr_list}{a scimeetr object}
+\item{scimeetr_data}{a scimeetr object}
 
 \item{synonymous_to}{an character string that is an expression for which 
 synonymous and similar expression are wanted. synonyms for each elements in

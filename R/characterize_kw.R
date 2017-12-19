@@ -6,15 +6,18 @@
 #' @return A plot, generated from the sankeyNetwork function in the package networkD3
 #' @importFrom dplyr %>%
 #' @export
-characterize_kw <- function(scimeetr_data) {
+characterize_kw <- function(scimeetr_data, n = 10) {
   lsci21 <- keep(scimeetr_data, stringr::str_count(names(scimeetr_data), "_") == 1)
   hold <- map(lsci21,
               function(x) {
                 data.frame(community_size = x$de$comsize[1],
-                           most_frequent_keywords = x$de[1:10,]$ID,
-                           disproportionately_more_frequent = arrange(x$kw[1:round(x$de$comsize[1] * 0.1),], desc(Relative_frequency * log(Frequency.x, 5)))$ID[1:10],
-                           disproportionately_less_frequent = arrange(x$kw[1:round(x$de$comsize[1] * 0.1),], Relative_frequency *log(Frequency.x, 5))$ID[1:10],
-                           most_frequent_publishers = names(sort(table(x$dfsci$SO), decreasing = T)[1:10]),
+                           most_frequent_keywords = x$de[1:n,]$ID,
+                           disproportionately_more_frequent = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], desc(Relative_frequency * log(Frequency.x, 5)))$ID[1:n],
+                           relative_frequency_1 = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], desc(Relative_frequency * log(Frequency.x, 5)))$Relative_frequency[1:n],
+                           disproportionately_less_frequent = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], Relative_frequency *log(Frequency.x, 5))$ID[1:n],
+                           relative_frequency_2 = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], Relative_frequency *log(Frequency.x, 5))$Relative_frequency[1:n],
+                           most_frequent_publishers = names(sort(table(x$dfsci$SO), decreasing = T)[1:n]),
+                           frequency = as.vector(sort(table(x$dfsci$SO), decreasing = T))[1:n],
                            stringsAsFactors = F)
               }
   )

@@ -1,14 +1,14 @@
 #' Find similar words
 #' 
-#' @param scimeetr_list a scimeetr object
+#' @param scimeetr_data a scimeetr object
 #' @param synonymous_to an character string that is an expression for which 
 #' synonymous and similar expression are wanted. synonyms for each elements in
 #' the vectors will be proposed.
 #' @return a list of character string. In other words, a vector of suggestions.
 #' @importFrom dplyr %>% 
 #' @export
-get_synonyms <- function(scimeetr_list, synonymous_to, n_gram = c(1L,1L)) {
-  tokens = scimeetr_list$com1$dfsci$AB %>%
+get_synonyms <- function(scimeetr_data, synonymous_to, n_gram = c(1L,3L)) {
+  tokens = scimeetr_data$com1$dfsci$AB %>%
     tolower %>%
     stringr::str_replace_all('[[:punct:] ]+', " ") %>%
     stringr::str_replace_all('[0-9]+', "") %>%
