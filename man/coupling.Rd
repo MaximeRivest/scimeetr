@@ -4,7 +4,7 @@
 \alias{coupling}
 \title{Make graph based on coupling}
 \usage{
-coupling(dfsci = dfsci, coupling_by = "bic")
+coupling(dfsci = dfsci, coupling_by = "bic", kw = 1, ti = 1, ab = 1)
 }
 \arguments{
 \item{dfsci}{A data.frame of class scimeetr created from importing files

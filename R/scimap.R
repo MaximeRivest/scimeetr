@@ -9,7 +9,7 @@
 #'   'auc'/'author coupling', 'woc'/'word coupling'.
 #' @param community_algorithm A vector of length one. 'louvain', 'fast 
 #'   greedy'...
-#' @param inclusive_com TRUE or FALSE. Tells wheter to include within the 
+#' @param inclusive_com TRUE or FALSE. Tells whether to include within the 
 #'   subcommunities all the frontier nodes that were not originally included in 
 #'   the subcommunities.
 #' @return biblio_list. A list of the communities, including the global 
@@ -18,10 +18,9 @@
 #' @export
 #' @import dplyr purrr
 
-scimap <- function(scimeetr_list, 
-                   coupling_by = 'bic',
-                   community_algorithm = 'louvain',
-                   min_com_size = 30, kw = 1, ti = 1, ab = 1) {
+scimap <- function(scimeetr_list, coupling_by = 'bic',
+                   community_algorithm = 'louvain', min_com_size = 30, kw = 1,
+                   ti = 1, ab = 1) {
   names_lsci <- names(scimeetr_list)
   lsci_temp <- list()
   for(i in 1:length(scimeetr_list)){

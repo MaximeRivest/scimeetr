@@ -5,7 +5,7 @@
 \title{Finds research communities}
 \usage{
 scimap(scimeetr_list, coupling_by = "bic", community_algorithm = "louvain",
-  min_com_size = 30)
+  min_com_size = 30, kw = 1, ti = 1, ab = 1)
 }
 \arguments{
 \item{scimeetr_list}{A list of class scimeetr. Objects of class scimeetr are 
@@ -20,7 +20,7 @@ coupling', 'abc'/'abstract coupling', 'joc'/'journal coupling',
 \item{community_algorithm}{A vector of length one. 'louvain', 'fast 
 greedy'...}
 
-\item{inclusive_com}{TRUE or FALSE. Tells wheter to include within the 
+\item{inclusive_com}{TRUE or FALSE. Tells whether to include within the 
 subcommunities all the frontier nodes that were not originally included in 
 the subcommunities.}
 }
