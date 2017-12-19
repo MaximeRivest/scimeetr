@@ -4,7 +4,8 @@
 \alias{plot_publication_network}
 \title{Plot publication network colored by sub-communities}
 \usage{
-plot_publication_network(scimeetr_data, plot_to_file = F, filename, ...)
+plot_publication_network(scimeetr_data, plot_to_file = F, filename, width,
+  height)
 }
 \arguments{
 \item{scimeetr_data}{A list of scimeet object}
