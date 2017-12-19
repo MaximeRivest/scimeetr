@@ -8,7 +8,7 @@
 plot.scimeetrsum <- function(object, node_names = 'tag', node_size = 1, ...){
   if(any(names(object) =='plot')){
     subnet <- object$plot
-    igraph::plot.igraph(subnet,
+    igraph::plot.igraph(subnet,                  
                         vertex.label.color="black",
                         vertex.shape = 'rectangle',
                         vertex.color = 'grey',
