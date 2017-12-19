@@ -13,6 +13,13 @@
 #' 
 plot_citer_network <- function(scimeetr_data, reading_list, plot_to_file = F,
                                filename, width, height) {
+  add.alpha <- function(col, alpha=1){
+    if(missing(col))
+      stop("Please provide a vector of colours.")
+    apply(sapply(col, col2rgb)/255, 2,
+          function(x)
+            rgb(x[1], x[2], x[3], alpha=alpha))
+  }
   g1 <- plot_publication_network(scimeetr_data)
   old_color <- igraph::V(g1)$color
   if(plot_to_file == F) {
