@@ -1,8 +1,8 @@
 #' Summary scimeetr
-#' 
-#' @param object 
+#'
+#' @param object
 #' @param com_size minimum size of a community to plot
-#' @param ... 
+#' @param ...
 #' @return object of class scimeetrSum
 #' @method summary scimeetr
 #' @export
@@ -31,6 +31,26 @@ summary.scimeetr <- function(object, com_size = 200, ...){
     as.data.frame() %>%
     tidyr::gather(comID, tag)%>%
     mutate(comID = if_else(tag == '', comID,''))
+  # Make step printing
+  st <- which(ltag$comID != "")
+  end <- st + 6
+  n_cols <- max(lev_com) + 1
+  if(n_cols >= 2) {
+    for(i in 1:(n_cols - 1)) {
+      ltag <- cbind(ltag, ltag$tag)
+    }
+    for(i in st){
+      col_depth <- stringr::str_count(ltag[i,1], '_') + 1
+      if((col_depth + 2)>ncol(ltag)) {
+        ltag[(i+1):(i+6), 1:col_depth] <- ""
+      } else {
+        ltag[(i+1):(i+6),c(1:col_depth, (col_depth + 2):ncol(ltag))] <- ""
+      }
+
+    }
+  }
+
+
   com_size <- map(lsci, 'dfsci') %>% map_int(nrow)
   ltag$comID[ltag$comID %in% names(com_size)] <- paste0(names(com_size), ' (', com_size, ')')
   # Prepare igraph object for community summary plot
@@ -113,9 +133,9 @@ summary.scimeetr <- function(object, com_size = 200, ...){
       return(x)
     }) %>%
     map_chr(function(x)paste0(x, collapse=';\n'))
-  
+
   if(!is.null(el_com)) {
-    net <- igraph::graph_from_data_frame(d=el_com, vertices=node_com, directed=T) 
+    net <- igraph::graph_from_data_frame(d=el_com, vertices=node_com, directed=T)
     subnet <- igraph::induced_subgraph(net, igraph::V(net)[size>=com_size])
     lsum <- list(nb_papers = nb_papers,
                  nb_ref = nb_ref,

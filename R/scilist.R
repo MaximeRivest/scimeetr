@@ -6,7 +6,7 @@
 #' @param reading_list A vector of length one. Equal to either:
 #' 'core_papers', 'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC',
 #' 'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others', 'direct_cite_eigen',
-#' 'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank'
+#' 'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank', 'journal_dis'
 #'
 #' @param k length of list per community
 #' @return df. A reading list
@@ -386,8 +386,30 @@ scilist <- function(lsci = lsci, reading_list = 'core_papers', k = 5, m = 3) {
       return(x)
     }, k)
     names(rl) <-  names(lsci)
+  } else if (reading_list == 'journal_dis') {
+    lev_com <- stringr::str_count(names(lsci), '_')
+    splt_cr <- split_cr(lsci)
+    rl <- map(lsci, 'dfsci') %>%
+      map(function(dfsci, splt_cr, k) {
+        cr_list <- strsplit(dfsci$CR, split="; ")
+        cr_df <- data.frame('RECID' = rep(dfsci$RECID, sapply(cr_list, length)),
+                            'DOI' = rep(dfsci$DI, sapply(cr_list, length)),
+                            'CR' = toupper(unlist(cr_list)),
+                            stringsAsFactors = F)
+        rl <- inner_join(cr_df, splt_cr, by = c('CR' = 'record')) %>%
+          group_by(RECID.x) %>%
+          summarise(metric = length(unique(journal)),
+                    norm_metric = length(unique(journal))/n()) %>%
+          arrange(desc(metric))
+        rl <- rl[1:k,] # other lists kept only publication and metric
+        names(rl) <- c('publication', 'metric')
+        rl$list_type <- 'number_of_differente_journal'
+        return(rl)
+      }, splt_cr, k)
   }
   return(map(rl, as.data.frame))
 }
+
+
 
 

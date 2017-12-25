@@ -20,7 +20,9 @@ plot_citer_network <- function(scimeetr_data, reading_list, plot_to_file = F,
           function(x)
             rgb(x[1], x[2], x[3], alpha=alpha))
   }
-  g1 <- plot_publication_network(scimeetr_data)
+  grl <- plot_publication_network(scimeetr_data)
+  g1 <- grl[[1]]
+  l <- grl[[2]] 
   old_color <- igraph::V(g1)$color
   if(plot_to_file == F) {
     par(mfrow = c(2,5))

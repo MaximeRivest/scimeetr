@@ -109,5 +109,5 @@ plot_publication_network <- function(scimeetr_data,
   }
   par(mfrow = c(1,1))
   igraph::V(g1)$color <- purrr::map2_chr(as.list(pal1[coms]), as.list(log(igraph::V(g1)$TC+1)/(max(log(igraph::V(g1)$TC+1)))), add.alpha)
-  return(invisible(g1))
+  return(invisible(list(g1, l)))
 }
