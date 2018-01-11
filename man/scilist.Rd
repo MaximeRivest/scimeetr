@@ -10,7 +10,7 @@ scilist(lsci = lsci, reading_list = "core_papers", k = 5, m = 3)
 \item{reading_list}{A vector of length one. Equal to either:
 'core_papers', 'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC',
 'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others', 'direct_cite_eigen',
-'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank'}
+'betweeness', 'closeness', 'connectness', 'link_strength', 'page_rank', 'journal_dis'}
 
 \item{k}{length of list per community}
 

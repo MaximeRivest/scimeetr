@@ -7,9 +7,9 @@
 \method{plot}{scimeetrsum}(object, node_names = "tag", node_size = 1, ...)
 }
 \arguments{
-\item{object}{}
+\item{object}{a summary object}
 
-\item{...}{}
+\item{...}{igraph plot options}
 }
 \description{
 Plot scimeetr summary

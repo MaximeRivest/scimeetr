@@ -1,8 +1,8 @@
 #' Summary scimeetr
 #'
-#' @param object
+#' @param object a scimeetr object
 #' @param com_size minimum size of a community to plot
-#' @param ...
+#' @param ... options to plot
 #' @return object of class scimeetrSum
 #' @method summary scimeetr
 #' @export

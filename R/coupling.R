@@ -32,6 +32,7 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic', kw = 1, ti = 1, ab = 1)
       left_join(dfsci[,c('UT', 'NR')], by = c('UT.y' = 'UT'))%>%
       mutate(w_ij = count/sqrt(NR.x * NR.y)) %>%
       select(UT.x, UT.y, w_ij)
+    rm(crutdf)
     couple_df$w_ij[couple_df$w_ij == Inf] <- 0
     couple_df <- filter(couple_df, w_ij != 0)
     m <- sum(couple_df$w_ij)
@@ -40,11 +41,12 @@ coupling <- function(dfsci = dfsci, coupling_by = 'bic', kw = 1, ti = 1, ab = 1)
     k_i <- coup2 %>%
       group_by(wos_id) %>%
       summarise(k_i = sum(w_ij))
+    rm(coup2)
     k_i <- k_i$k_i
     names(k_i) <- unique(c(couple_df$UT.x, couple_df$UT.y))
     couple_df <- couple_df %>%
       mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
-
+    rm(k_i)
     names(couple_df) <- c("rec1",
                           "rec2",
                           "bc",

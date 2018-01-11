@@ -1,10 +1,10 @@
 #' Plot scimeetr summary
 #' 
-#' @param object 
-#' @param ... 
+#' @param object a summary object
+#' @param ... igraph plot options
 #' @method plot scimeetrsum
-#' @export
 #' @importFrom igraph plot.igraph
+#' @export
 plot.scimeetrsum <- function(object, node_names = 'tag', node_size = 1, ...){
   if(any(names(object) =='plot')){
     subnet <- object$plot

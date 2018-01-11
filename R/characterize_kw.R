@@ -6,8 +6,8 @@
 #' @return A plot, generated from the sankeyNetwork function in the package networkD3
 #' @importFrom dplyr %>%
 #' @export
-characterize_kw <- function(scimeetr_data, n = 10) {
-  lsci21 <- keep(scimeetr_data, stringr::str_count(names(scimeetr_data), "_") == 1)
+characterize_kw <- function(scimeetr_data, n = 10, nb_of_underscore = 1) {
+  lsci21 <- keep(scimeetr_data, stringr::str_count(names(scimeetr_data), "_") == nb_of_underscore)
   hold <- map(lsci21,
               function(x) {
                 data.frame(community_size = x$de$comsize[1],

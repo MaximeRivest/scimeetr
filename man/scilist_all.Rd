@@ -4,10 +4,11 @@
 \alias{scilist_all}
 \title{Make all reading lists}
 \usage{
-scilist_all(scimeetr_data, length_list = 1)
+scilist_all(scimeetr_data, length_list = 1, verbose = T,
+  except_bet_clo = T)
 }
 \arguments{
-\item{scimeetr_data}{A scimeetr object. This is created from importing files 
+\item{scimeetr_data}{A scimeetr object. This is created from importing files
 with import_wos_file or scimap().}
 
 \item{length_list}{An integer that will multiply the standard list length.}

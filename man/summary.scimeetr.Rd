@@ -7,11 +7,11 @@
 \method{summary}{scimeetr}(object, com_size = 200, ...)
 }
 \arguments{
-\item{object}{}
+\item{object}{a scimeetr object}
 
 \item{com_size}{minimum size of a community to plot}
 
-\item{...}{}
+\item{...}{options to plot}
 }
 \value{
 object of class scimeetrSum

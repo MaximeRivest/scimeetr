@@ -92,7 +92,7 @@ summary(scimeetr_list)
     ## 
     ##     Mean number of citation per paper:  19.81536
     ## 
-    ##     Average number of citation per paper per year:  1.666667
+    ##     Average number of citation per paper per year:  1.2
     ## 
     ## 
     ##   Table of the 10 most mentionned keywords 
@@ -176,7 +176,7 @@ summary(scimap_result)
     ## 
     ##     Mean number of citation per paper:  19.81536
     ## 
-    ##     Average number of citation per paper per year:  1.666667
+    ##     Average number of citation per paper per year:  1.2
     ## 
     ## 
     ##   Table of the 10 most mentionned keywords 
@@ -213,42 +213,42 @@ summary(scimap_result)
     ## 
     ##   Table of the most descriminant keywords 
     ## 
-    ##           comID                        tag
-    ## 1    com1 (742)                           
-    ## 2                             BIODIVERSITY
-    ## 3                             CONSERVATION
-    ## 4                               MANAGEMENT
-    ## 5                              AGRICULTURE
-    ## 6                 AGRI-ENVIRONMENT SCHEMES
-    ## 7                       ECOSYSTEM SERVICES
-    ## 8  com1_1 (202)                           
-    ## 9                            PARTICIPATION
-    ## 10                             AGRICULTURE
-    ## 11                                 FARMERS
-    ## 12                               ATTITUDES
-    ## 13              AGRI-ENVIRONMENTAL SCHEMES
-    ## 14                                  POLICY
-    ## 15 com1_8 (132)                           
-    ## 16                                ADOPTION
-    ## 17                             AGRICULTURE
-    ## 18                                  POLICY
-    ## 19                           WATER QUALITY
-    ## 20                               AUSTRALIA
-    ## 21                                 FARMERS
-    ## 22  com1_4 (67)                           
-    ## 23                                LAND-USE
-    ## 24                             AGRICULTURE
-    ## 25                                 SCHEMES
-    ## 26                               LANDSCAPE
-    ## 27                                  POLICY
-    ## 28              COMMON AGRICULTURAL POLICY
-    ## 29 com1_3 (292)                           
-    ## 30                            BIODIVERSITY
-    ## 31                AGRI-ENVIRONMENT SCHEMES
-    ## 32                            CONSERVATION
-    ## 33                              MANAGEMENT
-    ## 34                               DIVERSITY
-    ## 35                 AGRICULTURAL LANDSCAPES
+    ##           comID                      tag                   ltag$tag
+    ## 1    com1 (742)                                                    
+    ## 2                           BIODIVERSITY                           
+    ## 3                           CONSERVATION                           
+    ## 4                             MANAGEMENT                           
+    ## 5                            AGRICULTURE                           
+    ## 6               AGRI-ENVIRONMENT SCHEMES                           
+    ## 7                     ECOSYSTEM SERVICES                           
+    ## 8  com1_1 (358)                                                    
+    ## 9                                                          ADOPTION
+    ## 10                                                    PARTICIPATION
+    ## 11                                                      AGRICULTURE
+    ## 12                                                          FARMERS
+    ## 13                                                           POLICY
+    ## 14                                       AGRI-ENVIRONMENTAL SCHEMES
+    ## 15  com1_2 (49)                                                    
+    ## 16                                                      ABANDONMENT
+    ## 17                                                    CEREAL-STEPPE
+    ## 18                                                    MEMBER STATES
+    ## 19                                                   MOUNTAIN AREAS
+    ## 20                                       COMMON AGRICULTURAL POLICY
+    ## 21                                                       CAP REFORM
+    ## 22  com1_6 (62)                                                    
+    ## 23                                              BOVINE TUBERCULOSIS
+    ## 24                                                             RICE
+    ## 25                                                          SCARING
+    ## 26                                             SPECIES DISTRIBUTION
+    ## 27                                                 INVASIVE SPECIES
+    ## 28                                             LANDSCAPE PREFERENCE
+    ## 29 com1_3 (265)                                                    
+    ## 30                                                     BIODIVERSITY
+    ## 31                                         AGRI-ENVIRONMENT SCHEMES
+    ## 32                                                       MANAGEMENT
+    ## 33                                          AGRICULTURAL LANDSCAPES
+    ## 34                                                        DIVERSITY
+    ## 35                                                     CONSERVATION
 
 Except for the last tables, all of the output is identical to the `summary` output above. Those last tables now reveals that the papers in our database can be clustered in two communities. One that is about x and the other that is about y.
 
@@ -258,7 +258,7 @@ The function `plot` can be used on the output of the function summary for a grap
 plot(summary(scimap_result, com_size = 30))
 ```
 
-![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 <a href="#top">Back to top</a>
 
@@ -272,16 +272,13 @@ reading_list <- scilist(scimap_result)
 reading_list$com1
 ```
 
-| ID                                                                              |  Frequency.x|  Pourcentage|
-|:--------------------------------------------------------------------------------|------------:|------------:|
-| KLEIJN D, 2003, J APPL ECOL, V40, P947, DOI 10.1111/J.1365-2664.2003.00868.X    |          113|    0.0030005|
-| KLEIJN D, 2006, ECOL LETT, V9, P243, DOI 10.1111/J.1461-0248.2005.00869.X       |           73|    0.0019383|
-| KLEIJN D, 2001, NATURE, V413, P723, DOI 10.1038/35099540                        |           57|    0.0015135|
-| BENTON TG, 2003, TRENDS ECOL EVOL, V18, P182, DOI 10.1016/S0169-5347(03)00011-9 |           54|    0.0014338|
-| PANNELL DJ, 2006, AUST J EXP AGR, V46, P1407, DOI 10.1071/EA5037                |           50|    0.0013276|
-| MORRIS C, 1995, J RURAL STUD, V11, P51, DOI 10.1016/0743-0167(94)00037-A        |           47|    0.0012480|
-| TSCHARNTKE T, 2005, ECOL LETT, V8, P857, DOI 10.1111/J.1461-0248.2005.00782.X   |           45|    0.0011949|
-| FALCONER K, 2000, J RURAL STUD, V16, P379, DOI 10.1016/S0743-0167(99)00066-2    |           43|    0.0011418|
+| publication                                |  metric| list\_type   |
+|:-------------------------------------------|-------:|:-------------|
+| KLEIJN D, 2003, J APPL ECOL, 40, 947       |     113| core\_papers |
+| KLEIJN D, 2006, ECOL LETT, 9, 243          |      73| core\_papers |
+| KLEIJN D, 2001, NATURE, 413, 723           |      57| core\_papers |
+| BENTON TG, 2003, TRENDS ECOL EVOL, 18, 182 |      54| core\_papers |
+| PANNELL DJ, 2006, AUST J EXP AGR, 46, 1407 |      50| core\_papers |
 
 <a href="#top">Back to top</a>
 
@@ -389,7 +386,7 @@ summary(scimeetr_list)
     ## 
     ##     Mean number of citation per paper:  19.81536
     ## 
-    ##     Average number of citation per paper per year:  1.666667
+    ##     Average number of citation per paper per year:  1.2
     ## 
     ## 
     ##   Table of the 10 most mentionned keywords 
@@ -645,62 +642,13 @@ If we are confident that the papers contained in `scimeetr_list` are those for w
 scilist(scimeetr_list)
 ```
 
-<table>
-<colgroup>
-<col width="75%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">ID</th>
-<th align="right">Frequency.x</th>
-<th align="right">Pourcentage</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">KLEIJN D, 2003, J APPL ECOL, V40, P947, DOI 10.1111/J.1365-2664.2003.00868.X</td>
-<td align="right">113</td>
-<td align="right">0.0030005</td>
-</tr>
-<tr class="even">
-<td align="left">KLEIJN D, 2006, ECOL LETT, V9, P243, DOI 10.1111/J.1461-0248.2005.00869.X</td>
-<td align="right">73</td>
-<td align="right">0.0019383</td>
-</tr>
-<tr class="odd">
-<td align="left">KLEIJN D, 2001, NATURE, V413, P723, DOI 10.1038/35099540</td>
-<td align="right">57</td>
-<td align="right">0.0015135</td>
-</tr>
-<tr class="even">
-<td align="left">BENTON TG, 2003, TRENDS ECOL EVOL, V18, P182, DOI 10.1016/S0169-5347(03)00011-9</td>
-<td align="right">54</td>
-<td align="right">0.0014338</td>
-</tr>
-<tr class="odd">
-<td align="left">PANNELL DJ, 2006, AUST J EXP AGR, V46, P1407, DOI 10.1071/EA5037</td>
-<td align="right">50</td>
-<td align="right">0.0013276</td>
-</tr>
-<tr class="even">
-<td align="left">MORRIS C, 1995, J RURAL STUD, V11, P51, DOI 10.1016/0743-0167(94)00037-A</td>
-<td align="right">47</td>
-<td align="right">0.0012480</td>
-</tr>
-<tr class="odd">
-<td align="left">TSCHARNTKE T, 2005, ECOL LETT, V8, P857, DOI 10.1111/J.1461-0248.2005.00782.X</td>
-<td align="right">45</td>
-<td align="right">0.0011949</td>
-</tr>
-<tr class="even">
-<td align="left">FALCONER K, 2000, J RURAL STUD, V16, P379, DOI 10.1016/S0743-0167(99)00066-2</td>
-<td align="right">43</td>
-<td align="right">0.0011418</td>
-</tr>
-</tbody>
-</table>
+| publication                                |  metric| list\_type   |
+|:-------------------------------------------|-------:|:-------------|
+| KLEIJN D, 2003, J APPL ECOL, 40, 947       |     113| core\_papers |
+| KLEIJN D, 2006, ECOL LETT, 9, 243          |      73| core\_papers |
+| KLEIJN D, 2001, NATURE, 413, 723           |      57| core\_papers |
+| BENTON TG, 2003, TRENDS ECOL EVOL, 18, 182 |      54| core\_papers |
+| PANNELL DJ, 2006, AUST J EXP AGR, 46, 1407 |      50| core\_papers |
 
 With the parameter `k`, we can control the length of the reading list.
 
@@ -708,37 +656,11 @@ With the parameter `k`, we can control the length of the reading list.
 scilist(scimeetr_list, k = 3)
 ```
 
-<table>
-<colgroup>
-<col width="75%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">ID</th>
-<th align="right">Frequency.x</th>
-<th align="right">Pourcentage</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">KLEIJN D, 2003, J APPL ECOL, V40, P947, DOI 10.1111/J.1365-2664.2003.00868.X</td>
-<td align="right">113</td>
-<td align="right">0.0030005</td>
-</tr>
-<tr class="even">
-<td align="left">KLEIJN D, 2006, ECOL LETT, V9, P243, DOI 10.1111/J.1461-0248.2005.00869.X</td>
-<td align="right">73</td>
-<td align="right">0.0019383</td>
-</tr>
-<tr class="odd">
-<td align="left">KLEIJN D, 2001, NATURE, V413, P723, DOI 10.1038/35099540</td>
-<td align="right">57</td>
-<td align="right">0.0015135</td>
-</tr>
-</tbody>
-</table>
+| publication                          |  metric| list\_type   |
+|:-------------------------------------|-------:|:-------------|
+| KLEIJN D, 2003, J APPL ECOL, 40, 947 |     113| core\_papers |
+| KLEIJN D, 2006, ECOL LETT, 9, 243    |      73| core\_papers |
+| KLEIJN D, 2001, NATURE, 413, 723     |      57| core\_papers |
 
 With the parameter `reading_list`, we can get any of the following 12 reading lists that fits into three categories:
 
@@ -774,113 +696,28 @@ Using `scilist` with `reading_list = "core_yr"` will list the most cited paper f
 scilist(scimeetr_list, reading_list = "core_yr", k = 2)
 ```
 
-<table>
-<colgroup>
-<col width="83%" />
-<col width="12%" />
-<col width="4%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">record</th>
-<th align="right">Frequency.x</th>
-<th align="right">age</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">PE'ER G, 2014, SCIENCE, V344, P1090, DOI 10.1126/SCIENCE.1253425</td>
-<td align="right">9</td>
-<td align="right">3</td>
-</tr>
-<tr class="even">
-<td align="left">MEICHTRY-STIER KS, 2014, AGR ECOSYST ENVIRON, V189, P101, DOI 10.1016/J.AGEE.2014.02.038</td>
-<td align="right">5</td>
-<td align="right">3</td>
-</tr>
-<tr class="odd">
-<td align="left">RIBEIRO PF, 2014, AGR ECOSYST ENVIRON, V183, P138, DOI 10.1016/J.AGEE.2013.11.002</td>
-<td align="right">5</td>
-<td align="right">3</td>
-</tr>
-<tr class="even">
-<td align="left">BURTON RJF, 2013, LAND USE POLICY, V30, P628, DOI 10.1016/J.LANDUSEPOL.2012.05.002</td>
-<td align="right">25</td>
-<td align="right">4</td>
-</tr>
-<tr class="odd">
-<td align="left">UTHES S, 2013, ENVIRON MANAGE, V51, P251, DOI 10.1007/S00267-012-9959-6</td>
-<td align="right">16</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td align="left">BAUMGART-GETZ A, 2012, J ENVIRON MANAGE, V96, P17, DOI 10.1016/J.JENVMAN.2011.10.006</td>
-<td align="right">17</td>
-<td align="right">5</td>
-</tr>
-<tr class="odd">
-<td align="left">EMERY SB, 2012, J RURAL STUD, V28, P218, DOI 10.1016/J.JRURSTUD.2012.02.004</td>
-<td align="right">12</td>
-<td align="right">5</td>
-</tr>
-<tr class="even">
-<td align="left">KLEIJN D, 2011, TRENDS ECOL EVOL, V26, P474, DOI 10.1016/J.TREE.2011.05.009</td>
-<td align="right">23</td>
-<td align="right">6</td>
-</tr>
-<tr class="odd">
-<td align="left">BATARY P, 2011, P ROY SOC B-BIOL SCI, V278, P1894, DOI 10.1098/RSPB.2010.1923</td>
-<td align="right">15</td>
-<td align="right">6</td>
-</tr>
-<tr class="even">
-<td align="left">SATTLER C, 2010, LAND USE POLICY, V27, P70, DOI 10.1016/J.LANDUSEPOL.2008.02.002</td>
-<td align="right">20</td>
-<td align="right">7</td>
-</tr>
-<tr class="odd">
-<td align="left">MATZDORF B, 2010, LAND USE POLICY, V27, P535, DOI 10.1016/J.LANDUSEPOL.2009.07.011</td>
-<td align="right">18</td>
-<td align="right">7</td>
-</tr>
-<tr class="even">
-<td align="left">STOATE C, 2009, J ENVIRON MANAGE, V91, P22, DOI 10.1016/J.JENVMAN.2009.07.005</td>
-<td align="right">22</td>
-<td align="right">8</td>
-</tr>
-<tr class="odd">
-<td align="left">RUTO E, 2009, J ENVIRON PLANN MAN, V52, P631, DOI 10.1080/09640560902958172</td>
-<td align="right">19</td>
-<td align="right">8</td>
-</tr>
-<tr class="even">
-<td align="left">BURTON RJF, 2008, SOCIOL RURALIS, V48, P16, DOI 10.1111/J.1467-9523.2008.00452.X</td>
-<td align="right">41</td>
-<td align="right">9</td>
-</tr>
-<tr class="odd">
-<td align="left">DEFRANCESCO E, 2008, J AGR ECON, V59, P114, DOI 10.1111/J.1477-9552.2007.00134.X</td>
-<td align="right">38</td>
-<td align="right">9</td>
-</tr>
-<tr class="even">
-<td align="left">KNOWLER D, 2007, FOOD POLICY, V32, P25, DOI 10.1016/J.FOODPOL.2006.01.003</td>
-<td align="right">38</td>
-<td align="right">10</td>
-</tr>
-<tr class="odd">
-<td align="left">WHITTINGHAM MJ, 2007, J APPL ECOL, V44, P1, DOI 10.1111/J.1365-2664.2006.01263.X</td>
-<td align="right">29</td>
-<td align="right">10</td>
-</tr>
-</tbody>
-</table>
+| publication                                            |  metric| list\_type |
+|:-------------------------------------------------------|-------:|:-----------|
+| GILL RJ, 2016, ADV ECOL RES, 54, 135                   |       2| core\_yr   |
+| KARPOVICH D., 2016, SAGINAW BAY OPTIMIZA               |       2| core\_yr   |
+| PEREIRA P, 2016, LAND DEGRAD DEV, 27, 871              |       2| core\_yr   |
+| SIMONSEN CE, 2016, J APPL ECOL, 53, 916                |       2| core\_yr   |
+| BATARY P, 2015, CONSERV BIOL, 29, 1006                 |       8| core\_yr   |
+| PRAGER K, 2015, CURR OPIN ENV SUST, 12, 59             |       4| core\_yr   |
+| SCHOMERS S, 2015, LAND USE POLICY, 42, 58              |       4| core\_yr   |
+| PE'ER G, 2014, SCIENCE, 344, 1090                      |       9| core\_yr   |
+| MEICHTRY-STIER KS, 2014, AGR ECOSYST ENVIRON, 189, 101 |       5| core\_yr   |
+| RIBEIRO PF, 2014, AGR ECOSYST ENVIRON, 183, 138        |       5| core\_yr   |
+| BURTON RJF, 2013, LAND USE POLICY, 30, 628             |      25| core\_yr   |
+| UTHES S, 2013, ENVIRON MANAGE, 51, 251                 |      16| core\_yr   |
+| BAUMGART-GETZ A, 2012, J ENVIRON MANAGE, 96, 17        |      17| core\_yr   |
+| EMERY SB, 2012, J RURAL STUD, 28, 218                  |      12| core\_yr   |
 
 <a href="#top">Back to top</a>
 
 #### More cited than expected
 
-Using `scilist` with `reading_list = "core_residual"` will list the papers that diverge most from the expected number of citation for this particular paper. This can be visualised in the figure below. The point that have the biggest difference between their frequency value and the fitted blue lines are listed in the `core_residual` reading list. ![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-19-1.png)
+Using `scilist` with `reading_list = "core_residual"` will list the papers that diverge most from the expected number of citation for this particular paper. This can be visualised in the figure below. The point that have the biggest difference between their frequency value and the fitted blue lines are listed in the `core_residual` reading list. ![](README_files/figure-markdown_github/unnamed-chunk-19-1.png)
 
 Here is an example of the code and its result.
 
@@ -888,37 +725,11 @@ Here is an example of the code and its result.
 scilist(scimeetr_list, reading_list = "core_residual", k = 3)
 ```
 
-<table>
-<colgroup>
-<col width="81%" />
-<col width="13%" />
-<col width="5%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">record</th>
-<th align="right">Frequency.x</th>
-<th align="right">age</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">KLEIJN D, 2003, J APPL ECOL, V40, P947, DOI 10.1111/J.1365-2664.2003.00868.X</td>
-<td align="right">113</td>
-<td align="right">14</td>
-</tr>
-<tr class="even">
-<td align="left">MORRIS C, 1995, J RURAL STUD, V11, P51, DOI 10.1016/0743-0167(94)00037-A</td>
-<td align="right">47</td>
-<td align="right">22</td>
-</tr>
-<tr class="odd">
-<td align="left">ERVIN CA, 1982, LAND ECON, V58, P277, DOI 10.2307/3145937</td>
-<td align="right">15</td>
-<td align="right">35</td>
-</tr>
-</tbody>
-</table>
+| publication                          |  metric| list\_type     |
+|:-------------------------------------|-------:|:---------------|
+| KLEIJN D, 2003, J APPL ECOL, 40, 947 |     113| core\_residual |
+| MORRIS C, 1995, J RURAL STUD, 11, 51 |      47| core\_residual |
+| ERVIN CA, 1982, LAND ECON, 58, 277   |      15| core\_residual |
 
 <a href="#top">Back to top</a>
 
@@ -934,16 +745,62 @@ Using `scilist` with `reading_list = "by_expert_LC"` we will get a list of recen
 scilist(scimeetr_list, reading_list = "by_expert_LC", k = 2, m = 2)
 ```
 
-| AU           |   HL| PAPER                                            |
-|:-------------|----:|:-------------------------------------------------|
-| Herzog, F    |    6| SEREKE F, 2015, AGRON SUSTAIN DEV, 35, 759       |
-| Herzog, F    |    6| KELEMEN E, 2013, LAND USE POLICY, 35, 318        |
-| Matzdorf, B  |    5| MEYER C, 2016, LAND USE POLICY, 55, 352          |
-| Matzdorf, B  |    5| SCHOMERS S, 2015, SUSTAINABILITY-BASEL, 7, 13856 |
-| Matzdorf, B  |    5| SCHOMERS S, 2015, LAND USE POLICY, 42, 58        |
-| Schupbach, B |    5| SCHUPBACH B, 2016, LAND USE POLICY, 53, 27       |
-| Schupbach, B |    5| AVIRON S, 2011, RESTOR ECOL, 19, 500             |
-| Schupbach, B |    5| JUNGE X, 2011, BIOL CONSERV, 144, 1430           |
+<table>
+<colgroup>
+<col width="54%" />
+<col width="30%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">publication</th>
+<th align="left">metric</th>
+<th align="left">list_type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">SEREKE F, 2015, AGRON SUSTAIN DEV, 35, 759</td>
+<td align="left">Herzog, F h-index : 6</td>
+<td align="left">by_expert_LC</td>
+</tr>
+<tr class="even">
+<td align="left">KELEMEN E, 2013, LAND USE POLICY, 35, 318</td>
+<td align="left">Herzog, F h-index : 6</td>
+<td align="left">by_expert_LC</td>
+</tr>
+<tr class="odd">
+<td align="left">MEYER C, 2016, LAND USE POLICY, 55, 352</td>
+<td align="left">Matzdorf, B h-index : 5</td>
+<td align="left">by_expert_LC</td>
+</tr>
+<tr class="even">
+<td align="left">SCHOMERS S, 2015, SUSTAINABILITY-BASEL, 7, 13856</td>
+<td align="left">Matzdorf, B h-index : 5</td>
+<td align="left">by_expert_LC</td>
+</tr>
+<tr class="odd">
+<td align="left">SCHOMERS S, 2015, LAND USE POLICY, 42, 58</td>
+<td align="left">Matzdorf, B h-index : 5</td>
+<td align="left">by_expert_LC</td>
+</tr>
+<tr class="even">
+<td align="left">SCHUPBACH B, 2016, LAND USE POLICY, 53, 27</td>
+<td align="left">Schupbach, B h-index : 5</td>
+<td align="left">by_expert_LC</td>
+</tr>
+<tr class="odd">
+<td align="left">AVIRON S, 2011, RESTOR ECOL, 19, 500</td>
+<td align="left">Schupbach, B h-index : 5</td>
+<td align="left">by_expert_LC</td>
+</tr>
+<tr class="even">
+<td align="left">JUNGE X, 2011, BIOL CONSERV, 144, 1430</td>
+<td align="left">Schupbach, B h-index : 5</td>
+<td align="left">by_expert_LC</td>
+</tr>
+</tbody>
+</table>
 
 Using `scilist` with `reading_list = "by_expert_TC"` instead of `reading_list = "by_expert_LC"`, notice the `_TC` instead of the `_LC` will based the ranking calculation on **t**otal citation of it's publications instead of only the **l**ocal citations.
 
@@ -957,13 +814,13 @@ Using `scilist` with `reading_list = "group_of_experts_LC"` we will get a list o
 scilist(scimeetr_list, reading_list = "group_of_experts_LC", k = 5)
 ```
 
-| RECID                                         |       AuS|
-|:----------------------------------------------|---------:|
-| HERZOG F, 2005, AGR ECOSYST ENVIRON, 108, 189 |  8.678571|
-| AVIRON S, 2011, RESTOR ECOL, 19, 500          |  8.383333|
-| AVIRON S, 2007, AGR ECOSYST ENVIRON, 122, 295 |  8.166667|
-| AVIRON S, 2005, GRASSLAND SCI EUR, 10, 340    |  7.955952|
-| KAMPMANN D, 2008, J NAT CONSERV, 16, 12       |  7.926190|
+| publication                                   |    metric| list\_type             |
+|:----------------------------------------------|---------:|:-----------------------|
+| HERZOG F, 2005, AGR ECOSYST ENVIRON, 108, 189 |  8.678571| group\_of\_experts\_LC |
+| AVIRON S, 2011, RESTOR ECOL, 19, 500          |  8.383333| group\_of\_experts\_LC |
+| AVIRON S, 2007, AGR ECOSYST ENVIRON, 122, 295 |  8.166667| group\_of\_experts\_LC |
+| AVIRON S, 2005, GRASSLAND SCI EUR, 10, 340    |  7.955952| group\_of\_experts\_LC |
+| KAMPMANN D, 2008, J NAT CONSERV, 16, 12       |  7.926190| group\_of\_experts\_LC |
 
 Using `scilist` with `reading_list = "group_of_experts_TC"` instead of `reading_list = "group_of_experts_LC"`, notice the `_TC` instead of the `_LC` will based the ranking calculation on **t**otal citation of it's publications instead of only the **l**ocal citations.
 
@@ -981,13 +838,13 @@ Betweeness measures the importance of a paper in connecting two clusters of pape
 scilist(scimeetr_list, reading_list = "betweeness", k = 5)
 ```
 
-| .x\[\[i\]\]                                  |
-|:---------------------------------------------|
-| HEJNOWICZ AP, 2016, LAND USE POLICY, 55, 240 |
-| UTHES S, 2013, ENVIRON MANAGE, 51, 251       |
-| BURTON RJF, 2013, LAND USE POLICY, 30, 628   |
-| JARVIS DI, 2011, CRIT REV PLANT SCI, 30, 125 |
-| STOATE C, 2001, J ENVIRON MANAGE, 63, 337    |
+| publication                                  |     metric| list\_type |
+|:---------------------------------------------|----------:|:-----------|
+| UTHES S, 2013, ENVIRON MANAGE, 51, 251       |  0.4474377| betweeness |
+| FISCHER J, 2012, CONSERV LETT, 5, 167        |  0.4051355| betweeness |
+| JARVIS DI, 2011, CRIT REV PLANT SCI, 30, 125 |  0.2773863| betweeness |
+| XIONG Y, 2010, J GEOGR SCI, 20, 389          |  0.1677135| betweeness |
+| WADE MR, 2008, PHILOS T R SOC B, 363, 831    |  0.1211110| betweeness |
 
 <a href="#top">Back to top</a>
 
@@ -999,13 +856,13 @@ Closeness measures the average number of link between a paper and all other pape
 scilist(scimeetr_list, reading_list = "closeness", k = 5)
 ```
 
-| .x\[\[i\]\]                                  |
-|:---------------------------------------------|
-| HEJNOWICZ AP, 2016, LAND USE POLICY, 55, 240 |
-| UTHES S, 2013, ENVIRON MANAGE, 51, 251       |
-| HOLLAND JM, 2016, PEST MANAG SCI, 72, 1638   |
-| JARVIS DI, 2011, CRIT REV PLANT SCI, 30, 125 |
-| STOATE C, 2001, J ENVIRON MANAGE, 63, 337    |
+| publication                                  |     metric| list\_type |
+|:---------------------------------------------|----------:|:-----------|
+| UTHES S, 2013, ENVIRON MANAGE, 51, 251       |  0.0327660| closeness  |
+| FISCHER J, 2012, CONSERV LETT, 5, 167        |  0.0327537| closeness  |
+| JARVIS DI, 2011, CRIT REV PLANT SCI, 30, 125 |  0.0327450| closeness  |
+| XIONG Y, 2010, J GEOGR SCI, 20, 389          |  0.0327312| closeness  |
+| WADE MR, 2008, PHILOS T R SOC B, 363, 831    |  0.0327184| closeness  |
 
 <a href="#top">Back to top</a>
 
@@ -1017,13 +874,13 @@ Connectness measures the number of links a paper has. Papers with a high connect
 scilist(scimeetr_list, reading_list = "connectness", k = 5)
 ```
 
-| .x\[\[i\]\]                                     |
-|:------------------------------------------------|
-| METTEPENNINGEN E, 2013, LAND USE POLICY, 33, 20 |
-| GUILLEM EE, 2013, LAND USE POLICY, 31, 565      |
-| UTHES S, 2013, ENVIRON MANAGE, 51, 251          |
-| BURTON RJF, 2013, LAND USE POLICY, 30, 628      |
-| WADE MR, 2008, PHILOS T R SOC B, 363, 831       |
+| publication                                     |  metric| list\_type  |
+|:------------------------------------------------|-------:|:------------|
+| METTEPENNINGEN E, 2013, LAND USE POLICY, 33, 20 |     341| connectness |
+| GUILLEM EE, 2013, LAND USE POLICY, 31, 565      |     317| connectness |
+| UTHES S, 2013, ENVIRON MANAGE, 51, 251          |     305| connectness |
+| BURTON RJF, 2013, LAND USE POLICY, 30, 628      |     305| connectness |
+| WADE MR, 2008, PHILOS T R SOC B, 363, 831       |     295| connectness |
 
 <a href="#top">Back to top</a>
 
@@ -1035,13 +892,47 @@ scilist(scimeetr_list, reading_list = "connectness", k = 5)
 scilist(scimeetr_list, reading_list = "page_rank", k = 5)
 ```
 
-| .x\[\[i\]\]                                     |
-|:------------------------------------------------|
-| METTEPENNINGEN E, 2013, LAND USE POLICY, 33, 20 |
-| GUILLEM EE, 2013, LAND USE POLICY, 31, 565      |
-| UTHES S, 2013, ENVIRON MANAGE, 51, 251          |
-| GABRIEL D, 2009, J APPL ECOL, 46, 323           |
-| VAN DER WAL R, 2008, BIOL LETTERS, 4, 256       |
+<table>
+<colgroup>
+<col width="72%" />
+<col width="13%" />
+<col width="13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">publication</th>
+<th align="right">metric</th>
+<th align="left">list_type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">MORRIS C, 2004, LAND USE POLICY, 21, 177</td>
+<td align="right">0.0355645</td>
+<td align="left">page_rank</td>
+</tr>
+<tr class="even">
+<td align="left">MATHIJS E, 2003, OUTLOOK AGR, 32, 13</td>
+<td align="right">0.0288389</td>
+<td align="left">page_rank</td>
+</tr>
+<tr class="odd">
+<td align="left">LINDEMANN-MATTHIES P, 2010, LANDSCAPE URBAN PLAN, 98, 99</td>
+<td align="right">0.0256324</td>
+<td align="left">page_rank</td>
+</tr>
+<tr class="even">
+<td align="left">WATZOLD F, 2010, BIODIVERS CONSERV, 19, 2053</td>
+<td align="right">0.0249663</td>
+<td align="left">page_rank</td>
+</tr>
+<tr class="odd">
+<td align="left">HERZOG F, 2005, AGR ECOSYST ENVIRON, 108, 175</td>
+<td align="right">0.0221489</td>
+<td align="left">page_rank</td>
+</tr>
+</tbody>
+</table>
 
 <a href="#top">Back to top</a>
 
@@ -1053,47 +944,13 @@ With the option `cite_most_others`, the papers that cite most other papers of th
 scilist(scimeetr_list, reading_list = "cite_most_others", k = 5)
 ```
 
-<table>
-<colgroup>
-<col width="47%" />
-<col width="32%" />
-<col width="20%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">RECID.x</th>
-<th align="left">DOI</th>
-<th align="right">Nb_of_ref_within_com</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">UTHES S, 2013, ENVIRON MANAGE, 51, 251</td>
-<td align="left">10.1007/s00267-012-9959-6</td>
-<td align="right">24</td>
-</tr>
-<tr class="even">
-<td align="left">HEJNOWICZ AP, 2016, LAND USE POLICY, 55, 240</td>
-<td align="left">10.1016/j.landusepol.2016.04.005</td>
-<td align="right">16</td>
-</tr>
-<tr class="odd">
-<td align="left">SCHOMERS S, 2015, SUSTAINABILITY-BASEL, 7, 13856</td>
-<td align="left">10.3390/su71013856</td>
-<td align="right">13</td>
-</tr>
-<tr class="even">
-<td align="left">SCHOMERS S, 2015, LAND USE POLICY, 42, 58</td>
-<td align="left">10.1016/j.landusepol.2014.06.025</td>
-<td align="right">12</td>
-</tr>
-<tr class="odd">
-<td align="left">DEDEURWAERDERE T, 2015, ECOL ECON, 119, 24</td>
-<td align="left">10.1016/j.ecolecon.2015.07.025</td>
-<td align="right">11</td>
-</tr>
-</tbody>
-</table>
+| publication                                      |  metric| list\_type         |
+|:-------------------------------------------------|-------:|:-------------------|
+| UTHES S, 2013, ENVIRON MANAGE, 51, 251           |      24| cite\_most\_others |
+| HEJNOWICZ AP, 2016, LAND USE POLICY, 55, 240     |      16| cite\_most\_others |
+| SCHOMERS S, 2015, SUSTAINABILITY-BASEL, 7, 13856 |      13| cite\_most\_others |
+| SCHOMERS S, 2015, LAND USE POLICY, 42, 58        |      12| cite\_most\_others |
+| DEDEURWAERDERE T, 2015, ECOL ECON, 119, 24       |      11| cite\_most\_others |
 
 <a href="#top">Back to top</a>
 
@@ -1121,7 +978,7 @@ summary(scimap(scimeetr_list, coupling_by = 'bic', community_algorithm = 'louvai
     ## 
     ##     Mean number of citation per paper:  19.81536
     ## 
-    ##     Average number of citation per paper per year:  1.666667
+    ##     Average number of citation per paper per year:  1.2
     ## 
     ## 
     ##   Table of the 10 most mentionned keywords 
@@ -1158,35 +1015,28 @@ summary(scimap(scimeetr_list, coupling_by = 'bic', community_algorithm = 'louvai
     ## 
     ##   Table of the most descriminant keywords 
     ## 
-    ##           comID                        tag
-    ## 1    com1 (742)                           
-    ## 2                             BIODIVERSITY
-    ## 3                             CONSERVATION
-    ## 4                               MANAGEMENT
-    ## 5                              AGRICULTURE
-    ## 6                 AGRI-ENVIRONMENT SCHEMES
-    ## 7                       ECOSYSTEM SERVICES
-    ## 8  com1_1 (202)                           
-    ## 9                            PARTICIPATION
-    ## 10                             AGRICULTURE
-    ## 11                                 FARMERS
-    ## 12                               ATTITUDES
-    ## 13              AGRI-ENVIRONMENTAL SCHEMES
-    ## 14                                  POLICY
-    ## 15 com1_8 (132)                           
-    ## 16                                ADOPTION
-    ## 17                             AGRICULTURE
-    ## 18                                  POLICY
-    ## 19                           WATER QUALITY
-    ## 20                               AUSTRALIA
-    ## 21                                 FARMERS
-    ## 22 com1_3 (292)                           
-    ## 23                            BIODIVERSITY
-    ## 24                AGRI-ENVIRONMENT SCHEMES
-    ## 25                            CONSERVATION
-    ## 26                              MANAGEMENT
-    ## 27                               DIVERSITY
-    ## 28                 AGRICULTURAL LANDSCAPES
+    ##           comID                      tag                   ltag$tag
+    ## 1    com1 (742)                                                    
+    ## 2                           BIODIVERSITY                           
+    ## 3                           CONSERVATION                           
+    ## 4                             MANAGEMENT                           
+    ## 5                            AGRICULTURE                           
+    ## 6               AGRI-ENVIRONMENT SCHEMES                           
+    ## 7                     ECOSYSTEM SERVICES                           
+    ## 8  com1_1 (358)                                                    
+    ## 9                                                          ADOPTION
+    ## 10                                                    PARTICIPATION
+    ## 11                                                      AGRICULTURE
+    ## 12                                                          FARMERS
+    ## 13                                                           POLICY
+    ## 14                                       AGRI-ENVIRONMENTAL SCHEMES
+    ## 15 com1_3 (265)                                                    
+    ## 16                                                     BIODIVERSITY
+    ## 17                                         AGRI-ENVIRONMENT SCHEMES
+    ## 18                                                       MANAGEMENT
+    ## 19                                          AGRICULTURAL LANDSCAPES
+    ## 20                                                        DIVERSITY
+    ## 21                                                     CONSERVATION
 
 ``` r
 summary(scimap(scimeetr_list, coupling_by = 'abc', community_algorithm = 'louvain', min_com_size = 100))
@@ -1207,7 +1057,7 @@ summary(scimap(scimeetr_list, coupling_by = 'abc', community_algorithm = 'louvai
     ## 
     ##     Mean number of citation per paper:  19.81536
     ## 
-    ##     Average number of citation per paper per year:  1.666667
+    ##     Average number of citation per paper per year:  1.2
     ## 
     ## 
     ##   Table of the 10 most mentionned keywords 
@@ -1244,35 +1094,35 @@ summary(scimap(scimeetr_list, coupling_by = 'abc', community_algorithm = 'louvai
     ## 
     ##   Table of the most descriminant keywords 
     ## 
-    ##           comID                        tag
-    ## 1    com1 (742)                           
-    ## 2                             BIODIVERSITY
-    ## 3                             CONSERVATION
-    ## 4                               MANAGEMENT
-    ## 5                              AGRICULTURE
-    ## 6                 AGRI-ENVIRONMENT SCHEMES
-    ## 7                       ECOSYSTEM SERVICES
-    ## 8  com1_3 (255)                           
-    ## 9                                 ADOPTION
-    ## 10                                  POLICY
-    ## 11                                 FARMERS
-    ## 12                      ECOSYSTEM SERVICES
-    ## 13                               AUSTRALIA
-    ## 14                              INCENTIVES
-    ## 15 com1_2 (237)                           
-    ## 16                             AGRICULTURE
-    ## 17                           PARTICIPATION
-    ## 18                                  POLICY
-    ## 19                                 SCHEMES
-    ## 20              COMMON AGRICULTURAL POLICY
-    ## 21              AGRI-ENVIRONMENTAL SCHEMES
-    ## 22 com1_1 (249)                           
-    ## 23                            BIODIVERSITY
-    ## 24                AGRI-ENVIRONMENT SCHEMES
-    ## 25                            CONSERVATION
-    ## 26                              MANAGEMENT
-    ## 27                               DIVERSITY
-    ## 28                 AGRICULTURAL LANDSCAPES
+    ##           comID                      tag                   ltag$tag
+    ## 1    com1 (742)                                                    
+    ## 2                           BIODIVERSITY                           
+    ## 3                           CONSERVATION                           
+    ## 4                             MANAGEMENT                           
+    ## 5                            AGRICULTURE                           
+    ## 6               AGRI-ENVIRONMENT SCHEMES                           
+    ## 7                     ECOSYSTEM SERVICES                           
+    ## 8  com1_2 (249)                                                    
+    ## 9                                                          ADOPTION
+    ## 10                                                        AUSTRALIA
+    ## 11                                                    WATER QUALITY
+    ## 12                                                          FARMERS
+    ## 13                                                       INCENTIVES
+    ## 14                                                       MANAGEMENT
+    ## 15 com1_3 (243)                                                    
+    ## 16                                                      AGRICULTURE
+    ## 17                                                    PARTICIPATION
+    ## 18                                                          SCHEMES
+    ## 19                                       COMMON AGRICULTURAL POLICY
+    ## 20                                                           POLICY
+    ## 21                                       AGRI-ENVIRONMENTAL SCHEMES
+    ## 22 com1_1 (249)                                                    
+    ## 23                                                     BIODIVERSITY
+    ## 24                                         AGRI-ENVIRONMENT SCHEMES
+    ## 25                                                        DIVERSITY
+    ## 26                                                     CONSERVATION
+    ## 27                                                       MANAGEMENT
+    ## 28                                          AGRICULTURAL LANDSCAPES
 
 ``` r
 summary(scimap(scimeetr_list, coupling_by = 'tic', community_algorithm = 'louvain', min_com_size = 100))
@@ -1293,7 +1143,7 @@ summary(scimap(scimeetr_list, coupling_by = 'tic', community_algorithm = 'louvai
     ## 
     ##     Mean number of citation per paper:  19.81536
     ## 
-    ##     Average number of citation per paper per year:  1.666667
+    ##     Average number of citation per paper per year:  1.2
     ## 
     ## 
     ##   Table of the 10 most mentionned keywords 
@@ -1330,49 +1180,42 @@ summary(scimap(scimeetr_list, coupling_by = 'tic', community_algorithm = 'louvai
     ## 
     ##   Table of the most descriminant keywords 
     ## 
-    ##           comID                          tag
-    ## 1    com1 (742)                             
-    ## 2                               BIODIVERSITY
-    ## 3                               CONSERVATION
-    ## 4                                 MANAGEMENT
-    ## 5                                AGRICULTURE
-    ## 6                   AGRI-ENVIRONMENT SCHEMES
-    ## 7                         ECOSYSTEM SERVICES
-    ## 8  com1_1 (176)                             
-    ## 9                               CONSERVATION
-    ## 10                                    POLICY
-    ## 11                                   FARMERS
-    ## 12                                  ADOPTION
-    ## 13                                 AUSTRALIA
-    ## 14                                LANDSCAPES
-    ## 15 com1_3 (127)                             
-    ## 16                              BIODIVERSITY
-    ## 17                                   SCHEMES
-    ## 18                                    POLICY
-    ## 19                   AGRICULTURAL LANDSCAPES
-    ## 20                        ECOSYSTEM SERVICES
-    ## 21                             PARTICIPATION
-    ## 22 com1_5 (128)                             
-    ## 23                                MANAGEMENT
-    ## 24                        ECOSYSTEM SERVICES
-    ## 25                               AGRICULTURE
-    ## 26                                  ADOPTION
-    ## 27                 BIODIVERSITY CONSERVATION
-    ## 28                                    POLICY
-    ## 29 com1_4 (160)                             
-    ## 30                              BIODIVERSITY
-    ## 31                              CONSERVATION
-    ## 32                  AGRI-ENVIRONMENT SCHEMES
-    ## 33                                MANAGEMENT
-    ## 34                   AGRICULTURAL LANDSCAPES
-    ## 35              AGRICULTURAL INTENSIFICATION
-    ## 36 com1_2 (134)                             
-    ## 37                              BIODIVERSITY
-    ## 38                                  LAND-USE
-    ## 39                       AGRICULTURAL POLICY
-    ## 40                             PARTICIPATION
-    ## 41                                   SCHEMES
-    ## 42                                   FARMERS
+    ##           comID                      tag                   ltag$tag
+    ## 1    com1 (742)                                                    
+    ## 2                           BIODIVERSITY                           
+    ## 3                           CONSERVATION                           
+    ## 4                             MANAGEMENT                           
+    ## 5                            AGRICULTURE                           
+    ## 6               AGRI-ENVIRONMENT SCHEMES                           
+    ## 7                     ECOSYSTEM SERVICES                           
+    ## 8  com1_6 (175)                                                    
+    ## 9                                                       AGRICULTURE
+    ## 10                                                       MANAGEMENT
+    ## 11                                                     CONSERVATION
+    ## 12                                                     BIODIVERSITY
+    ## 13                                               ECOSYSTEM SERVICES
+    ## 14                                                  LAND-USE CHANGE
+    ## 15 com1_4 (126)                                                    
+    ## 16                                                       MANAGEMENT
+    ## 17                                               ECOSYSTEM SERVICES
+    ## 18                                                  INTENSIFICATION
+    ## 19                                                     BIODIVERSITY
+    ## 20                                                SOIL CONSERVATION
+    ## 21                                        BIODIVERSITY CONSERVATION
+    ## 22 com1_3 (131)                                                    
+    ## 23                                                     BIODIVERSITY
+    ## 24                                              AGRICULTURAL POLICY
+    ## 25                                         AGRI-ENVIRONMENT SCHEMES
+    ## 26                                                     CONSERVATION
+    ## 27                                                         LAND-USE
+    ## 28                                                       INDICATORS
+    ## 29 com1_5 (161)                                                    
+    ## 30                                                          SCHEMES
+    ## 31                                                     BIODIVERSITY
+    ## 32                                                     CONSERVATION
+    ## 33                                                       MANAGEMENT
+    ## 34                                          AGRICULTURAL LANDSCAPES
+    ## 35                                       AGRI-ENVIRONMENTAL SCHEMES
 
 ``` r
 summary(scimap(scimeetr_list, coupling_by = 'kec', community_algorithm = 'louvain', min_com_size = 100))
@@ -1393,7 +1236,7 @@ summary(scimap(scimeetr_list, coupling_by = 'kec', community_algorithm = 'louvai
     ## 
     ##     Mean number of citation per paper:  19.81536
     ## 
-    ##     Average number of citation per paper per year:  1.666667
+    ##     Average number of citation per paper per year:  1.2
     ## 
     ## 
     ##   Table of the 10 most mentionned keywords 
@@ -1430,42 +1273,35 @@ summary(scimap(scimeetr_list, coupling_by = 'kec', community_algorithm = 'louvai
     ## 
     ##   Table of the most descriminant keywords 
     ## 
-    ##           comID                          tag
-    ## 1    com1 (742)                             
-    ## 2                               BIODIVERSITY
-    ## 3                               CONSERVATION
-    ## 4                                 MANAGEMENT
-    ## 5                                AGRICULTURE
-    ## 6                   AGRI-ENVIRONMENT SCHEMES
-    ## 7                         ECOSYSTEM SERVICES
-    ## 8  com1_3 (297)                             
-    ## 9                                AGRICULTURE
-    ## 10                                  ADOPTION
-    ## 11                                    POLICY
-    ## 12                             PARTICIPATION
-    ## 13                                   FARMERS
-    ## 14                AGRI-ENVIRONMENTAL SCHEMES
-    ## 15 com1_2 (151)                             
-    ## 16                              BIODIVERSITY
-    ## 17                              CONSERVATION
-    ## 18                  AGRI-ENVIRONMENT SCHEMES
-    ## 19                                MANAGEMENT
-    ## 20              AGRICULTURAL INTENSIFICATION
-    ## 21                                 DIVERSITY
-    ## 22 com1_5 (112)                             
-    ## 23                                MANAGEMENT
-    ## 24                        ECOSYSTEM SERVICES
-    ## 25                 BIODIVERSITY CONSERVATION
-    ## 26                                 LANDSCAPE
-    ## 27                                    POLICY
-    ## 28                                   SYSTEMS
-    ## 29 com1_1 (127)                             
-    ## 30                              CONSERVATION
-    ## 31                  AGRI-ENVIRONMENT SCHEMES
-    ## 32                   AGRICULTURAL LANDSCAPES
-    ## 33                                 DIVERSITY
-    ## 34                                     BIRDS
-    ## 35                                  LAND-USE
+    ##           comID                      tag                     ltag$tag
+    ## 1    com1 (742)                                                      
+    ## 2                           BIODIVERSITY                             
+    ## 3                           CONSERVATION                             
+    ## 4                             MANAGEMENT                             
+    ## 5                            AGRICULTURE                             
+    ## 6               AGRI-ENVIRONMENT SCHEMES                             
+    ## 7                     ECOSYSTEM SERVICES                             
+    ## 8  com1_4 (312)                                                      
+    ## 9                                                         AGRICULTURE
+    ## 10                                                           ADOPTION
+    ## 11                                                             POLICY
+    ## 12                                                            FARMERS
+    ## 13                                         AGRI-ENVIRONMENTAL SCHEMES
+    ## 14                                                      PARTICIPATION
+    ## 15 com1_2 (209)                                                      
+    ## 16                                                       BIODIVERSITY
+    ## 17                                           AGRI-ENVIRONMENT SCHEMES
+    ## 18                                            AGRICULTURAL LANDSCAPES
+    ## 19                                                          DIVERSITY
+    ## 20                                                       CONSERVATION
+    ## 21                                       AGRICULTURAL INTENSIFICATION
+    ## 22 com1_3 (138)                                                      
+    ## 23                                                         MANAGEMENT
+    ## 24                                                 ECOSYSTEM SERVICES
+    ## 25                                                       CONSERVATION
+    ## 26                                                            SYSTEMS
+    ## 27                                          BIODIVERSITY CONSERVATION
+    ## 28                                                               LAND
 
 <a href="#top">Back to top</a>
 
@@ -1484,7 +1320,7 @@ scil
     ## ---------------------
     ## Number of papers:  742
     ## Number of communities:  5
-    ## Names of communities:  com1 com1_1 com1_8 com1_4 com1_3
+    ## Names of communities:  com1 com1_1 com1_2 com1_6 com1_3
     ## 
     ## Table of the 5 most mentionned words 
     ## 
@@ -1503,18 +1339,18 @@ subscil
     ## 
     ## # A scimeetr object #
     ## ---------------------
-    ## Number of papers:  202
+    ## Number of papers:  358
     ## Number of communities:  1
     ## Names of communities:  com1_1
     ## 
     ## Table of the 5 most mentionned words 
     ## 
     ##       key_words       title_words abstract_words
-    ## 1 PARTICIPATION           FARMERS        FARMERS
-    ## 2   AGRICULTURE            POLICY         POLICY
-    ## 3  CONSERVATION AGRIENVIRONMENTAL  ENVIRONMENTAL
-    ## 4       FARMERS      AGRICULTURAL   AGRICULTURAL
-    ## 5    MANAGEMENT           SCHEMES           FARM
+    ## 1   AGRICULTURE           FARMERS        FARMERS
+    ## 2      ADOPTION      CONSERVATION         POLICY
+    ## 3  CONSERVATION            POLICY  ENVIRONMENTAL
+    ## 4 PARTICIPATION        MANAGEMENT   CONSERVATION
+    ## 5    MANAGEMENT AGRIENVIRONMENTAL   AGRICULTURAL
 
 <a href="#top">Back to top</a>
 
@@ -1532,8 +1368,8 @@ scil
     ## # A scimeetr object #
     ## ---------------------
     ## Number of papers:  742
-    ## Number of communities:  13
-    ## Names of communities:  com1 com1_1 com1_1_2 com1_1_1 com1_1_3 com1_8 com1_8_3 com1_8_4 com1_4 com1_3 com1_3_4 com1_3_1 com1_3_5
+    ## Number of communities:  11
+    ## Names of communities:  com1 com1_1 com1_1_2 com1_1_1 com1_1_4 com1_2 com1_6 com1_3 com1_3_1 com1_3_3 com1_3_4
     ## 
     ## Table of the 5 most mentionned words 
     ## 
@@ -1552,17 +1388,17 @@ subscil
     ## 
     ## # A scimeetr object #
     ## ---------------------
-    ## Number of papers:  202
+    ## Number of papers:  358
     ## Number of communities:  4
-    ## Names of communities:  com1_1 com1_1_2 com1_1_1 com1_1_3
+    ## Names of communities:  com1_1 com1_1_2 com1_1_1 com1_1_4
     ## 
     ## Table of the 5 most mentionned words 
     ## 
     ##       key_words       title_words abstract_words
-    ## 1 PARTICIPATION           FARMERS        FARMERS
-    ## 2   AGRICULTURE            POLICY         POLICY
-    ## 3  CONSERVATION AGRIENVIRONMENTAL  ENVIRONMENTAL
-    ## 4       FARMERS      AGRICULTURAL   AGRICULTURAL
-    ## 5    MANAGEMENT           SCHEMES           FARM
+    ## 1   AGRICULTURE           FARMERS        FARMERS
+    ## 2      ADOPTION      CONSERVATION         POLICY
+    ## 3  CONSERVATION            POLICY  ENVIRONMENTAL
+    ## 4 PARTICIPATION        MANAGEMENT   CONSERVATION
+    ## 5    MANAGEMENT AGRIENVIRONMENTAL   AGRICULTURAL
 
 <a href="#top">Back to top</a>

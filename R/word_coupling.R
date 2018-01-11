@@ -66,9 +66,9 @@ wcoupling <- function(dfsci, kw = 5, ti = 3, ab = 2){
     mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
   
   names(ab_couple_df) <- c("rec1",
-                        "rec2",
-                        "bc",
-                        "weight"
+                           "rec2",
+                           "bc",
+                           "weight"
   )
   ab_couple_df <- ungroup(ab_couple_df)
   tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(ab_couple_df$rec2, ab_couple_df$rec1))))]
@@ -132,9 +132,9 @@ wcoupling <- function(dfsci, kw = 5, ti = 3, ab = 2){
     mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
   
   names(ti_couple_df) <- c("rec1",
-                        "rec2",
-                        "bc",
-                        "weight"
+                           "rec2",
+                           "bc",
+                           "weight"
   )
   ti_couple_df <- ungroup(ti_couple_df)
   tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(ti_couple_df$rec2, ti_couple_df$rec1))))]
@@ -184,9 +184,9 @@ wcoupling <- function(dfsci, kw = 5, ti = 3, ab = 2){
     mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
   
   names(kw_couple_df) <- c("rec1",
-                        "rec2",
-                        "bc",
-                        "weight"
+                           "rec2",
+                           "bc",
+                           "weight"
   )
   kw_couple_df <- ungroup(kw_couple_df)
   tmp <- dfsci$UT[which(!(dfsci$UT %in% unique(c(kw_couple_df$rec2, kw_couple_df$rec1))))]

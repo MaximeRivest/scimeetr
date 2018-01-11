@@ -19,7 +19,8 @@ print.scimeetrsum <- function(object, ...){
   colnames(kw4pr) <- c("                  Keyword", "   Frequency")
   print(kw4pr, right = T)
   cat("\n\n\n  Table of the 10 most productive journal \n\n")
-  so4pr <- as.data.frame(object$top10so)
+  so4pr <- data.frame(x = names(object$top10so),
+                      y = as.vector(object$top10so))
   colnames(so4pr) <- c("                  Journal", "   Frequency")
   print(so4pr, right = T)
   cat("\n\n\n  Table of the most descriminant keywords \n\n")
