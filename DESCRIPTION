@@ -20,7 +20,8 @@ Imports:
     tm,
     tidyr,
     text2vec,
-    visNetwork
+    visNetwork,
+    pryr
 License: MIT
 Encoding: UTF-8
 LazyData: true
