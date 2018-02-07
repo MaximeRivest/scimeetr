@@ -2,16 +2,44 @@
 % Please edit documentation in R/characterize_kw.R
 \name{characterize_kw}
 \alias{characterize_kw}
-\title{Make a list of dataframe of keyword frequency}
+\title{Characterize keywords.}
 \usage{
 characterize_kw(scimeetr_data, lambda = 0.4)
 }
 \arguments{
-\item{scimeetr_data}{A scimeetr object}
+\item{scimeetr_data}{An object of class scimeetr.}
+
+\item{lambda}{A number from 0 to 1. 0 for relative frequency 1 for total 
+occurence only}
 }
 \value{
-A plot, generated from the sankeyNetwork function in the package networkD3
+A list of dataframe. The list length matchs the number of communities
+  that the scimeetr object contains.
 }
 \description{
-This can be used to characterize the sub-communities found by scimap().
+\code{characterize_kw} calculates several keyword metrics from a scimeetr
+object. The results are returned in a list of data frame. The metrics in the
+table are: keywords frequency, keywords relative frequency, and keyword
+relevance.
+}
+\examples{
+# Example with an object of class scimeetr (see import_wos_files() or 
+# import_scopus_files()) already in the workspace
+keywords_list <- characterize_kw(scimeetr_list)
+# Since this example shows how to load WOS from your system we need to run 
+# the following line to find the path to the exemple file
+fpath <- system.file("extdata", package="scimeetr") 
+fpath <- paste(fpath, "/wos_folder/", sep = "") 
+# Then we can run the actual example
+example_scimeetr_object <- import_wos_files(files_directory = fpath)
+characterize_kw(example_scimeetr_object)
+
+}
+\seealso{
+\code{\link{characterize_jo}} for journal characterization, 
+  \code{\link{characterize_ti}} for title-word characterization, 
+  \code{\link{characterize_ab}} for abstract-word characterization, 
+  \code{\link{characterize_au}} for author characterization, 
+  \code{\link{characterize_un}} for university characterization, 
+  \code{\link{characterize_co}} for country characterization
 }
