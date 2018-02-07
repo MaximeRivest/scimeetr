@@ -27,7 +27,7 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
 Date: 2016-05-28
-URL: http://www.maximerivest.com
+URL: http://www.ScholarsReadingList.com, https://github.com/MaximeRivest/scimeetr
 Suggests:
     knitr,
     rmarkdown

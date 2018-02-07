@@ -6,20 +6,50 @@
 #' @return A plot, generated from the sankeyNetwork function in the package networkD3
 #' @importFrom dplyr %>%
 #' @export
-characterize_kw <- function(scimeetr_data, n = 10, nb_of_underscore = 1) {
-  lsci21 <- keep(scimeetr_data, stringr::str_count(names(scimeetr_data), "_") == nb_of_underscore)
-  hold <- map(lsci21,
-              function(x) {
-                data.frame(community_size = x$de$comsize[1],
-                           most_frequent_keywords = x$de[1:n,]$ID,
-                           disproportionately_more_frequent = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], desc(Relative_frequency * log(Frequency.x, 5)))$ID[1:n],
-                           relative_frequency_1 = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], desc(Relative_frequency * log(Frequency.x, 5)))$Relative_frequency[1:n],
-                           disproportionately_less_frequent = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], Relative_frequency *log(Frequency.x, 5))$ID[1:n],
-                           relative_frequency_2 = arrange(x$de[1:round(x$de$comsize[1] * 0.5),], Relative_frequency *log(Frequency.x, 5))$Relative_frequency[1:n],
-                           most_frequent_publishers = names(sort(table(x$dfsci$SO), decreasing = T)[1:n]),
-                           frequency = as.vector(sort(table(x$dfsci$SO), decreasing = T))[1:n],
-                           stringsAsFactors = F)
-              }
-  )
-  return(hold)
+characterize_kw <- function(scimeetr_data, lambda = 0.4) {
+  hold <- purrr::map(scimeetr_data, function(x) {
+    # Size
+    community_size <- nrow(x$dfsci)
+    # Table of most prolific journals
+    id <- toupper(unlist(stringr::str_split(x$dfsci$ID, '; ')))
+    de <- toupper(unlist(stringr::str_split(x$dfsci$DE, '; ')))
+    idnde <- c(id, de)
+    iddf <- as.data.frame(table(id), stringsAsFactors = F) %>%
+      filter(Freq > 3 & 0 != nchar(id)) 
+    dedf <- as.data.frame(table(de), stringsAsFactors = F) %>%
+      filter(Freq > 3 & 0 != nchar(de))
+    idndedf <- as.data.frame(table(idnde), stringsAsFactors = F) %>%
+      filter(Freq > 3 & 0 != nchar(idnde))
+    tmp_df <- left_join(idndedf, dedf, by = c('idnde' = 'de'), suffix = c("_id_and_de", "_de")) %>%
+      left_join(iddf, by = c("idnde" = "id")) %>%
+      arrange(desc(Freq_de))
+    names(tmp_df) <- c('keyword', 'id_and_de_frequency', 'de_frequency', 'id_frequency' )
+    return(tmp_df)
+  })
+  # If it's a sub_community, table of relative frequency 
+  tmp <- purrr::map(scimeetr_data, "parent_com") %>%
+    purrr::compact()
+  hold_relative <- purrr::map2(hold[names(tmp)], hold[as.character(tmp)], function(child, parent, lambda) {
+    tst <- left_join(child, parent, by = "keyword") %>%
+      mutate(id_and_de_relative = (id_and_de_frequency.x / id_and_de_frequency.y) / (sum(id_and_de_frequency.x,na.rm = T)/sum(id_and_de_frequency.y, na.rm = T)),
+             de_relative = (de_frequency.x / de_frequency.y) / (sum(de_frequency.x,na.rm = T)/sum(de_frequency.y, na.rm = T)),
+             id_relative = (id_frequency.x / id_frequency.y) / (sum(id_frequency.x,na.rm = T)/sum(id_frequency.y, na.rm = T)),
+             id_and_de_relevancy = lambda * log(id_and_de_frequency.x/sum(id_and_de_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((id_and_de_frequency.x/sum(id_and_de_frequency.x,na.rm = T))/(id_and_de_frequency.y/sum(id_and_de_frequency.y,na.rm = T)), base = 10),
+             de_relevancy = lambda * log(de_frequency.x/sum(de_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((de_frequency.x/sum(de_frequency.x,na.rm = T))/(de_frequency.y/sum(de_frequency.y,na.rm = T)), base = 10),
+             id_relevancy = lambda * log(id_frequency.x/sum(id_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((id_frequency.x/sum(id_frequency.x,na.rm = T))/(id_frequency.y/sum(id_frequency.y,na.rm = T)), base = 10)) %>%
+      select(keyword, id_and_de_relative:id_relevancy)
+    return(tst)
+  }, lambda)
+  kw_df <- list()
+  for(x in 1:length(hold)){
+    subh <- hold_relative[[names(hold)[x]]]
+    if(!is.null(subh)) {
+      kw_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'keyword') %>%
+        arrange(desc(de_relevancy))
+    } else {
+      kw_df[[x]] <- hold[[x]]
+    }
+  }
+  names(kw_df) <- names(scimeetr_data)
+  return(kw_df)
 }
