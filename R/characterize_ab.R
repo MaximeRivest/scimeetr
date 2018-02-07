@@ -28,14 +28,12 @@ characterize_ab <- function(scimeetr_data, lambda = 0.4) {
   for(x in 1:length(hold)){
     subh <- hold_relative[[names(hold)[x]]]
     if(!is.null(subh)) {
-      kw_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'keyword') %>%
-        arrange(desc(de_relevancy))
+      kw_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'abstract_word') %>%
+        arrange(desc(relevance))
     } else {
       kw_df[[x]] <- hold[[x]]
     }
   }
   names(kw_df) <- names(scimeetr_data)
   return(kw_df)
-}
-return(hold)
 }
