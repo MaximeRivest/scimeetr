@@ -31,7 +31,7 @@ bibliometric data that were acquired from \url{https://www.scopus.com/} or
 \code{\link{characterize_au}}. And, (4) generate reading list with
 \code{\link{scilist}} or \code{\link{scilist_all}}
 
-For more details refer to the vignette.
+For more details, refer to the vignette.
 }
 \seealso{
 Useful links:

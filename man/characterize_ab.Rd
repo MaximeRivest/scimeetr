@@ -4,7 +4,7 @@
 \alias{characterize_ab}
 \title{Make a list of dataframe of abstract word frequency}
 \usage{
-characterize_ab(scimeetr_data, n = 10)
+characterize_ab(scimeetr_data, lambda = 0.4)
 }
 \arguments{
 \item{scimeetr_data}{A scimeetr object}

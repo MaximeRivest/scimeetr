@@ -13,6 +13,8 @@
 #'   \code{\link{characterize_un}} for university characterization, 
 #'   \code{\link{characterize_co}} for country characterization
 #' @param scimeetr_data An object of class scimeetr.
+#' @param lambda A number from 0 to 1. 0 for relative frequency 1 for total
+#'   occurence only
 #' @examples 
 #' # Example with an object of class scimeetr (see import_wos_files() or 
 #' # import_scopus_files()) already in the workspace
@@ -29,7 +31,7 @@
 #'   that the scimeetr object contains.
 #' @import dplyr
 #' @export
-characterize_jo <- function(scimeetr_data) {
+characterize_jo <- function(scimeetr_data, lambda = 0.6) {
   splitted_cr <- split_cr(scimeetr_data)
   hold <- purrr::map(scimeetr_data, function(x, splitted_cr) {
     # Size
@@ -59,17 +61,18 @@ characterize_jo <- function(scimeetr_data) {
   # If it's a sub_community, table of relative frequency 
   tmp <- purrr::map(scimeetr_data, "parent_com") %>%
     purrr::compact()
-  hold_relative <- purrr::map2(hold[names(tmp)], hold[as.character(tmp)], function(child, parent) {
+  hold_relative <- purrr::map2(hold[names(tmp)], hold[as.character(tmp)], function(child, parent, lambda) {
     tst <- left_join(child, parent, by = "journal") %>%
       mutate(citations_rel = (citations.x / citations.y) / (sum(citations.x,na.rm = T)/sum(citations.y, na.rm = T)),
              H_rel = rank(desc(H.y)) - rank(desc(H.x)),
              papers_cited_rank = rank(desc(papers_cited.y)) - rank(desc(papers_cited.x)),
              papers_cited_rel = (papers_cited.x / papers_cited.y) / (sum(papers_cited.x,na.rm = T)/sum(papers_cited.y, na.rm = T)),
+             papers_cited_relevance = lambda * log(papers_cited.x/sum(papers_cited.x,na.rm = T), base = 10) + (1 - lambda) * log((papers_cited.x/sum(papers_cited.x,na.rm = T))/(papers_cited.y/sum(papers_cited.y,na.rm = T)), base = 10),
              papers_within_com_rank = rank(desc(papers_within_com.y)) - rank(desc(papers_within_com.x)),
-             papers_within_com_rel = (papers_within_com.x / papers_within_com.y) / (sum(papers_within_com.x,na.rm = T)/sum(papers_within_com.y, na.rm = T))) %>%
+             papers_within_com_rel = (papers_within_com.x / papers_within_com.y) / (sum(papers_within_com.x,na.rm = T)/sum(papers_within_com.y, na.rm = T)),
+             papers_within_relevance = lambda * log(papers_within_com.x/sum(papers_within_com.x,na.rm = T), base = 10) + (1 - lambda) * log((papers_within_com.x/sum(papers_within_com.x,na.rm = T))/(papers_within_com.y/sum(papers_within_com.y,na.rm = T)), base = 10)) %>%
       select(journal, citations_rel:papers_within_com_rel)
-  }
-  )
+  }, lambda)
   jo_df <- list()
   for(x in 1:length(hold)){
     subh <- hold_relative[[names(hold)[x]]]

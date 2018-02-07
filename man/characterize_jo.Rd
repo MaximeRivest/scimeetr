@@ -4,14 +4,17 @@
 \alias{characterize_jo}
 \title{Characterize journals.}
 \usage{
-characterize_jo(scimeetr_data)
+characterize_jo(scimeetr_data, lambda = 0.6)
 }
 \arguments{
 \item{scimeetr_data}{An object of class scimeetr.}
+
+\item{lambda}{A number from 0 to 1. 0 for relative frequency 1 for total
+occurence only}
 }
 \value{
-A list of dataframe. The list length match the number of communities 
-  of the scimeetr object.
+A list of dataframe. The list length matchs the number of communities
+  that the scimeetr object contains.
 }
 \description{
 \code{characterize_jo} calculates several journal bibliometrics from a 
