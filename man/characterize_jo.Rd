@@ -2,15 +2,16 @@
 % Please edit documentation in R/characterize_jo.R
 \name{characterize_jo}
 \alias{characterize_jo}
-\title{Characterize journals.}
+\title{Characterize bibliometric corpus with journals.}
 \usage{
 characterize_jo(scimeetr_data, lambda = 0.6)
 }
 \arguments{
 \item{scimeetr_data}{An object of class scimeetr.}
 
-\item{lambda}{A number from 0 to 1. 0 for relative frequency 1 for total
-occurence only}
+\item{lambda}{A number from 0 to 1. If 0 the relevance score would be equal 
+to the relative frequency. If 1 for the relevance score would be equal to
+the frequency.}
 }
 \value{
 A list of dataframe. The list length matchs the number of communities
@@ -20,8 +21,11 @@ A list of dataframe. The list length matchs the number of communities
 \code{characterize_jo} calculates several journal bibliometrics from a 
 scimeetr object. The results are returned in a list of data frame. The 
 metrics in the table are: number of citations, H-index, impact factor, number
-of different papers that were cited by papers in the scimeetr dataframe and 
-others.
+of different papers that were cited by papers in the scimeetr dataframe,
+number of papers that are within the community. _rel, _rank and _relevance at
+the end of a column name refers to the fact that the relativem the rank
+change or the relevance of the journal were calculated based on the metrics
+that matches the start of the column name.
 }
 \examples{
 # Example with an object of class scimeetr (see import_wos_files() or 

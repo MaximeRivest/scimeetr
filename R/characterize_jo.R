@@ -1,10 +1,13 @@
-#' Characterize journals.
+#' Characterize bibliometric corpus with journals.
 #' 
 #' \code{characterize_jo} calculates several journal bibliometrics from a 
 #' scimeetr object. The results are returned in a list of data frame. The 
 #' metrics in the table are: number of citations, H-index, impact factor, number
-#' of different papers that were cited by papers in the scimeetr dataframe and 
-#' others.
+#' of different papers that were cited by papers in the scimeetr dataframe,
+#' number of papers that are within the community. _rel, _rank and _relevance at
+#' the end of a column name refers to the fact that the relativem the rank
+#' change or the relevance of the journal were calculated based on the metrics
+#' that matches the start of the column name.
 #' 
 #' @seealso \code{\link{characterize_kw}} for keyword characterization, 
 #'   \code{\link{characterize_ti}} for title-word characterization, 
@@ -13,8 +16,9 @@
 #'   \code{\link{characterize_un}} for university characterization, 
 #'   \code{\link{characterize_co}} for country characterization
 #' @param scimeetr_data An object of class scimeetr.
-#' @param lambda A number from 0 to 1. 0 for relative frequency 1 for total
-#'   occurence only
+#' @param lambda A number from 0 to 1. If 0 the relevance score would be equal 
+#'   to the relative frequency. If 1 for the relevance score would be equal to
+#'   the frequency.
 #' @examples 
 #' # Example with an object of class scimeetr (see import_wos_files() or 
 #' # import_scopus_files()) already in the workspace

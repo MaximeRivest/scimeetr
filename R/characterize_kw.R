@@ -1,8 +1,8 @@
-#' Characterize keywords.
+#' Characterize bibliometric corpus with keywords.
 #' 
-#' \code{characterize_kw} calculates several keyword metrics from a scimeetr
-#' object. The results are returned in a list of data frame. The metrics in the
-#' table are: keywords frequency, keywords relative frequency, and keyword
+#' \code{characterize_kw} calculates several keyword metrics from a scimeetr 
+#' object. The results are returned in a list of data frame. The metrics in the 
+#' table are: keywords frequency, keywords relative frequency, and keywords 
 #' relevance.
 #' 
 #' @seealso \code{\link{characterize_jo}} for journal characterization, 
@@ -12,8 +12,9 @@
 #'   \code{\link{characterize_un}} for university characterization, 
 #'   \code{\link{characterize_co}} for country characterization
 #' @param scimeetr_data An object of class scimeetr.
-#' @param lambda A number from 0 to 1. 0 for relative frequency 1 for total 
-#'   occurence only
+#' @param lambda A number from 0 to 1. If 0 the relevance score would be equal 
+#'   to the relative frequency. If 1 for the relevance score would be equal to
+#'   the frequency.
 #' @examples 
 #' # Example with an object of class scimeetr (see import_wos_files() or 
 #' # import_scopus_files()) already in the workspace
@@ -59,9 +60,9 @@ characterize_kw <- function(scimeetr_data, lambda = 0.4) {
              de_relative = (de_frequency.x / de_frequency.y) / (sum(de_frequency.x,na.rm = T)/sum(de_frequency.y, na.rm = T)),
              id_relative = (id_frequency.x / id_frequency.y) / (sum(id_frequency.x,na.rm = T)/sum(id_frequency.y, na.rm = T)),
              id_and_de_relevancy = lambda * log(id_and_de_frequency.x/sum(id_and_de_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((id_and_de_frequency.x/sum(id_and_de_frequency.x,na.rm = T))/(id_and_de_frequency.y/sum(id_and_de_frequency.y,na.rm = T)), base = 10),
-             de_relevancy = lambda * log(de_frequency.x/sum(de_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((de_frequency.x/sum(de_frequency.x,na.rm = T))/(de_frequency.y/sum(de_frequency.y,na.rm = T)), base = 10),
-             id_relevancy = lambda * log(id_frequency.x/sum(id_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((id_frequency.x/sum(id_frequency.x,na.rm = T))/(id_frequency.y/sum(id_frequency.y,na.rm = T)), base = 10)) %>%
-      select(keyword, id_and_de_relative:id_relevancy)
+             de_relevance = lambda * log(de_frequency.x/sum(de_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((de_frequency.x/sum(de_frequency.x,na.rm = T))/(de_frequency.y/sum(de_frequency.y,na.rm = T)), base = 10),
+             id_relevance = lambda * log(id_frequency.x/sum(id_frequency.x,na.rm = T), base = 10) + (1 - lambda) * log((id_frequency.x/sum(id_frequency.x,na.rm = T))/(id_frequency.y/sum(id_frequency.y,na.rm = T)), base = 10)) %>%
+      select(keyword, id_and_de_relative:id_relevance)
     return(tst)
   }, lambda)
   kw_df <- list()
@@ -69,7 +70,7 @@ characterize_kw <- function(scimeetr_data, lambda = 0.4) {
     subh <- hold_relative[[names(hold)[x]]]
     if(!is.null(subh)) {
       kw_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'keyword') %>%
-        arrange(desc(de_relevancy))
+        arrange(desc(de_relevance))
     } else {
       kw_df[[x]] <- hold[[x]]
     }

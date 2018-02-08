@@ -2,24 +2,25 @@
 % Please edit documentation in R/characterize_kw.R
 \name{characterize_kw}
 \alias{characterize_kw}
-\title{Characterize keywords.}
+\title{Characterize bibliometric corpus with keywords.}
 \usage{
 characterize_kw(scimeetr_data, lambda = 0.4)
 }
 \arguments{
 \item{scimeetr_data}{An object of class scimeetr.}
 
-\item{lambda}{A number from 0 to 1. 0 for relative frequency 1 for total 
-occurence only}
+\item{lambda}{A number from 0 to 1. If 0 the relevance score would be equal 
+to the relative frequency. If 1 for the relevance score would be equal to
+the frequency.}
 }
 \value{
 A list of dataframe. The list length matchs the number of communities
   that the scimeetr object contains.
 }
 \description{
-\code{characterize_kw} calculates several keyword metrics from a scimeetr
-object. The results are returned in a list of data frame. The metrics in the
-table are: keywords frequency, keywords relative frequency, and keyword
+\code{characterize_kw} calculates several keyword metrics from a scimeetr 
+object. The results are returned in a list of data frame. The metrics in the 
+table are: keywords frequency, keywords relative frequency, and keywords 
 relevance.
 }
 \examples{

@@ -2,15 +2,16 @@
 % Please edit documentation in R/characterize_ti.R
 \name{characterize_ti}
 \alias{characterize_ti}
-\title{Characterize words found within papers' titles}
+\title{Characterize bibliometric corpus with titles.}
 \usage{
 characterize_ti(scimeetr_data, lambda = 0.4)
 }
 \arguments{
 \item{scimeetr_data}{An object of class scimeetr.}
 
-\item{lambda}{A number from 0 to 1. 0 for relative frequency 1 for total 
-occurence only}
+\item{lambda}{A number from 0 to 1. If 0 the relevance score would be equal 
+to the relative frequency. If 1 for the relevance score would be equal to
+the frequency.}
 }
 \value{
 A list of dataframe. The list length matchs the number of communities

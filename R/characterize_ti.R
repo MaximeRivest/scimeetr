@@ -1,4 +1,4 @@
-#' Characterize words found within papers' titles
+#' Characterize bibliometric corpus with titles.
 #' 
 #' \code{characterize_ti} calculates several title-word metrics from a
 #' scimeetr object. The results are returned in a list of data frame. The
@@ -12,8 +12,9 @@
 #'   \code{\link{characterize_un}} for university characterization, 
 #'   \code{\link{characterize_co}} for country characterization
 #' @param scimeetr_data An object of class scimeetr.
-#' @param lambda A number from 0 to 1. 0 for relative frequency 1 for total 
-#'   occurence only
+#' @param lambda A number from 0 to 1. If 0 the relevance score would be equal 
+#'   to the relative frequency. If 1 for the relevance score would be equal to
+#'   the frequency.
 #' @examples 
 #' # Example with an object of class scimeetr (see import_wos_files() or 
 #' # import_scopus_files()) already in the workspace
@@ -54,8 +55,12 @@ characterize_ti <- function(scimeetr_data, lambda = 0.4) {
       ti_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'title_word') %>%
         arrange(desc(relevance)) %>%
         select(title_word, frequency.x, Relative_frequency.y:relevance)
+      names(ti_df[[x]]) <- c('title_word',
+                             'frequency',
+                             'relative_frequency',
+                             'relevance')
     } else {
-      ti_df[[x]] <- hold[[x]]
+      ti_df[[x]] <- hold[[x]][,1:2]
     }
   }
   names(ti_df) <- names(scimeetr_data)
