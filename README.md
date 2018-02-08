@@ -13,6 +13,12 @@ Scimeetr
         -   [Retrieving data from Web of Science](#retrieving-data-from-web-of-science)
     -   [How to upload bibliometric data into R](#how-to-upload-bibliometric-data-into-r)
     -   [Exploring scimeetr data](#exploring-scimeetr-data)
+        -   [Printing and summary](#printing-and-summary)
+        -   [Characterizing the corpus of papers contained by a scimeetr object](#characterizing-the-corpus-of-papers-contained-by-a-scimeetr-object)
+            -   [Characterize the corpus with keywords](#characterize-the-corpus-with-keywords)
+            -   [Characterize the corpus with journals](#characterize-the-corpus-with-journals)
+            -   [Characterize the corpus with authors](#characterize-the-corpus-with-authors)
+        -   [Scimeetr object structure and navigation](#scimeetr-object-structure-and-navigation)
     -   [Making reading lists](#making-reading-lists)
         -   [Core](#core)
             -   [Most cited per year](#most-cited-per-year)
@@ -345,6 +351,8 @@ Do not forget that this function take in a path to a folder not a file. Thus, it
 Exploring scimeetr data
 -----------------------
 
+### Printing and summary
+
 Printing `scimeetr_list` that we just created will provide some informations about it, but `summary` will provide more.
 
 ``` r
@@ -431,6 +439,184 @@ summary(scimeetr_list)
     ## 5                         AGRICULTURE
     ## 6            AGRI-ENVIRONMENT SCHEMES
     ## 7                  ECOSYSTEM SERVICES
+
+### Characterizing the corpus of papers contained by a scimeetr object
+
+Within the scimeetr package there are several function that help us characterize our corpus of papers.
+
+The corpus of papers can be characterized be:
+
+-   keywords with `characterize_kw()`
+-   title-words with `characterize_ti()`
+-   astract-words with `characterize_ab()`
+-   journals with `characterize_jo()`
+-   authors with `characterize_au()`
+-   universities with `characterize_un()`
+-   countries with `characterize_co()`
+
+#### Characterize the corpus with keywords
+
+To get even more information about the corpus of papers contained within `scimeetr_list` we can use `characterize_kw`. This function will generate a list of data frames, one data frame per communities within `scimeetr_list`. The first column of any of these data frames will contain the keywords themselves. The second column contains the frequency of the keywords (i.e. the number of papers that mentions this keyword).
+
+``` r
+kw <- characterize_kw(scimeetr_list)
+head(kw$com1)
+```
+
+| keyword                    |  id\_and\_de\_frequency|  de\_frequency|  id\_frequency|
+|:---------------------------|-----------------------:|--------------:|--------------:|
+| BIODIVERSITY               |                     182|             57|            125|
+| AGRICULTURE                |                     112|             46|             66|
+| COMMON AGRICULTURAL POLICY |                      40|             32|              8|
+| ECOSYSTEM SERVICES         |                      76|             31|             45|
+| CONSERVATION               |                     155|             28|            127|
+| AGRI-ENVIRONMENT SCHEMES   |                     103|             27|             76|
+
+<a href="#top">Back to top</a>
+
+#### Characterize the corpus with journals
+
+We can also use `characterize_jo`. Just like `characterize_kw`, this function will generate a list of data frames, one data frame per communities within `scimeetr_list`. The first column of any of these data frames will contain the journals' names themselves. The other columns contains several journal based metrics.
+
+``` r
+jo <- characterize_jo(scimeetr_list)
+head(jo$com1)
+```
+
+| journal             |  citations|    H|  impact\_factor|  papers\_cited|  papers\_within\_com|
+|:--------------------|----------:|----:|---------------:|--------------:|--------------------:|
+| J APPL ECOL         |        841|   13|        5.461039|            154|                   21|
+| LAND USE POLICY     |        533|   12|        4.801802|            111|                   84|
+| AGR ECOSYST ENVIRON |        574|   10|        3.610063|            159|                   37|
+| J ENVIRON MANAGE    |        445|   10|        5.493827|             81|                   33|
+| J RURAL STUD        |        522|   10|        5.381443|             97|                   17|
+| SCIENCE             |        218|    9|        4.739130|             46|                   NA|
+
+<a href="#top">Back to top</a>
+
+#### Characterize the corpus with authors
+
+We can also use `characterize_au`. The first column of any of these data frames will contain the authors' names themselves. The other columns contains several author based metrics.
+
+``` r
+au <- characterize_au(scimeetr_list)
+head(au$com1)
+```
+
+<table>
+<colgroup>
+<col width="11%" />
+<col width="4%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="9%" />
+<col width="10%" />
+<col width="9%" />
+<col width="12%" />
+<col width="17%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">AU</th>
+<th align="right">HHL</th>
+<th align="right">HH</th>
+<th align="right">HL</th>
+<th align="right">H</th>
+<th align="right">Local_cit</th>
+<th align="right">Global_cit</th>
+<th align="right">nb_papers</th>
+<th align="right">local2global</th>
+<th align="right">fa_nb_paper_cited</th>
+<th align="right">fa_total_cit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">HERZOG F</td>
+<td align="right">6</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="right">9</td>
+<td align="right">57</td>
+<td align="right">293</td>
+<td align="right">12</td>
+<td align="right">0.1945392</td>
+<td align="right">5</td>
+<td align="right">32</td>
+</tr>
+<tr class="even">
+<td align="left">MATZDORF B</td>
+<td align="right">5</td>
+<td align="right">6</td>
+<td align="right">3</td>
+<td align="right">5</td>
+<td align="right">52</td>
+<td align="right">138</td>
+<td align="right">7</td>
+<td align="right">0.3768116</td>
+<td align="right">5</td>
+<td align="right">41</td>
+</tr>
+<tr class="odd">
+<td align="left">SCHUPBACH B</td>
+<td align="right">5</td>
+<td align="right">8</td>
+<td align="right">4</td>
+<td align="right">7</td>
+<td align="right">42</td>
+<td align="right">274</td>
+<td align="right">9</td>
+<td align="right">0.1532847</td>
+<td align="right">1</td>
+<td align="right">5</td>
+</tr>
+<tr class="even">
+<td align="left">BURTON RJF</td>
+<td align="right">4</td>
+<td align="right">5</td>
+<td align="right">3</td>
+<td align="right">5</td>
+<td align="right">43</td>
+<td align="right">166</td>
+<td align="right">5</td>
+<td align="right">0.2590361</td>
+<td align="right">11</td>
+<td align="right">154</td>
+</tr>
+<tr class="odd">
+<td align="left">DRECHSLER M</td>
+<td align="right">4</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">20</td>
+<td align="right">64</td>
+<td align="right">5</td>
+<td align="right">0.3125000</td>
+<td align="right">7</td>
+<td align="right">33</td>
+</tr>
+<tr class="even">
+<td align="left">JEANNERET P</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">4</td>
+<td align="right">5</td>
+<td align="right">25</td>
+<td align="right">143</td>
+<td align="right">6</td>
+<td align="right">0.1748252</td>
+<td align="right">3</td>
+<td align="right">10</td>
+</tr>
+</tbody>
+</table>
+
+<a href="#top">Back to top</a>
+
+### Scimeetr object structure and navigation
 
 A scimeetr object such as `scimeetr_list` contains more data than what can be seen with `print` and `summary`. A scimeetr object is in fact a list of communities list which are themselves list of up to 9 elements. Each communities contain a data.frame called `dfsci`. This dataframe contains all the bibliometric data that was importedinto `R`.
 
@@ -717,7 +903,7 @@ scilist(scimeetr_list, reading_list = "core_yr", k = 2)
 
 #### More cited than expected
 
-Using `scilist` with `reading_list = "core_residual"` will list the papers that diverge most from the expected number of citation for this particular paper. This can be visualised in the figure below. The point that have the biggest difference between their frequency value and the fitted blue lines are listed in the `core_residual` reading list. ![](README_files/figure-markdown_github/unnamed-chunk-19-1.png)
+Using `scilist` with `reading_list = "core_residual"` will list the papers that diverge most from the expected number of citation for this particular paper. This can be visualised in the figure below. The point that have the biggest difference between their frequency value and the fitted blue lines are listed in the `core_residual` reading list. ![](README_files/figure-markdown_github/unnamed-chunk-25-1.png)
 
 Here is an example of the code and its result.
 
