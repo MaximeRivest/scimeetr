@@ -1,12 +1,37 @@
-#' Make a list of dataframe of country frequency
+#' Characterize country.
 #' 
-#' This can be used to characterize the communities of research.
-#'
-#' @param scimeetr_data A scimeetr object
-#' @return A list of dataframe containing journal related metrics
+#' \code{characterize_co} calculates several country bibliometrics from a 
+#' scimeetr object. The results are returned in a list of data frame. The 
+#' metrics in the table are: number of citations, H-index, impact factor, number
+#' of different papers that were cited by papers in the scimeetr dataframe and 
+#' others.
+#' 
+#' @seealso \code{\link{characterize_kw}} for keyword characterization, 
+#'   \code{\link{characterize_ti}} for title-word characterization, 
+#'   \code{\link{characterize_ab}} for abstract-word characterization, 
+#'   \code{\link{characterize_au}} for author characterization, 
+#'   \code{\link{characterize_un}} for university characterization, 
+#'   \code{\link{characterize_jo}} for journal characterization
+#' @param scimeetr_data An object of class scimeetr.
+#' @param lambda A number from 0 to 1. 0 for relative frequency 1 for total
+#'   occurence only
+#' @examples 
+#' # Example with an object of class scimeetr (see import_wos_files() or 
+#' # import_scopus_files()) already in the workspace
+#' countries <- characterize_co(scimeetr_list)
+#' # Since this example shows how to load WOS from your system we need to run 
+#' # the following line to find the path to the exemple file
+#' fpath <- system.file("extdata", package="scimeetr") 
+#' fpath <- paste(fpath, "/wos_folder/", sep = "") 
+#' # Then we can run the actual example
+#' example_scimeetr_object <- import_wos_files(files_directory = fpath)
+#' characterize_co(example_scimeetr_object)
+#' 
+#' @return A list of dataframe. The list length matchs the number of communities
+#'   that the scimeetr object contains.
 #' @import dplyr
 #' @export
-characterize_co <- function(scimeetr_data) {
+characterize_co <- function(scimeetr_data, lambda = 0.5) {
   hold <- purrr::map(scimeetr_data, function(x, splitted_cr) {
     C1vec <- x$dfsci$C1
     country_final_vec <- rep(NA, nrow(x$dfsci))
@@ -38,21 +63,25 @@ characterize_co <- function(scimeetr_data) {
       }
     }
     co <- unlist(stringr::str_split(country_final_vec, ';'))
-    return(arrange(as.data.frame(table(tolower(co))), desc(Freq)))
+    df <- as.data.frame(table(tolower(co)), stringsAsFactors = F)
+    co <- arrange(df, desc(Freq))
+    return(co)
   })
   # If it's a sub_community, table of relative frequency 
   tmp <- purrr::map(scimeetr_data, "parent_com") %>%
     compact()
-  hold_relative <- purrr::map2(hold[names(tmp)], hold[as.character(tmp)], function(child, parent) {
+  hold_relative <- purrr::map2(hold[names(tmp)], hold[as.character(tmp)], function(child, parent, lambda) {
     tst <- left_join(child, parent, by = "Var1") %>%
-      mutate(Freq_rel = (Freq.x / Freq.y) / (sum(Freq.x,na.rm = T)/sum(Freq.y, na.rm = T))) %>%
-      select(Var1,Freq_rel)
-  })
+      mutate(Freq_rel = (Freq.x / Freq.y) / (sum(Freq.x,na.rm = T)/sum(Freq.y, na.rm = T)),
+             relevance = lambda * log(Freq.x/sum(Freq.x,na.rm = T), base = 10) + (1 - lambda) * log((Freq.x/sum(Freq.x,na.rm = T))/(Freq.y/sum(Freq.y,na.rm = T)), base = 10)) %>%
+      select(Var1,Freq_rel:relevance)
+  }, lambda)
   co_df <- list()
   for(x in 1:length(hold)){
     subh <- hold_relative[[names(hold)[x]]]
     if(!is.null(subh)) {
-      co_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'Var1')
+      co_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'Var1') %>%
+        arrange(desc(relevance))
     } else {
       co_df[[x]] <- hold[[x]]
     }

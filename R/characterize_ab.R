@@ -7,7 +7,7 @@
 #' 
 #' @seealso \code{\link{characterize_jo}} for journal characterization, 
 #'   \code{\link{characterize_ti}} for title-word characterization, 
-#'   \code{\link{characterize_kw}} for abstract-word characterization, 
+#'   \code{\link{characterize_kw}} for keyword characterization, 
 #'   \code{\link{characterize_au}} for author characterization, 
 #'   \code{\link{characterize_un}} for university characterization, 
 #'   \code{\link{characterize_co}} for country characterization

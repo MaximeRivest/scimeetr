@@ -1,14 +1,38 @@
-#' Make a list of dataframe of Authors frequencies
+#' Characterize authors found within papers' titles
 #' 
-#' This can be used to characterize the communities of research.
-#'
-#' @param scimeetr_data A scimeetr object
-#' @return A list of dataframe containing Author related metrics
+#' \code{characterize_au} calculates several author related metrics from a
+#' scimeetr object. The results are returned in a list of data frame. The
+#' metrics in the table are: title-words frequency, title-words relative
+#' frequency, title-words relevance.
+#' 
+#' @seealso \code{\link{characterize_jo}} for journal characterization, 
+#'   \code{\link{characterize_ab}} for abstract-word characterization, 
+#'   \code{\link{characterize_kw}} for keyword characterization, 
+#'   \code{\link{characterize_ti}} for title characterization, 
+#'   \code{\link{characterize_un}} for university characterization, 
+#'   \code{\link{characterize_co}} for country characterization
+#' @param scimeetr_data An object of class scimeetr.
+#' @param lambda A number from 0 to 1. 0 for relative frequency 1 for total 
+#'   occurence only
+#' @examples 
+#' # Example with an object of class scimeetr (see import_wos_files() or 
+#' # import_scopus_files()) already in the workspace
+#' author_list <- characterize_au(scimeetr_list)
+#' # Since this example shows how to load WOS from your system we need to run 
+#' # the following line to find the path to the exemple file
+#' fpath <- system.file("extdata", package="scimeetr") 
+#' fpath <- paste(fpath, "/wos_folder/", sep = "") 
+#' # Then we can run the actual example
+#' example_scimeetr_object <- import_wos_files(files_directory = fpath)
+#' characterize_au(example_scimeetr_object)
+#' 
+#' @return A list of dataframe. The list length matchs the number of communities
+#'   that the scimeetr object contains.
 #' @import dplyr
 #' @export
-characterize_au <- function(scimeetr_data) {
+characterize_au <- function(scimeetr_data, lambda = 0.7) {
   splitted_cr <- split_cr(scimeetr_data)
-  splt_cr_freq <- map2(map(scimeetr_data, 'cr'), rep(list(splitted_cr), length(lsci)), full_join, by = c('ID'))
+  splt_cr_freq <- map2(map(scimeetr_data, 'cr'), rep(list(splitted_cr), length(scimeetr_data)), full_join, by = c('ID'))
   hold <- map2(map(scimeetr_data, 'dfsci'), splt_cr_freq, full_join, by = c('RECID')) %>%
     map(function(dfsci_mod){
       au_list <- strsplit(dfsci_mod$AU, split="; ")
@@ -38,6 +62,7 @@ characterize_au <- function(scimeetr_data) {
                LCC = LC * worth,
                TCC = TC * worth) %>%
         group_by(AU) %>%
+        filter(n() > 1) %>%
         mutate(rank_LCC = rank(desc(LCC)),
                HHL = LCC > rank_LCC,
                rank_TCC = rank(desc(TCC)),
@@ -54,6 +79,7 @@ characterize_au <- function(scimeetr_data) {
                   Local_cit = sum(LC, na.rm = T),
                   Global_cit = sum(TC, na.rm = T),
                   nb_papers = n()) %>%
+        filter(H>1) %>%
         ungroup() %>%
         mutate(local2global = Local_cit / Global_cit) %>%
         arrange(desc(HHL))
@@ -65,5 +91,24 @@ characterize_au <- function(scimeetr_data) {
       df <- full_join(audf1, first_au, by = c('AU' = 'author'))
       return(df)
     })
-  return(hold)
+  # If it's a sub_community, table of relative frequency 
+  tmp <- purrr::map(scimeetr_data, "parent_com") %>%
+    purrr::compact()
+  hold_relative <- purrr::map2(hold[names(tmp)], hold[as.character(tmp)], function(child, parent, lambda) {
+    tst <- left_join(child, parent, by = "AU") %>%
+      mutate(relevance_based_on_local_cit = lambda * log(Local_cit.x/sum(Local_cit.x,na.rm = T), base = 10) + (1 - lambda) * log((Local_cit.x/sum(Local_cit.x,na.rm = T))/(Local_cit.y/sum(Local_cit.y,na.rm = T)), base = 10),
+             relevance_based_on_nb_papers = lambda * log(nb_papers.x/sum(nb_papers.x,na.rm = T), base = 10) + (1 - lambda) * log((nb_papers.x/sum(nb_papers.x,na.rm = T))/(nb_papers.y/sum(nb_papers.y,na.rm = T)), base = 10)) %>%
+      select(AU,starts_with('relevance'))
+  }, lambda)
+  au_df <- list()
+  for(x in 1:length(hold)){
+    subh <- hold_relative[[names(hold)[x]]]
+    if(!is.null(subh)) {
+      au_df[[x]] <- left_join(hold[[names(hold)[x]]], hold_relative[[names(hold)[x]]], 'AU')
+    } else {
+      au_df[[x]] <- hold[[x]]
+    }
+  }
+  names(au_df) <- names(scimeetr_data)
+  return(au_df)
 }

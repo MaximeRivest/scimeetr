@@ -2,16 +2,45 @@
 % Please edit documentation in R/characterize_co.R
 \name{characterize_co}
 \alias{characterize_co}
-\title{Make a list of dataframe of country frequency}
+\title{Characterize country.}
 \usage{
-characterize_co(scimeetr_data)
+characterize_co(scimeetr_data, lambda = 0.5)
 }
 \arguments{
-\item{scimeetr_data}{A scimeetr object}
+\item{scimeetr_data}{An object of class scimeetr.}
+
+\item{lambda}{A number from 0 to 1. 0 for relative frequency 1 for total
+occurence only}
 }
 \value{
-A list of dataframe containing journal related metrics
+A list of dataframe. The list length matchs the number of communities
+  that the scimeetr object contains.
 }
 \description{
-This can be used to characterize the communities of research.
+\code{characterize_co} calculates several country bibliometrics from a 
+scimeetr object. The results are returned in a list of data frame. The 
+metrics in the table are: number of citations, H-index, impact factor, number
+of different papers that were cited by papers in the scimeetr dataframe and 
+others.
+}
+\examples{
+# Example with an object of class scimeetr (see import_wos_files() or 
+# import_scopus_files()) already in the workspace
+countries <- characterize_co(scimeetr_list)
+# Since this example shows how to load WOS from your system we need to run 
+# the following line to find the path to the exemple file
+fpath <- system.file("extdata", package="scimeetr") 
+fpath <- paste(fpath, "/wos_folder/", sep = "") 
+# Then we can run the actual example
+example_scimeetr_object <- import_wos_files(files_directory = fpath)
+characterize_co(example_scimeetr_object)
+
+}
+\seealso{
+\code{\link{characterize_kw}} for keyword characterization, 
+  \code{\link{characterize_ti}} for title-word characterization, 
+  \code{\link{characterize_ab}} for abstract-word characterization, 
+  \code{\link{characterize_au}} for author characterization, 
+  \code{\link{characterize_un}} for university characterization, 
+  \code{\link{characterize_jo}} for journal characterization
 }

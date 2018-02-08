@@ -2,16 +2,44 @@
 % Please edit documentation in R/characterize_ti.R
 \name{characterize_ti}
 \alias{characterize_ti}
-\title{Make a list of dataframe of title word frequency}
+\title{Characterize words found within papers' titles}
 \usage{
-characterize_ti(scimeetr_data, n = 10)
+characterize_ti(scimeetr_data, lambda = 0.4)
 }
 \arguments{
-\item{scimeetr_data}{A scimeetr object}
+\item{scimeetr_data}{An object of class scimeetr.}
+
+\item{lambda}{A number from 0 to 1. 0 for relative frequency 1 for total 
+occurence only}
 }
 \value{
-A list of dataframe of length equal to the number of sub-communities
+A list of dataframe. The list length matchs the number of communities
+  that the scimeetr object contains.
 }
 \description{
-This can be used to characterize the sub-communities found by scimap().
+\code{characterize_ti} calculates several title-word metrics from a
+scimeetr object. The results are returned in a list of data frame. The
+metrics in the table are: title-words frequency, title-words relative
+frequency, title-words relevance.
+}
+\examples{
+# Example with an object of class scimeetr (see import_wos_files() or 
+# import_scopus_files()) already in the workspace
+titleword_list <- characterize_ti(scimeetr_list)
+# Since this example shows how to load WOS from your system we need to run 
+# the following line to find the path to the exemple file
+fpath <- system.file("extdata", package="scimeetr") 
+fpath <- paste(fpath, "/wos_folder/", sep = "") 
+# Then we can run the actual example
+example_scimeetr_object <- import_wos_files(files_directory = fpath)
+characterize_ti(example_scimeetr_object)
+
+}
+\seealso{
+\code{\link{characterize_jo}} for journal characterization, 
+  \code{\link{characterize_ab}} for abstract-word characterization, 
+  \code{\link{characterize_kw}} for keyword characterization, 
+  \code{\link{characterize_au}} for author characterization, 
+  \code{\link{characterize_un}} for university characterization, 
+  \code{\link{characterize_co}} for country characterization
 }
