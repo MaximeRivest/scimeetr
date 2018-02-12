@@ -22,8 +22,8 @@ split_cr <- function(scimeetr_data, min_cr_freq = 2)
     simple_doi <- stringr::str_extract(cr_vec, "(?<=DOI\\s).*")
     x <- paste0(au, ', ', yr, ', ', so, ', ', vl, ', ', bp)
     x <- stringr::str_replace_all(x, ' ,', ',')
-    doi <- paste('<a href="http://dx.doi.org/',simple_doi,'">',simple_doi,'</a>', sep = "")
-    doi_url <- paste('http://dx.doi.org/',simple_doi, sep = "")
+    doi <- paste('<a href="https://doi.org/',simple_doi,'">',simple_doi,'</a>', sep = "")
+    doi_url <- paste('https://doi.org/',simple_doi, sep = "")
     #x <- x[-which(stringr::str_count(x, "NA")>=4)]
     cr_df <- data.frame(record  = cr_vec,
                         author  = au,
