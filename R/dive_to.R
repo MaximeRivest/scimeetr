@@ -1,9 +1,9 @@
 #' Dive to a sub-community and keep its sub-communities
 #' 
-#' @param scimeetr_list a scimeetr object
-#' @param aim_at a character string matching the name of the community that you
+#' @param scimeetr_list A \link{scimeetr} object
+#' @param aim_at A character string matching the name of the community that you
 #' which to get to
-#' @return scimeetr_list of length 1
+#' @return A scimeetr object.
 #' @export
 
 dive_to <- function(scimeetr_list, aim_at) {

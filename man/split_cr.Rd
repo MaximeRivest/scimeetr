@@ -4,10 +4,10 @@
 \alias{split_cr}
 \title{Split cited references into first author, year, journal, etc.}
 \usage{
-split_cr(lsci, min_cr_freq = 2)
+split_cr(scimeetr_data, min_cr_freq = 2)
 }
 \arguments{
-\item{dfsci}{a dataframe with a CR column}
+\item{scimeetr_data}{A scimeetr object.}
 }
 \value{
 a dataframe

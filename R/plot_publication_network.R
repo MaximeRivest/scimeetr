@@ -1,10 +1,16 @@
 #' Plot publication network colored by sub-communities
-#'
-#' @param scimeetr_data A list of scimeet object
+#' 
+#' With \code{plot_publication_network} you can generate a plot of a publication
+#' network which will be colored by sub-communities.
+#' 
+#' @param scimeetr_data A \link{scimeetr} object
 #' @param plot_to_file True or False
 #' @param filename a character string matchin a path name
+#' @param width Argument to jpeg()
+#' @param height Argument to jpeg()
 #' @param ... if plot_to_file is True, parameter of the jpeg() function.
-#' @return A plot, generated from the sankeyNetwork function in the package networkD3
+#' @return A plot, generated from the sankeyNetwork function in the package
+#'   networkD3
 #' @importFrom pryr %<a-%
 #' @export
 #' 

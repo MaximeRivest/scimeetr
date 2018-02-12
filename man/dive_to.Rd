@@ -7,13 +7,13 @@
 dive_to(scimeetr_list, aim_at)
 }
 \arguments{
-\item{scimeetr_list}{a scimeetr object}
+\item{scimeetr_list}{A \link{scimeetr} object}
 
-\item{aim_at}{a character string matching the name of the community that you
+\item{aim_at}{A character string matching the name of the community that you
 which to get to}
 }
 \value{
-scimeetr_list of length 1
+A scimeetr object.
 }
 \description{
 Dive to a sub-community and keep its sub-communities

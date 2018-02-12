@@ -4,34 +4,17 @@
 \alias{clusterize}
 \title{Wrapper of igraph community algorithms}
 \usage{
-import_wos_files(files_directory)
+clusterize(graph = graph, community_algorithm = "louvain")
 }
 \arguments{
-\item{files_directory}{a character vector giving the \bold{folder} path in 
-which all the Web of Science files to be imported into a data frame can be 
-found. This folder should contain \bold{only} the files to be imported.}
+\item{graph}{A igraph object.}
+
+\item{community_algorithm}{A character vector of length one.}
 }
 \value{
-data frame of 62 columns and a number of row equal to the number of 
-  unique records.
+An object of class 'community'.
 }
 \description{
-This function imports and if there is more than one file in the user selected
-directory automatically merges Web of Science files. This is all put into a 
-data frame. Moreover, all duplicated records are automatically removed.
+A function that helps you pick some community clustering algorithms provided
+by the package \link{igraph}.
 }
-\details{
-No details for now.
-}
-\examples{
-\dontrun{Since this example shows how to load WOS from your system we need to run the following line to find the path to the exemple file} 
-fpath <- system.file("extdata", package="scimeetr") 
-fpath <- paste(fpath, "/wos_folder/", sep = "") 
-\dontrun{Then we can run the actual example} 
-wos_df <- import_wos_files(files_directory = fpath)
-
-}
-\author{
-Maxime Rivest
-}
-\keyword{manip}

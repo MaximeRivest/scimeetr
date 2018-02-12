@@ -13,6 +13,7 @@
 #'   unique records.
 #' @author Maxime Rivest
 #' @keywords manip
+#' @seealso \code{\link{scimeetr}} and \code{\link{import_wos_files}}.
 #' @export
 #' @import dplyr stringr
 import_scopus_files <- function(files_directory) {

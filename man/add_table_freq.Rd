@@ -4,10 +4,10 @@
 \alias{add_table_freq}
 \title{Make frequencies table}
 \usage{
-add_table_freq(lsci)
+add_table_freq(scimeetr_data)
 }
 \arguments{
-\item{lsci}{An object of class scimeetr}
+\item{scimeetr_data}{An object of class scimeetr}
 }
 \value{
 An object of class scimeetr

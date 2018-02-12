@@ -39,7 +39,7 @@ compare_scimap <- function(sl) {
               tag.y = unique(tag.y))
   nodes <- data.frame(names = as.character(na.omit(unique(c(tmp$comid.x, tmp$comid.y)))),
                        index = 0:(length(as.character(na.omit(unique(c(tmp$comid.x, tmp$comid.y)))))-1),
-                       tags = as.character(na.omit(unique(c(tmp$tag.x, tmp$tag.y)))),
+                       tags = as.character(na.omit(c(unique(tmp$tag.x), unique(tmp$tag.y)))),
                        stringsAsFactors = F)
   #nodes <- rbind(nodes, c('NA', max(nodes$index)+1, 'NA'))
   tmp <-  dplyr::left_join(tmp, nodes[,1:2], by = c('comid.x' = 'names'))

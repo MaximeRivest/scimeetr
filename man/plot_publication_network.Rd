@@ -8,17 +8,23 @@ plot_publication_network(scimeetr_data, plot_to_file = F, filename, width,
   height)
 }
 \arguments{
-\item{scimeetr_data}{A list of scimeet object}
+\item{scimeetr_data}{A \link{scimeetr} object}
 
 \item{plot_to_file}{True or False}
 
 \item{filename}{a character string matchin a path name}
 
+\item{width}{Argument to jpeg()}
+
+\item{height}{Argument to jpeg()}
+
 \item{...}{if plot_to_file is True, parameter of the jpeg() function.}
 }
 \value{
-A plot, generated from the sankeyNetwork function in the package networkD3
+A plot, generated from the sankeyNetwork function in the package
+  networkD3
 }
 \description{
-Plot publication network colored by sub-communities
+With \code{plot_publication_network} you can generate a plot of a publication
+network which will be colored by sub-communities.
 }

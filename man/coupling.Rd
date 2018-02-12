@@ -4,16 +4,19 @@
 \alias{coupling}
 \title{Make graph based on coupling}
 \usage{
-coupling(dfsci = dfsci, coupling_by = "bic", kw = 1, ti = 1, ab = 1)
+coupling(dfsci = dfsci, coupling_by = "bic", kw = 1, ti = 1, ab = 1,
+  splitted_cr)
 }
 \arguments{
-\item{dfsci}{A data.frame of class scimeetr created from importing files
-with import_bib_file or a list of class scimeetr created from the
-function scimap.}
+\item{dfsci}{A data.frame from a scimeetr object.}
 
-\item{coupling_by}{A vector of length one. Equal to either:
-'bc'/'bibliographic coupling', 'kc'/'keyword coupling', 'tc'/'title coupling',
-'ac'/'abstract coupling', 'jc'/'journal coupling', 'ac'/'author coupling'.}
+\item{coupling_by}{A character vector of length one. Equal to either: 'bic' 
+for bibliographic coupling, 'kec' for keyword coupling, 'tic' for title 
+coupling, 'abc' for abstract coupling, 'joc' for journal coupling, 'auc' 
+for author coupling', 'woc' for word coupling, 'bickec' for a combination
+of bibliographic coupling and keyword coupling, and 'bickecticjoc' for a
+combination of bic, kec, tic, joc (this might be the better way for most
+use but it is a bit slow, this is why it is not the default choice)}
 }
 \value{
 graph object

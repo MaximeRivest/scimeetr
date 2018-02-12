@@ -10,19 +10,28 @@ plot_citer_network(scimeetr_data, reading_list, plot_to_file = F, filename,
 \arguments{
 \item{scimeetr_data}{A list of scimeet object}
 
-\item{reading_list}{A dataframe from scilist or scilist_all with a
+\item{reading_list}{A dataframe from scilist[[i]] or scilist_all[[i]] with a 
 publication column}
 
 \item{plot_to_file}{True or False}
 
 \item{filename}{a character string matchin a path name}
 
+\item{width}{Argument to jpeg()}
+
+\item{height}{Argument to jpeg()}
+
 \item{...}{if plot_to_file is True, parameter of the jpeg() function.}
 }
 \value{
-A plot, generated from the sankeyNetwork function in the package
+A plot, generated from the sankeyNetwork function in the package 
   networkD3
 }
 \description{
-Plot citer network
+\link{plot_cite_network} let you plot a network of papers for which only the 
+papers citing the papers in the reading list are colored.
+}
+\seealso{
+See \link{plot_publication_network} to generate a full publication
+  plot colored by sub-communities of research.
 }

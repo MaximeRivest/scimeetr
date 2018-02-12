@@ -21,7 +21,6 @@ No details for now.
 }
 \examples{
 wcoupling(scimeetr_list$com1$dfsci, kw = 2, ti = 1 ab = 1)
-
 }
 \author{
 Maxime Rivest

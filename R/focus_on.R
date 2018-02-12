@@ -1,9 +1,9 @@
 #' Focus on only one community
 #' 
-#' @param scimeetr_list a scimeetr object
-#' @param grab a character string matching the name of the community that you
-#' which to focus on
-#' @return a scimeetr object
+#' @param scimeetr_list A \link{scimeetr} object.
+#' @param grab A character string matching the name of the community that you
+#' which to focus on.
+#' @return A scimeetr object.
 #' @export
 
 focus_on <- function(scimeetr_list, grab) {

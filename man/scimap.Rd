@@ -4,31 +4,35 @@
 \alias{scimap}
 \title{Finds research communities}
 \usage{
-scimap(scimeetr_list, coupling_by = "bic", community_algorithm = "louvain",
+scimap(scimeetr_data, coupling_by = "bic", community_algorithm = "louvain",
   min_com_size = 30, kw = 1, ti = 1, ab = 1)
 }
 \arguments{
-\item{scimeetr_list}{A list of class scimeetr. Objects of class scimeetr are 
-return by with import_bib_file or a list of class scimeetr created from the
-function scimap.}
+\item{scimeetr_data}{A list of class scimeetr. Objects of class scimeetr are 
+returned by import_wos_files or by scimap itself.}
 
-\item{coupling_by}{A character vector of length one. Equal to either: 
-'bic'/'bibliographic coupling', 'kec'/'keyword coupling', 'tic'/'title 
-coupling', 'abc'/'abstract coupling', 'joc'/'journal coupling', 
-'auc'/'author coupling', 'woc'/'word coupling'.}
+\item{coupling_by}{A character vector of length one. Equal to either: 'bic' 
+for bibliographic coupling, 'kec' for keyword coupling, 'tic' for title 
+coupling, 'abc' for abstract coupling, 'joc' for journal coupling, 'auc' 
+for author coupling', 'woc' for word coupling, 'bickec' for a combination
+of bibliographic coupling and keyword coupling, and 'bickecticjoc' for a
+combination of bic, kec, tic, joc (this might be the better way for most
+use but it is a bit slow, this is why it is not the default choice).}
 
-\item{community_algorithm}{A vector of length one. 'louvain', 'fast 
+\item{community_algorithm}{A character vector of length one. 'louvain', 'fast
 greedy'...}
-
-\item{inclusive_com}{TRUE or FALSE. Tells whether to include within the 
-subcommunities all the frontier nodes that were not originally included in 
-the subcommunities.}
 }
 \value{
-biblio_list. A list of the communities, including the global 
-  community, with all their associated graph object, community object and 
-  biblio_df object.
+scimeetr_data. A \link{scimeetr} object.
 }
 \description{
-Finds research communities
+\code{scimap} is used to find sub-communities of a \link{scimeetr} object.
+}
+\examples{
+# Here we see that scimeetr_list contains no sub-communities
+summary(scimeetr_list)
+sci <- scimap(scimeetr_list, coupling_by = 'bickec')
+# After applying scimap() to scimeetr_list. The resulting variable (sci)
+# contains sub-communities
+summary(sci)
 }

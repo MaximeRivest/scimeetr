@@ -1,12 +1,12 @@
 #' Split cited references into first author, year, journal, etc.
 #' 
-#' @param dfsci a dataframe with a CR column
+#' @param scimeetr_data A scimeetr object.
 #' @return a dataframe
 #' @importFrom dplyr %>%
 #' @export
-split_cr <- function(lsci, min_cr_freq = 2)
+split_cr <- function(scimeetr_data, min_cr_freq = 2)
 {
-  parent_com <- purrr::map_df(lsci, 'dfsci')
+  parent_com <- purrr::map_df(scimeetr_data, 'dfsci')
   dfsci <- unique(parent_com)
   if(stringr::str_detect(dfsci$UT[1], "^WOS")){
     cr_vec<- table(unlist(stringr::str_split(dfsci$CR, '; ')))

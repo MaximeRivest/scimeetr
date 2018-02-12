@@ -6,7 +6,6 @@
 #' the vectors will be proposed.
 #' @return a list of character string. In other words, a vector of suggestions.
 #' @importFrom dplyr %>% 
-#' @export
 get_synonyms <- function(scimeetr_data, synonymous_to, n_gram = c(1L,3L)) {
   tokens = scimeetr_data$com1$dfsci$AB %>%
     tolower %>%

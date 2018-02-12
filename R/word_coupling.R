@@ -9,8 +9,6 @@
 #' @author Maxime Rivest
 #' @examples 
 #' wcoupling(scimeetr_list$com1$dfsci, kw = 2, ti = 1 ab = 1)
-#' 
-#' @export
 #' @import dplyr
 wcoupling <- function(dfsci, kw = 5, ti = 3, ab = 2){
   # Abstract
@@ -60,8 +58,9 @@ wcoupling <- function(dfsci, kw = 5, ti = 3, ab = 2){
   k_i <- coup2 %>%
     group_by(wos_id) %>%
     summarise(k_i = sum(w_ij))
+  nam <- as.character(k_i$wos_id)
   k_i <- k_i$k_i
-  names(k_i) <- unique(c(ab_couple_df$UT.x, ab_couple_df$UT.y))
+  names(k_i) <- nam
   ab_couple_df <- ab_couple_df %>%
     mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
   
@@ -126,8 +125,9 @@ wcoupling <- function(dfsci, kw = 5, ti = 3, ab = 2){
   k_i <- coup2 %>%
     group_by(wos_id) %>%
     summarise(k_i = sum(w_ij))
+  nam <- as.character(k_i$wos_id)
   k_i <- k_i$k_i
-  names(k_i) <- unique(c(ti_couple_df$UT.x, ti_couple_df$UT.y))
+  names(k_i) <- nam
   ti_couple_df <- ti_couple_df %>%
     mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
   
@@ -178,8 +178,9 @@ wcoupling <- function(dfsci, kw = 5, ti = 3, ab = 2){
   k_i <- coup2 %>%
     group_by(wos_id) %>%
     summarise(k_i = sum(w_ij))
+  nam <- as.character(k_i$wos_id)
   k_i <- k_i$k_i
-  names(k_i) <- unique(c(kw_couple_df$UT.x, kw_couple_df$UT.y))
+  names(k_i) <- nam
   kw_couple_df <- kw_couple_df %>%
     mutate(asso_stre = (2* w_ij * m)/ (k_i[UT.x] * k_i[UT.y]))
   

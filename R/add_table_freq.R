@@ -1,17 +1,16 @@
 #' Make frequencies table
 #'
-#' @param lsci An object of class scimeetr
+#' @param scimeetr_data An object of class scimeetr
 #' @return An object of class scimeetr
-#' @export
 #' @import dplyr purrr
-add_table_freq <- function(lsci){
-  if(!any(class(lsci) == "scimeetr")) {
+add_table_freq <- function(scimeetr_data){
+  if(!any(class(scimeetr_data) == "scimeetr")) {
     cat("This is not a scimeetr object !")
   } else {
-    names_lsci <- names(lsci)
+    names_lsci <- names(scimeetr_data)
     lsci_temp <- list()
-    for(i in 1:length(lsci)){
-      i_lsci <- lsci[[i]]
+    for(i in 1:length(scimeetr_data)){
+      i_lsci <- scimeetr_data[[i]]
       if(!any(names(i_lsci) == "kw")){
         DE_list <- strsplit(i_lsci$dfsci$DE, "[;][ ]")
         ID_list <- strsplit(i_lsci$dfsci$ID, "[;][ ]")
@@ -26,9 +25,9 @@ add_table_freq <- function(lsci){
           arrange(desc(Frequency.x))
         if(!purrr::is_empty(i_lsci$parent_com)) {
           kwdf$comsize <- nrow(i_lsci$dfsci)
-          kwdf$parentsize <- nrow(lsci[[i_lsci$parent_com]]$dfsci)
+          kwdf$parentsize <- nrow(scimeetr_data[[i_lsci$parent_com]]$dfsci)
           kwdf <- kwdf %>%
-            left_join(select(lsci[[i_lsci$parent_com]]$kw,ID, Frequency = Frequency.x), by = "ID") %>%
+            left_join(select(scimeetr_data[[i_lsci$parent_com]]$kw,ID, Frequency = Frequency.x), by = "ID") %>%
             mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
             arrange(desc(Frequency.x), desc(Relative_frequency))
           #Descriminant words
@@ -50,9 +49,9 @@ add_table_freq <- function(lsci){
           arrange(desc(Frequency.x))
         if(!purrr::is_empty(i_lsci$parent_com)) {
           kwdf$comsize <- nrow(i_lsci$dfsci)
-          kwdf$parentsize <- nrow(lsci[[i_lsci$parent_com]]$dfsci)
+          kwdf$parentsize <- nrow(scimeetr_data[[i_lsci$parent_com]]$dfsci)
           kwdf <- kwdf %>%
-            left_join(select(lsci[[i_lsci$parent_com]]$kw,ID, Frequency = Frequency.x), by = "ID") %>%
+            left_join(select(scimeetr_data[[i_lsci$parent_com]]$kw,ID, Frequency = Frequency.x), by = "ID") %>%
             mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
             arrange(desc(Frequency.x), desc(Relative_frequency))
         }
@@ -93,9 +92,9 @@ add_table_freq <- function(lsci){
           arrange(desc(Frequency.x))
         if(!purrr::is_empty(i_lsci$parent_com)) {
           tidf$comsize <- nrow(i_lsci$dfsci)
-          tidf$parentsize <- nrow(lsci[[i_lsci$parent_com]]$dfsci)
+          tidf$parentsize <- nrow(scimeetr_data[[i_lsci$parent_com]]$dfsci)
           tidf <- tidf %>%
-            left_join(select(lsci[[i_lsci$parent_com]]$ti, ID, Frequency = Frequency.x), by = "ID") %>%
+            left_join(select(scimeetr_data[[i_lsci$parent_com]]$ti, ID, Frequency = Frequency.x), by = "ID") %>%
             mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
             arrange(desc(Frequency.x), desc(Relative_frequency))
         }
@@ -136,9 +135,9 @@ add_table_freq <- function(lsci){
           arrange(desc(Frequency.x))
         if(!purrr::is_empty(i_lsci$parent_com)) {
           abdf$comsize <- nrow(i_lsci$dfsci)
-          abdf$parentsize <- nrow(lsci[[i_lsci$parent_com]]$dfsci)
+          abdf$parentsize <- nrow(scimeetr_data[[i_lsci$parent_com]]$dfsci)
           abdf <- abdf %>%
-            left_join(select(lsci[[i_lsci$parent_com]]$ab, ID, Frequency = Frequency.x), by = "ID") %>%
+            left_join(select(scimeetr_data[[i_lsci$parent_com]]$ab, ID, Frequency = Frequency.x), by = "ID") %>%
             mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
             arrange(desc(Frequency.x), desc(Relative_frequency))
         }
@@ -180,9 +179,9 @@ add_table_freq <- function(lsci){
           arrange(desc(Frequency.x))
         if(!purrr::is_empty(i_lsci$parent_com)) {
           iddf$comsize <- nrow(i_lsci$dfsci)
-          iddf$parentsize <- nrow(lsci[[i_lsci$parent_com]]$dfsci)
+          iddf$parentsize <- nrow(scimeetr_data[[i_lsci$parent_com]]$dfsci)
           iddf <- iddf %>%
-            left_join(select(lsci[[i_lsci$parent_com]]$cr,ID, Frequency = Frequency.x), by = "ID") %>%
+            left_join(select(scimeetr_data[[i_lsci$parent_com]]$cr,ID, Frequency = Frequency.x), by = "ID") %>%
             mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
             arrange(desc(Frequency.x), desc(Relative_frequency))
         }
@@ -200,9 +199,9 @@ add_table_freq <- function(lsci){
           arrange(desc(Frequency.x))
         if(!purrr::is_empty(i_lsci$parent_com)) {
           iddf$comsize <- nrow(i_lsci$dfsci)
-          iddf$parentsize <- nrow(lsci[[i_lsci$parent_com]]$dfsci)
+          iddf$parentsize <- nrow(scimeetr_data[[i_lsci$parent_com]]$dfsci)
           iddf <- iddf %>%
-            left_join(select(lsci[[i_lsci$parent_com]]$au,ID, Frequency = Frequency.x), by = "ID") %>%
+            left_join(select(scimeetr_data[[i_lsci$parent_com]]$au,ID, Frequency = Frequency.x), by = "ID") %>%
             mutate("Relative_frequency" = (Frequency.x / (comsize/parentsize * Frequency))) %>%
             arrange(desc(Frequency.x), desc(Relative_frequency))
         }
@@ -217,6 +216,10 @@ add_table_freq <- function(lsci){
       lsci_temp <- c(lsci_temp, i_lsci)
     }
     class(lsci_temp) <- c('scimeetr', class(lsci_temp))
+    kw <- characterize_kw(lsci_temp)
+    for(i in 1:length(lsci_temp)){
+      lsci_temp[[i]]$tag <- kw[[i]]$keyword[1:6]
+    }
     return(lsci_temp)
   }
 }

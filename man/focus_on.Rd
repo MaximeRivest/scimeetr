@@ -7,13 +7,13 @@
 focus_on(scimeetr_list, grab)
 }
 \arguments{
-\item{scimeetr_list}{a scimeetr object}
+\item{scimeetr_list}{A \link{scimeetr} object.}
 
-\item{grab}{a character string matching the name of the community that you
-which to focus on}
+\item{grab}{A character string matching the name of the community that you
+which to focus on.}
 }
 \value{
-a scimeetr object
+A scimeetr object.
 }
 \description{
 Focus on only one community

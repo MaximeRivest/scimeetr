@@ -23,6 +23,9 @@ data frame. Moreover, all duplicated records are automatically removed.
 \details{
 No details for now.
 }
+\seealso{
+\code{\link{scimeetr}} and \code{\link{import_wos_files}}.
+}
 \author{
 Maxime Rivest
 }

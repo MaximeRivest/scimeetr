@@ -18,7 +18,7 @@
 #' fpath <- paste(fpath, "/wos_folder/", sep = "") 
 #' \dontrun{Then we can run the actual example} 
 #' wos_df <- import_wos_files(files_directory = fpath)
-#' 
+#' @seealso \code{\link{scimeetr}} and \code{\link{import_scopus_files}}.
 #' @keywords manip
 #' @export
 #' @import dplyr stringr
