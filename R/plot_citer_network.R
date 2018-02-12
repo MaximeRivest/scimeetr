@@ -1,16 +1,22 @@
 #' Plot citer network
 #' 
+#' \link{plot_cite_network} let you plot a network of papers for which only the 
+#' papers citing the papers in the reading list are colored.
+#' 
 #' @param scimeetr_data A list of scimeet object
-#' @param reading_list A dataframe from scilist or scilist_all with a
+#' @param reading_list A dataframe from scilist[[i]] or scilist_all[[i]] with a 
 #'   publication column
 #' @param plot_to_file True or False
 #' @param filename a character string matchin a path name
+#' @param width Argument to jpeg()
+#' @param height Argument to jpeg()
 #' @param ... if plot_to_file is True, parameter of the jpeg() function.
-#' @return A plot, generated from the sankeyNetwork function in the package
+#' @return A plot, generated from the sankeyNetwork function in the package 
 #'   networkD3
 #' @importFrom pryr %<a-%
 #' @export
-#' 
+#' @seealso See \link{plot_publication_network} to generate a full publication
+#'   plot colored by sub-communities of research.
 plot_citer_network <- function(scimeetr_data, reading_list, plot_to_file = F,
                                filename, width, height) {
   add.alpha <- function(col, alpha=1){
