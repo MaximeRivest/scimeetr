@@ -8,6 +8,7 @@
 #' @param filename a character string matchin a path name
 #' @param width Argument to jpeg()
 #' @param height Argument to jpeg()
+#' @param min_com_size A numeric vector of length one.
 #' @param ... if plot_to_file is True, parameter of the jpeg() function.
 #' @return A plot, generated from the sankeyNetwork function in the package
 #'   networkD3
@@ -18,7 +19,8 @@ plot_publication_network <- function(scimeetr_data,
                                      plot_to_file = F, 
                                      filename,
                                      width,
-                                     height){
+                                     height,
+                                     min_com_size = 100){
   g <- scimeetr_data[[1]]$graph
   cur_com <- scimeetr_data[[1]]$coms
   cur_dfsci <- scimeetr_data[[1]]$dfsci
@@ -41,7 +43,7 @@ plot_publication_network <- function(scimeetr_data,
                                     'CS',
                                     tmp$UT,
                                     tmp$Freq)
-  g1 <- igraph::induced_subgraph(g, igraph::V(g)[CS >=100])
+  g1 <- igraph::induced_subgraph(g, igraph::V(g)[CS >= min_com_size])
   g1 <- igraph::delete.edges(g1,
                              which(igraph::E(g1)$weight <= 0.3))
   g1 <- igraph::delete.vertices(g1,which(igraph::degree(g1)<3))

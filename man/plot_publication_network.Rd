@@ -5,7 +5,7 @@
 \title{Plot publication network colored by sub-communities}
 \usage{
 plot_publication_network(scimeetr_data, plot_to_file = F, filename, width,
-  height)
+  height, min_com_size = 100)
 }
 \arguments{
 \item{scimeetr_data}{A \link{scimeetr} object}
@@ -17,6 +17,8 @@ plot_publication_network(scimeetr_data, plot_to_file = F, filename, width,
 \item{width}{Argument to jpeg()}
 
 \item{height}{Argument to jpeg()}
+
+\item{min_com_size}{A numeric vector of length one.}
 
 \item{...}{if plot_to_file is True, parameter of the jpeg() function.}
 }
