@@ -7,20 +7,20 @@
 as.scimeetr(dfsci)
 }
 \arguments{
-\item{dfsci}{A dataframe, which can be derived from a data frame contained 
+\item{dfsci}{A dataframe, which can be derived from a data frame contained
 within a scimeetr object.}
 }
 \value{
 An object of class scimeetr.
 }
 \description{
-\code{as.scimeetr()} let's you make a scimeetr object from a valid data 
-frame. To be valid a data frame must contain at least the 14 following 
-columns: CR (cited references), UT (unique id), C1 (authors' affiliations), 
-DE (author keywords), ID (index keywords), AU (authors), JI (abbreviated 
-source title), SO (source title), VL (volume), PY (publication year), BP 
-(page start), TI (title), AB (abstract), TC (total citation). See 
-\code{scimeetr_list$com1$dfsci} for the appropriate format of each of these 
+\code{as.scimeetr()} let's you make a scimeetr object from a valid data
+frame. To be valid a data frame must contain at least the 14 following
+columns: CR (cited references), UT (unique id), C1 (authors' affiliations),
+DE (author keywords), ID (index keywords), AU (authors), JI (abbreviated
+source title), SO (source title), VL (volume), PY (publication year), BP
+(page start), TI (title), AB (abstract), TC (total citation). See
+\code{scimeetr_list$com1$dfsci} for the appropriate format of each of these
 columns.
 }
 \examples{

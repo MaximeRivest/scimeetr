@@ -59,7 +59,12 @@ plot_publication_network <- function(scimeetr_data,
   g1 <- igraph::delete.edges(g1,
                              which(igraph::E(g1)$weight <= sort(igraph::E(g1)$weight, decreasing = T)[1000]))
   coms <- as.integer(as.factor(as.character(igraph::V(g1)$CS)))
-  pal1 <- RColorBrewer::brewer.pal(length(unique(coms)), "Set1")
+  if(length(unique(coms)) >= 3) {
+    pal1 <- RColorBrewer::brewer.pal(length(unique(coms)), "Set1")
+  } else {
+    pal1 <- c("#E41A1C", "#377EB8")
+  }
+  
   add.alpha <- function(col, alpha=1){
     if(missing(col))
       stop("Please provide a vector of colours.")

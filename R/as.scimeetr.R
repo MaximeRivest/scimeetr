@@ -19,7 +19,7 @@
 #' @export
 as.scimeetr <- function(dfsci) {
 
-  if(tryCatch(stringr::str_detect(dfsci$UT[1], 'WOS'), silent = T, cat('Your dfsci seems empty.'))){
+  if(stringr::str_detect(dfsci$UT[1], 'WOS')){
     dfsci <- dplyr::select(dfsci, PT:RECID)
   } else {
     dfsci <- dplyr::select(dfsci, AU:CR)
