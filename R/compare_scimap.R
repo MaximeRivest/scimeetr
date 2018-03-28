@@ -6,6 +6,15 @@
 #' @export
 #'
 compare_scimap <- function(sl) {
+  idmaker <- function(x){
+    max.val = x*10000
+    count <- nchar(as.character(max.val))
+    size <- paste("%0",count,"d",sep="")
+    lets <- toupper(sample(letters,x, replace=T))
+    nums <- sprintf(size,sample(1:max.val)[1])
+    ids <- paste(lets,nums,sep="")
+    return(ids)
+  }
   sli <- NULL
   counter <- 1
 
@@ -22,7 +31,7 @@ compare_scimap <- function(sl) {
     comid <- paste0('l', counter, '__', names(dfscisize))
     comidv <- rep(comid, dfscisize)
     tag <- purrr::map(tmp, 'tag') %>%
-      purrr::map_chr(~paste0(.x[1:4], collapse = '_'))
+      purrr::map_chr(~paste0(c(paste0(.x[1:4], collapse = '_'),idmaker(1)), collapse = '_'))
     tagv <- rep(tag, dfscisize)
     dfi <- data.frame(ut = utv$UT,
                       comid = comidv,

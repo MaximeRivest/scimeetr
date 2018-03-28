@@ -407,9 +407,26 @@ scilist_all <- function(scimeetr_data, length_list = 1, verbose = T, except_bet_
     k = ceiling(4*length_list)
     co3 <- map(scimeetr_data, function(com_i, k){
       if(nrow(com_i$dfsci) >= 1000) {
-        bet <- igraph::estimate_betweenness(com_i$graph, directed = F,weights = igraph::E(com_i$graph)$weight + 0.0000001, cutoff = 3)
+        igraph::E(com_i$graph)$weight <- max(igraph::E(com_i$graph)$weight) - (igraph::E(com_i$graph)$weight) + 0.0000001
+        com_i$graph <- igraph::delete.edges(com_i$graph,
+                                            which(
+                                              igraph::E(com_i$graph)$weight >= 
+                                                quantile(igraph::E(com_i$graph)$weight,
+                                                         probs = c(0.25))))
+        #com_i$graph <- igraph::delete.vertices(com_i$graph,which(igraph::degree(com_i$graph)<3))
+        bet <- igraph::estimate_betweenness(
+          com_i$graph,
+          directed = F,
+          cutoff = 3)
       } else {
-        bet <- igraph::betweenness(com_i$graph, directed = F, normalized = T, weights = igraph::E(com_i$graph)$weight + 0.0000001)
+        igraph::E(com_i$graph)$weight <- max(igraph::E(com_i$graph)$weight) - (igraph::E(com_i$graph)$weight) + 0.0000001
+        com_i$graph <- igraph::delete.edges(com_i$graph,
+                                            which(igraph::E(com_i$graph)$weight >= quantile(igraph::E(com_i$graph)$weight, probs = c(0.25))))
+        #com_i$graph <- igraph::delete.vertices(com_i$graph,which(igraph::degree(com_i$graph)<3))
+        bet <- igraph::betweenness(
+          com_i$graph,
+          directed = F,
+          normalized = T)
       }
       publication <- unique(com_i$dfsci[com_i$dfsci$UT %in% names(sort(bet, decreasing = T)[1:k]), 'RECID'])[1:k]
       metric <- sort(bet, decreasing = T)[1:k]
