@@ -14,7 +14,7 @@ print.scimeetrsum <- function(object, ...){
   print(object$quant_nb_citation)
   cat("\n    Mean number of citation per paper: ", object$mean_nb_citation)
   cat("\n\n    Average number of citation per paper per year: ", object$avg_nb_citation_yr)
-  cat("\n\n\n  Table of the 10 most mentionned keywords \n\n")
+  cat("\n\n\n  Table of the 10 most mentioned keywords \n\n")
   kw4pr <- as.data.frame(object$top10kw)
   colnames(kw4pr) <- c("                  Keyword", "   Frequency")
   print(kw4pr, right = T)
