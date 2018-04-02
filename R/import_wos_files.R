@@ -25,6 +25,7 @@
 import_wos_files <-
 function (files_directory) 
 {
+  header_name <- "PT\tAU\tBA\tBE\tGP\tAF\tBF\tCA\tTI\tSO\tSE\tBS\tLA\tDT\tCT\tCY\tCL\tSP\tHO\tDE\tID\tAB\tC1\tRP\tEM\tRI\tOI\tFU\tFX\tCR\tNR\tTC\tZ9\tU1\tU2\tPU\tPI\tPA\tSN\tEI\tBN\tJ9\tJI\tPD\tPY\tVL\tIS\tPN\tSU\tSI\tMA\tBP\tEP\tAR\tDI\tD2\tEA\tEY\tPG\tWC\tSC\tGA\tUT\tPM\tOA\tHC\tHP\tDA"
   dfsci_temp <- NULL
   folder_content <- list.files(files_directory)
   files_quantity <- length(folder_content)
@@ -36,9 +37,14 @@ function (files_directory)
       v_char <- suppressWarnings(readLines(full_file_path, encoding = "UTF-8"))
       v_char <- iconv(v_char, from = "UTF-8", to = "ASCII", 
                       sub = "")
+      if(v_char[1] != header_name){
+        v_char = c(header_name, v_char)
+      }
+      v_char <- stringr::str_replace(v_char, "^[null]+", "")
       tab_count <- stringr::str_count(v_char[], '\t')
       good_lines <- c(1, which(tab_count == max(tab_count)))
-      dfsci <-read.table(text = v_char ,header = T, quote = "",
+
+      dfsci <-read.table(text = v_char[good_lines] ,header = T, quote = "",
                          fileEncoding = 'ASCII',
                          row.names = NULL,
                          comment.char = "",
@@ -50,6 +56,10 @@ function (files_directory)
       v_char <- suppressWarnings(readLines(full_file_path, encoding = "UTF-8"))
       v_char <- iconv(v_char, from = "UTF-8", to = "ASCII", 
                       sub = "")
+      if(v_char[1] != header_name){
+        v_char = c(header_name, v_char)
+      }
+      v_char <- stringr::str_replace(v_char, "^[null]+", "")
       tab_count <- stringr::str_count(v_char[], '\t')
       good_lines <- c(1, which(tab_count == max(tab_count)))
       dfsci_temp <-read.table(text = v_char[good_lines] ,header = T, quote = "",

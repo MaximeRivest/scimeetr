@@ -9,16 +9,16 @@ scilist(scimeetr_data, reading_list = "core_papers", k = 5, m = 3)
 \arguments{
 \item{scimeetr_data}{An object of class '\link{scimeetr}'}
 
-\item{reading_list}{A vector of length one. Equal to either: 'core_papers', 
-'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC', 
-'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others', 
-'direct_cite_eigen', 'betweeness', 'closeness', 'connectness', 
-'link_strength', 'page_rank', 'journal_dis'}
+\item{reading_list}{A vector of length one. Equal to either: 'core_papers',
+'core_yr', 'core_residual', 'by_expert_LC', 'by_expert_TC',
+'group_of_experts_TC', 'group_of_experts_LC', 'cite_most_others',
+'direct_cite_eigen', 'betweeness', 'closeness', 'connectness',
+'link_strength', 'page_rank', 'journal_dis', 'journal_unique_combn'}
 
 \item{k}{Length of list per community}
 
-\item{m}{Not always used. \code{m} is used when there is a two step filter. 
-An example of a two step filter is the list generated when reading_list = 
+\item{m}{Not always used. \code{m} is used when there is a two step filter.
+An example of a two step filter is the list generated when reading_list =
 'by_expert'. First k will determine how many experts should be listed, then
 m will determine how many papers per experts should be listed.}
 }
@@ -26,63 +26,63 @@ m will determine how many papers per experts should be listed.}
 A data frame.
 }
 \description{
-\code{scilist} ranks papers according to different metrics. The metric is 
+\code{scilist} ranks papers according to different metrics. The metric is
 determined by the argument 'reading_list'.
 }
 \details{
-With the parameter reading_list, we can get any of the following 12 reading 
-lists that fits into three categories: \itemize{ \item Core \itemize{ \item 
+With the parameter reading_list, we can get any of the following 12 reading
+lists that fits into three categories: \itemize{ \item Core \itemize{ \item
 core_papers \item core_yr \item core_residual } \item Experts \itemize{ \item
-by_expert_LC \item by_expert_TC \item group_of_experts_TC \item 
+by_expert_LC \item by_expert_TC \item group_of_experts_TC \item
 group_of_experts_LC } \item Centrality \itemize{ \item cite_most_others \item
 betweeness \item closeness \item connectness \item page_rank } }
 
-Using \code{scilist} with reading_list = "core_papers" will list the most 
+Using \code{scilist} with reading_list = "core_papers" will list the most
 cited paper. The parameter k controls the number of paper to list.
 
-Using \code{scilist} with reading_list = "core_yr" will list the most cited 
-paper for each year from three years before present to ten years before 
+Using \code{scilist} with reading_list = "core_yr" will list the most cited
+paper for each year from three years before present to ten years before
 present. The parameter k controls the number of paper per year to list.
 
 Using \code{scilist} with reading_list = "core_residual" will list the papers
-that diverge most from the expected number of citation for this particular 
+that diverge most from the expected number of citation for this particular
 paper.
 
 Using \code{scilist} with reading_list = "by_expert_LC" we will get a list of
-recent papers by one or a few experts in the community. For the option 
-by_expert_LC, authors are ranked based on their harmonic local H-index. The 
-H-index is a measure of an other productivity and impact. An author with an 
-H-index of 10 means that he has published at least 10 papers with 10 or more 
+recent papers by one or a few experts in the community. For the option
+by_expert_LC, authors are ranked based on their harmonic local H-index. The
+H-index is a measure of an other productivity and impact. An author with an
+H-index of 10 means that he has published at least 10 papers with 10 or more
 citation each. A local H-index means that only citations from other papers in
 the community are counted. A harmonic local H-index means that authors do not
-get the full credit for each citation their paper received. It is corrected 
+get the full credit for each citation their paper received. It is corrected
 depending on the authos position in the authors list. First authors gets most
-of the credit, then the last author gets the second most, and the authors 
-gets credit as a proportion of their position. Once the authors 
-harmonic-local-H-index is found they are ranked and the m most recent 
+of the credit, then the last author gets the second most, and the authors
+gets credit as a proportion of their position. Once the authors
+harmonic-local-H-index is found they are ranked and the m most recent
 publication of the k most 'expert' authors are listed as a reading list.
 
-Using \code{scilist} with reading_list = "by_expert_TC" instead of 
-reading_list = "by_expert_LC", notice the _TC instead of the _LC will based 
-the ranking calculation on total citation of it's publications instead of 
+Using \code{scilist} with reading_list = "by_expert_TC" instead of
+reading_list = "by_expert_LC", notice the _TC instead of the _LC will based
+the ranking calculation on total citation of it's publications instead of
 only the local citations.
 
-Using \code{scilist} with reading_list = "group_of_experts_LC" we will get a 
-list of papers for which many authors are experts in the community. For this 
-option, authors are assigned a harmonic local H-index like described in the 
+Using \code{scilist} with reading_list = "group_of_experts_LC" we will get a
+list of papers for which many authors are experts in the community. For this
+option, authors are assigned a harmonic local H-index like described in the
 previous section. But this time, a weighted sum of the harmonic-local-H-index
 of each authors of a paper is calculated.
 
-Betweeness measures the importance of a paper in connecting two clusters of 
+Betweeness measures the importance of a paper in connecting two clusters of
 papers. Papers with a high betweeness would therefore be a paper that tend to
 be more interdisciplinary.
 
-Closeness measures the average number of link between a paper and all other 
-papers. Papers with a high closeness would therefore be a paper that tend to 
+Closeness measures the average number of link between a paper and all other
+papers. Papers with a high closeness would therefore be a paper that tend to
 have a large and wide list of citations.
 
-Connectness measures the number of links a paper has. Papers with a high 
-connectness would therefore be a paper that tend to have cited what most 
+Connectness measures the number of links a paper has. Papers with a high
+connectness would therefore be a paper that tend to have cited what most
 other studies cited.
 
 With the option cite_most_others, the papers that cite most other papers of
