@@ -7,17 +7,12 @@
 merge_scopus_and_wos(scopus, wos)
 }
 \arguments{
-\item{sl}{A list of \link{scimeetr} object}
+\item{scopus}{A \link{scimeetr} object from \link{import_scopus_files}()}
 
-\item{minimum_com_overlap}{An integer. Minimum weight of the link between 
-paper to keep in the graph. If it is equal to length(sl) that means that 
-papers that were not classifies in the same communities for every scimap 
-would not be linked in a network.}
-
-\item{min_com_size}{An integer.}
+\item{wos}{A \link{scimeetr} object from \link{import_wos_files}()}
 }
 \value{
-A list a class scimeetr.
+A list of class scimeetr.
 }
 \description{
 With \code{merge_scimaps} you can re-assign communities to papers based on a 

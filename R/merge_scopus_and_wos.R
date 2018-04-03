@@ -3,15 +3,50 @@
 #' With \code{merge_scimaps} you can re-assign communities to papers based on a 
 #' conscensus from different coupling options.
 #' 
-#' @param sl A list of \link{scimeetr} object
-#' @param minimum_com_overlap An integer. Minimum weight of the link between 
-#'   paper to keep in the graph. If it is equal to length(sl) that means that 
-#'   papers that were not classifies in the same communities for every scimap 
-#'   would not be linked in a network.
-#' @param min_com_size An integer.
-#' @return A list a class scimeetr.
-#' @import dplyr
+#' @param scopus A \link{scimeetr} object from \link{import_scopus_files}()
+#' @param wos A \link{scimeetr} object from \link{import_wos_files}()
+#' @return A list of class scimeetr.
 #' @export
 #' 
 merge_scopus_and_wos <- function(scopus, wos){
+  col2keep <- names(scopus$com1$dfsci)[names(scopus$com1$dfsci) %in% names(wos$com1$dfsci)]
+  sub_scopus <- scopus$com1$dfsci[col2keep]
+  sub_scopus$fa <- tolower(stringr::str_extract(sub_scopus$AU, '^[A-Za-z]+'))
+  sub_scopus$fal <- tolower(sapply(stringr::str_extract_all(sub_scopus$AU, '^[\\w.]+|;\\s[\\w.]+'),paste0, collapse = ''))
+  sub_scopus$TI <- toupper(sub_scopus$TI)
+  sub_scopus <- sub_scopus[!duplicated(
+    with(sub_scopus,
+         paste0(PY, VL, J9, fa, TI))),]
+  
+  sub_wos <- wos$com1$dfsci[col2keep]
+  sub_wos$fa <- tolower(stringr::str_extract(sub_wos$AU, '^[A-Za-z]+'))
+  sub_wos$fal <- tolower(sapply(stringr::str_extract_all(sub_wos$AU, '^[\\w.]+|;\\s[\\w.]+'),paste0, collapse = ''))
+  sub_wos$TI <- toupper(sub_wos$TI)
+  sub_wos <- sub_wos[!duplicated(
+    with(sub_wos,
+         paste0(PY, VL, J9, fa, TI))),]
+
+  tmp1 <- dplyr::inner_join(sub_wos, sub_scopus,by = c("PY", "VL", "J9", "fal", "BP"), suffix = c("", ".scop"))
+
+  tmp2 <- dplyr::inner_join(sub_wos, sub_scopus,by = c("PY", "fa", "TI"), suffix = c("", ".scop"))
+  
+  tmp3 <- dplyr::inner_join(sub_wos[sub_wos$DI != "",], 
+                            sub_scopus[sub_scopus$DI != "",],
+                            by = c("DI"), suffix = c("", ".scop"))
+
+  ut_match <- unique(c(tmp1$UT, tmp2$UT, tmp3$UT))
+  scop_drop <- unique(c(tmp1$UT.scop, tmp2$UT.scop, tmp3$UT.scop))
+  
+  sub_scopus <- dplyr::filter(sub_scopus, !(sub_scopus$UT %in% scop_drop))
+  
+  both_db <- rbind(sub_scopus, sub_wos)
+  both_db <- both_db[!duplicated(both_db$DI),]
+  both_db <- dplyr::select(both_db, -c(fa, fal))
+  for(j in 1:ncol(both_db)){
+    if(is.character(both_db[,j]) & (names(both_db)[j] != "DI")){
+      both_db[,j] <- toupper(both_db[,j])
+    }
+  }
+  lsci <- as.scimeetr(both_db)
+  return(lsci)
 }
