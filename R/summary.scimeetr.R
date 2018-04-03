@@ -22,8 +22,10 @@ summary.scimeetr <- function(object, com_size = 200, ...){
   lparent_com$dfsci$DE[which(lparent_com$dfsci$DE == "")] <- NA
   top10kw <- sort(table(toupper(unlist(stringr::str_split(lparent_com$dfsci$DE, '; ')))),
                  decreasing = T)[1:10]
+  class(top10kw) <- "table"
   top10so <- sort(table(toupper(lparent_com$dfsci$SO)),
                   decreasing = T)[1:10]
+  class(top10so) <- "table"
   ltag <- map(lsci, "tag") %>%
     discard(is_empty) %>%
     map(function(x) c('',x)) %>%
