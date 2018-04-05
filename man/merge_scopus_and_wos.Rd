@@ -2,7 +2,7 @@
 % Please edit documentation in R/merge_scopus_and_wos.R
 \name{merge_scopus_and_wos}
 \alias{merge_scopus_and_wos}
-\title{Merge scimaps}
+\title{Merge data from scopus and Web of Science together}
 \usage{
 merge_scopus_and_wos(scopus, wos)
 }
@@ -15,6 +15,8 @@ merge_scopus_and_wos(scopus, wos)
 A list of class scimeetr.
 }
 \description{
-With \code{merge_scimaps} you can re-assign communities to papers based on a 
-conscensus from different coupling options.
+With \code{merge_scopus_and_wos} you can merge bibliometric data from Scopus
+and the Web of Science. Be carefull if you are using this prior to
+bibliographic coupling. Scopus and WOS format the cited reference field
+differently.
 }

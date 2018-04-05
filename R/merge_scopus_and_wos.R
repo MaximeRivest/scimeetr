@@ -1,8 +1,10 @@
-#' Merge scimaps
-#' 
-#' With \code{merge_scimaps} you can re-assign communities to papers based on a 
-#' conscensus from different coupling options.
-#' 
+#' Merge data from scopus and Web of Science together
+#'
+#' With \code{merge_scopus_and_wos} you can merge bibliometric data from Scopus
+#' and the Web of Science. Be carefull if you are using this prior to
+#' bibliographic coupling. Scopus and WOS format the cited reference field
+#' differently.
+#'
 #' @param scopus A \link{scimeetr} object from \link{import_scopus_files}()
 #' @param wos A \link{scimeetr} object from \link{import_wos_files}()
 #' @return A list of class scimeetr.
