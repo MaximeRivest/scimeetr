@@ -20,3 +20,7 @@ and the Web of Science. Be carefull if you are using this prior to
 bibliographic coupling. Scopus and WOS format the cited reference field
 differently.
 }
+\details{
+I thank Dr. Shinichi Nakagawa and Rose O'Dea for requiring this
+  feature.
+}

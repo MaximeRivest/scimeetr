@@ -8,6 +8,8 @@
 #' @param scopus A \link{scimeetr} object from \link{import_scopus_files}()
 #' @param wos A \link{scimeetr} object from \link{import_wos_files}()
 #' @return A list of class scimeetr.
+#' @details I thank Dr. Shinichi Nakagawa and Rose O'Dea for requiring this
+#'   feature.
 #' @export
 #' 
 merge_scopus_and_wos <- function(scopus, wos){
