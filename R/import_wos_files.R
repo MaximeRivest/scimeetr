@@ -74,9 +74,12 @@ function (files_directory)
   column_names <- names(dfsci)[-1]
   dfsci <- dfsci[, 1:(ncol(dfsci) - 1)]
   names(dfsci) <- column_names
+  if(sum(is.na(dfsci$CR)) == nrow(dfsci)) {
+    warning("The field CR (cited reference) contains no references. \nAlmost everything is scimeetr will break without that field. \nWhen you download records from WOS or Scopus, please carefully follow that steps at: \nhttps://github.com/MaximeRivest/scimeetr#how-to-get-bibliometric-data",call. = F)
+  } 
   dfsci$RECID <- make_recid(dfsci)
   lsci <- list("com1" = list("dfsci" = dfsci[!duplicated(dfsci), ]))
   class(lsci) <- c('scimeetr', class(lsci))
-  lsci <- add_table_freq(lsci)
+  lsci <- scimeetr:::add_table_freq(lsci)
   return(lsci)
 }

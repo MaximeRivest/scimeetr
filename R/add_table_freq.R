@@ -167,7 +167,7 @@ add_table_freq <- function(scimeetr_data){
       #   }
       #   i_lsci$wo <- wodf
       # }
-      if (!any(names(i_lsci) == "cr")) {
+      if (!any(names(i_lsci) == "cr") & (sum(is.na(dfsci$CR)) != nrow(dfsci))) {
         id_list <- strsplit(i_lsci$dfsci$CR, "[;][ ]")
         iddf <- data.frame('ID' = toupper(unlist(id_list)),
                            stringsAsFactors=F)
