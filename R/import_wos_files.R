@@ -37,9 +37,9 @@ function (files_directory)
       v_char <- suppressWarnings(readLines(full_file_path, encoding = "UTF-8"))
       v_char <- iconv(v_char, from = "UTF-8", to = "ASCII", 
                       sub = "")
-      if(v_char[1] != header_name){
-        v_char = c(header_name, v_char)
-      }
+      # if(v_char[1] != header_name){
+      #   v_char = c(header_name, v_char)
+      # }
       v_char <- stringr::str_replace(v_char, "^[null]+", "")
       tab_count <- stringr::str_count(v_char[], '\t')
       good_lines <- c(1, which(tab_count == max(tab_count)))
@@ -56,9 +56,9 @@ function (files_directory)
       v_char <- suppressWarnings(readLines(full_file_path, encoding = "UTF-8"))
       v_char <- iconv(v_char, from = "UTF-8", to = "ASCII", 
                       sub = "")
-      if(v_char[1] != header_name){
-        v_char = c(header_name, v_char)
-      }
+      # if(v_char[1] != header_name){
+      #   v_char = c(header_name, v_char)
+      # }
       v_char <- stringr::str_replace(v_char, "^[null]+", "")
       tab_count <- stringr::str_count(v_char[], '\t')
       good_lines <- c(1, which(tab_count == max(tab_count)))

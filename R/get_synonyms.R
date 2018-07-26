@@ -38,8 +38,8 @@ get_synonyms <- function(scimeetr_data, synonymous_to, n_gram = c(1L,3L)) {
   # create co-occurrence vectorizer
   vectorizer = text2vec::vocab_vectorizer(v)
   tcm = text2vec::create_tcm(it_phrases, vectorizer, skip_grams_window = 5L)
-  glove = text2vec::GlobalVectors$new(word_vectors_size = 50, vocabulary = v, x_max = 10)
-  wv_main = glove$fit_transform(tcm, n_iter = 100, convergence_tol = 0.01)
+  glove = text2vec::GlobalVectors$new(word_vectors_size = 100, vocabulary = v, x_max = 10)
+  wv_main = glove$fit_transform(tcm, n_iter = 100, convergence_tol = 0.0001)
   wv_context = glove$components
   word_vectors = wv_main + t(wv_context)
   suggestions <- NULL
