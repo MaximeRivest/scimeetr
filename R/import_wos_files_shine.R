@@ -4,7 +4,7 @@
 #' directory automatically merges Web of Science files. This is all put into a 
 #' data frame. Moreover, all duplicated records are automatically removed.
 #' 
-#' @usage import_wos_files(files_directory)
+#' @usage import_wos_files_shine(files_directory)
 #' @param files_directory a character vector giving the \bold{folder} path in 
 #'   which all the Web of Science files to be imported into a data frame can be 
 #'   found. This folder should contain \bold{only} the files to be imported.

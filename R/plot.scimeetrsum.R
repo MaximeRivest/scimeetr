@@ -14,12 +14,12 @@ plot.scimeetrsum <- function(object, node_names = 'tag', node_size = 1, ...){
                         vertex.color = 'grey',
                         edge.arrow.size=.2,
                         vertex.label=igraph::get.vertex.attribute(subnet, node_names),
-                        vertex.label.cex=0.75 * node_size,
-                        vertex.size= 100 * node_size,
-                        vertex.size2= 40 * node_size,
+                        vertex.label.cex=0.5 * node_size,
+                        vertex.size= 120 * node_size,
+                        vertex.size2= 50 * node_size,
                         edge.curved=0.2,
                         layout = igraph::layout_with_kk(subnet),
-                        margin = -0.50 * node_size,
+                        margin = 0 * node_size,
                         asp = 1)
     invisible(subnet)
   } else {

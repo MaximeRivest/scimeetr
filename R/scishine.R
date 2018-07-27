@@ -10,88 +10,168 @@
 #' scishine()
 #' @seealso \code{\link{scimeetr}}.
 #' @export
-#' @import shiny
+#' @import shiny shinydashboard
 scishine <- function(){
   # Define UI for app that draws a histogram ----
-  ui <- fluidPage(
-    
-    # App title ----
-    titlePanel("Scimeetr"),
-    
-    # Sidebar layout with input and output definitions ----
-    sidebarLayout(
-      
-      # Sidebar panel for inputs ----
-      sidebarPanel(
-        
-        # Input: Slider for the number of bins ----
-        shiny::fileInput(inputId = 'file_directory',label = NULL,multiple = T,buttonLabel = 'Browse',placeholder = "Text file"), width = 3 
-        
-      ),
-      
-      # Main panel for displaying outputs ----
-      mainPanel(
-        h2('Summary'),
-        fluidRow(column(width=8,
-                        p(strong('Number of papers:'))),
-                 column(width = 4,
-                        textOutput("nb_papers"))),
-        fluidRow(column(width=8,
-                        p(strong('Number of different reference:'))),
-                 column(width = 4,
-                        textOutput("nb_ref"))),
-        fluidRow(column(width=8,
-                        p(strong('Average number of reference per paper:'))),
-                 column(width = 4,
-                        textOutput("avg_nb_ref"))),
-        fluidRow(column(width=8,
-                        p(strong('Quantiles of total citation per paper:')))),
-        fluidRow(column(width = 8),
-                 column(width = 4,
-                        tableOutput("quant_nb_citation"))),
-        fluidRow(column(width=8,
-                        p(strong('Mean number of citation per paper:'))),
-                 column(width = 4,
-                        textOutput("mean_nb_citation"))),
-        fluidRow(column(width=8,
-                        p(strong(' Average number of citation per paper per year:'))),
-                 column(width = 4,
-                        textOutput("avg_nb_citation_yr"))),
-        h3("Keyword table"),
-        fluidRow(column(width = 12,DT::dataTableOutput("kw")))
+  ui <- dashboardPage(
+    dashboardHeader(title = "Scimeetr"),
+    dashboardSidebar(      
+      sidebarMenu(
+        menuItem("Summary", tabName = "summary", icon = icon("home")),
+        shiny::fileInput(
+          inputId = 'file_directory',
+          label = NULL,multiple = T,buttonLabel = 'Browse',
+          placeholder = "Text file")
+      )),
+    dashboardBody(
+      tabItems(
+        tabItem("summary",
+                # Boxes need to be put in a row (or column)
+                fluidRow(
+                  valueBoxOutput("nb_papers"),
+                  valueBoxOutput("nb_ref"),
+                  valueBoxOutput("avg_nb_ref"),
+                  valueBoxOutput("mean_nb_citation")
+                  ),
+                fluidRow(
+                  tabBox(
+                    title = "Plots",
+                    id = "tabset1", height = "700px", width = "400px",
+                    tabPanel("Source", plotOutput("plot_sum_com_so")),
+                    tabPanel("Keyword", sankeyNetworkOutput("plot_sum_com_tag")),
+                    tabPanel("Title", plotOutput("plot_sum_com_ti")),
+                    tabPanel("Abstract", plotOutput("plot_sum_com_ab")),
+                    tabPanel("Author", plotOutput("plot_sum_com_au")),
+                    tabPanel("Size", plotOutput("plot_sum_com_size")),
+                    tabPanel("ID", plotOutput("plot_sum_com_id"))
+                  )
+                ),
+                fluidRow(
+                  shinydashboard::box(DT::dataTableOutput("kw"), 
+                                      width = 12)
+                )
+        )
       )
     )
   )
   
-  
   # Define server logic required to draw a histogram ----
   server <- function(input, output) {
-    r <- NULL
-    lsci <- NULL
     lsci <- reactive({
-      
-      if(length(input$file_directory$datapath)>= 1){
+      if(!is.null(input$file_directory)){
         sci <- import_wos_files_shine(input$file_directory$datapath)
       } else {
         sci <- NULL
       }
     })
-    r <-  reactive({summary(lsci())})
-
-    output$nb_papers <- renderText({r()$nb_papers})
-    output$nb_ref <- renderText({r()$nb_ref})
-    output$avg_nb_ref <- renderText({r()$avg_nb_ref})
-    output$quant_nb_citation <- renderTable({
-      my_df <- data.frame(quantile = names(r()$quant_nb_citation),
-                          citations = r()$quant_nb_citation)
-      })
-    output$mean_nb_citation <- renderText({r()$mean_nb_citation})
-    output$avg_nb_citation_yr <- renderText({r()$avg_nb_citation_yr})
+    lsci1 <-  reactive({
+      if(is.null(lsci())){
+        lsci1 <- NULL
+      } else {
+        scimap(lsci())
+      }
+    })
+    r <-  reactive({
+      if(is.null(lsci1())){
+        r <- NULL
+      } else {
+        summary(lsci1())
+      }
+    })
     
-    # Show the first "n" observations ----
-    output$kw <- DT::renderDataTable(scimeetr::characterize_kw(lsci())$com1,
-                                 options = list(
-                                   pageLength = 8))
+    output$nb_papers <- renderValueBox({
+      valueBox(
+        r()$nb_papers, "papers", icon = icon("article"),
+        color = "light-blue", width = 1
+      )
+    })
+    
+    output$nb_papers <- renderValueBox({
+      valueBox(
+        r()$nb_papers, "papers", icon = icon("article"),
+        color = "light-blue", width = 1
+      )
+    })
+    
+    output$nb_ref <- renderValueBox({
+      valueBox(
+        r()$nb_ref, "unique references", icon = icon("article"),
+        color = "light-blue", width = 1
+      )
+    })
+    
+    output$avg_nb_ref <- renderValueBox({
+      valueBox(
+        r()$avg_nb_ref, "reference per paper on average", icon = icon("article"),
+        color = "light-blue", width = 1
+      )
+    })
+    
+    output$mean_nb_citation <- renderValueBox({
+      valueBox(
+        round(r()$mean_nb_citation), "citation per paper on average", icon = icon("article"),
+        color = "light-blue", width = 1
+      )
+    })
+    output$plot_sum_com_tag <- renderSankeyNetwork(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        compare_scimap(list(lsci(), lsci1()))
+      })
+    
+    output$plot_sum_com_so <- renderPlot(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        plot(r(), "so")
+      })
+    
+    output$plot_sum_com_ab <- renderPlot(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        plot(r(), "ab", node_size = 1)
+      })
+    
+    output$plot_sum_com_ti <- renderPlot(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        plot(r(), "ti")
+      })
+    
+    output$plot_sum_com_size <- renderPlot(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        plot(r(), "size")
+      })
+    
+    output$plot_sum_com_au <- renderPlot(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        plot(r(), "au")
+      })
+    
+    output$plot_sum_com_id <- renderPlot(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        plot(r(), "id")
+      })
+    
+    output$kw <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame("Keywords" = NA,
+                   "Frequency" = NA)
+      } else {
+        scimeetr::characterize_kw(lsci())$com1
+      },
+      options = list(
+        pageLength = 6
+      ))
   }
   
   return(shinyApp(ui, server))
