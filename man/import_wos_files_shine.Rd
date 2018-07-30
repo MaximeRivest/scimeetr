@@ -4,7 +4,7 @@
 \alias{import_wos_files_shine}
 \title{Import and Merge Web of Science Files into a Data Frame}
 \usage{
-import_wos_files(files_directory)
+import_wos_files_shine(files_directory)
 }
 \arguments{
 \item{files_directory}{a character vector giving the \bold{folder} path in 

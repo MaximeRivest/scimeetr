@@ -18,6 +18,7 @@ scishine <- function(){
     dashboardSidebar(      
       sidebarMenu(
         menuItem("Summary", tabName = "summary", icon = icon("home")),
+        menuItem("In depth characterization", tabName = "characterize", icon = icon("star")),
         shiny::fileInput(
           inputId = 'file_directory',
           label = NULL,multiple = T,buttonLabel = 'Browse',
@@ -28,27 +29,57 @@ scishine <- function(){
         tabItem("summary",
                 # Boxes need to be put in a row (or column)
                 fluidRow(
+                  box(visNetwork::visNetworkOutput("subcomplot"), 
+                                      width = 4),
+                  box(DT::dataTableOutput("comlegend"), width = 8)
+                ),
+                fluidRow(
                   valueBoxOutput("nb_papers"),
                   valueBoxOutput("nb_ref"),
                   valueBoxOutput("avg_nb_ref"),
-                  valueBoxOutput("mean_nb_citation")
+                  valueBoxOutput("mean_nb_citation"),
+                  valueBoxOutput("med_nb_citation"),
+                  valueBoxOutput("nb_subcom")
                   ),
                 fluidRow(
-                  tabBox(
-                    title = "Plots",
-                    id = "tabset1", height = "700px", width = "400px",
-                    tabPanel("Source", plotOutput("plot_sum_com_so")),
-                    tabPanel("Keyword", sankeyNetworkOutput("plot_sum_com_tag")),
-                    tabPanel("Title", plotOutput("plot_sum_com_ti")),
-                    tabPanel("Abstract", plotOutput("plot_sum_com_ab")),
-                    tabPanel("Author", plotOutput("plot_sum_com_au")),
-                    tabPanel("Size", plotOutput("plot_sum_com_size")),
-                    tabPanel("ID", plotOutput("plot_sum_com_id"))
-                  )
-                ),
+                  box(networkD3::sankeyNetworkOutput("plot_sum_com_tag"),
+                      width = 12)
+                )
+        ),
+        tabItem("characterize",
                 fluidRow(
-                  shinydashboard::box(DT::dataTableOutput("kw"), 
-                                      width = 12)
+                  tabBox(
+                    title = "Frequency tables",
+                    id = "tabset2", height = "700px", width = "400px",
+                    tabPanel("Keywords", 
+                             box(
+                               DT::dataTableOutput("kw"), 
+                               width = 12)),
+                    tabPanel("Abstract words", 
+                             box(
+                               DT::dataTableOutput("ab"), 
+                               width = 12)),
+                    tabPanel("Title words", 
+                             box(
+                               DT::dataTableOutput("ti"), 
+                               width = 12)),
+                    tabPanel("Journals", 
+                             box(
+                               DT::dataTableOutput("jo"), 
+                               width = 12)),
+                    tabPanel("Authors",
+                             box(
+                               DT::dataTableOutput("au"), 
+                               width = 12)),
+                    tabPanel("Universities",
+                             box(
+                               DT::dataTableOutput("un"), 
+                               width = 12)),
+                    tabPanel("Countries",
+                             box(
+                               DT::dataTableOutput("co"), 
+                               width = 12))
+                  )
                 )
         )
       )
@@ -86,13 +117,6 @@ scishine <- function(){
       )
     })
     
-    output$nb_papers <- renderValueBox({
-      valueBox(
-        r()$nb_papers, "papers", icon = icon("article"),
-        color = "light-blue", width = 1
-      )
-    })
-    
     output$nb_ref <- renderValueBox({
       valueBox(
         r()$nb_ref, "unique references", icon = icon("article"),
@@ -109,11 +133,43 @@ scishine <- function(){
     
     output$mean_nb_citation <- renderValueBox({
       valueBox(
-        round(r()$mean_nb_citation), "citation per paper on average", icon = icon("article"),
+        round(r()$mean_nb_citation[1]), "citation per paper on average", icon = icon("article"),
         color = "light-blue", width = 1
       )
     })
-    output$plot_sum_com_tag <- renderSankeyNetwork(
+    
+    output$med_nb_citation <- renderValueBox({
+      valueBox(
+        median(r()$quant_nb_citation[3]), "citation per paper on median", icon = icon("article"),
+        color = "light-blue", width = 1
+      )
+    })
+    
+    output$nb_subcom <- renderValueBox({
+      valueBox(
+        length(lsci1())-1, "communities", icon = icon("article"),
+        color = "light-blue", width = 1
+      )
+    })
+    
+    output$subcomplot <- visNetwork::renderVisNetwork(
+      if(is.null(lsci())){
+        plot(1:3,1:3)
+      } else {
+        plot_subcommunities(lsci1())
+      })
+    
+    output$comlegend <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame(X = 0, Y = 0)
+      } else {
+        r()$ltag
+      },
+      options = list(
+        pageLength = 7
+      ))
+    
+    output$plot_sum_com_tag <- networkD3::renderSankeyNetwork(
       if(is.null(lsci())){
         plot(1:3,1:3)
       } else {
@@ -168,6 +224,72 @@ scishine <- function(){
                    "Frequency" = NA)
       } else {
         scimeetr::characterize_kw(lsci())$com1
+      },
+      options = list(
+        pageLength = 6
+      ))
+    
+    output$au <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame("Keywords" = NA,
+                   "Frequency" = NA)
+      } else {
+        scimeetr::characterize_au(lsci())$com1
+      },
+      options = list(
+        pageLength = 6
+      ))
+    
+    output$jo <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame("Journals" = NA,
+                   "Frequency" = NA)
+      } else {
+        scimeetr::characterize_jo(lsci())$com1
+      },
+      options = list(
+        pageLength = 6
+      ))
+    
+    output$ti <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame("Title words" = NA,
+                   "Frequency" = NA)
+      } else {
+        scimeetr::characterize_ti(lsci())$com1
+      },
+      options = list(
+        pageLength = 6
+      ))
+    
+    output$ab <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame("Abstractwords" = NA,
+                   "Frequency" = NA)
+      } else {
+        scimeetr::characterize_ab(lsci())$com1
+      },
+      options = list(
+        pageLength = 6
+      ))
+    
+    output$co <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame("Countries" = NA,
+                   "Frequency" = NA)
+      } else {
+        scimeetr::characterize_co(lsci())$com1
+      },
+      options = list(
+        pageLength = 6
+      ))
+    
+    output$un <- DT::renderDataTable(
+      if(is.null(lsci())){
+        data.frame("Universities" = NA,
+                   "Frequency" = NA)
+      } else {
+        scimeetr::characterize_un(lsci())$com1
       },
       options = list(
         pageLength = 6
