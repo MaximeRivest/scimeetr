@@ -24,7 +24,8 @@ Imports:
     pryr,
     networkD3,
     shiny,
-    shinydashboard
+    shinydashboard,
+    DT
 License: MIT
 Encoding: UTF-8
 LazyData: true
