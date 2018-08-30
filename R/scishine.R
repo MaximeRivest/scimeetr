@@ -125,6 +125,14 @@ scishine <- function(){
   
   # Define server logic required to draw a histogram ----
   server <- function(input, output, session) {
+    
+    super_join <- function(rl_cp = rl_cp, lsciPP = lsciPP, spltcr = spltcr){
+      return(dplyr::left_join(
+        dplyr::left_join(rl_cp, spltcr, by = c('publication' = 'RECID')),
+        lsciPP$com1$dfsci, by = c('publication' = 'RECID')
+      ))
+    }
+    
     lsci <- reactive({
       if(!is.null(input$file_directory)){
         sci <- scimeetr:::import_wos_files_shine(input$file_directory$datapath)
@@ -132,6 +140,8 @@ scishine <- function(){
         sci <- NULL
       }
     })
+    
+    spltcr <- reactive({split_cr(lsci())})
     
     lsci1 <-  reactive({
       if(is.null(lsci())){
@@ -148,6 +158,28 @@ scishine <- function(){
         summary(lsci1())
       }
     })
+    
+    kw <-  reactive({scimeetr::characterize_kw(lsci1())})
+    so <-  reactive({scimeetr::characterize_so(lsci1())})
+    jo <-  reactive({scimeetr::characterize_jo(lsci1())})
+    au <-  reactive({scimeetr::characterize_au(lsci1())})
+    co <-  reactive({scimeetr::characterize_co(lsci1())})
+    un <-  reactive({scimeetr::characterize_un(lsci1())})
+    ti <-  reactive({scimeetr::characterize_ti(lsci1())})
+    ab <-  reactive({scimeetr::characterize_ab(lsci1())})
+    cp <- reactive({
+      rl_cp <- scimeetr::scilist(lsci1(),reading_list = 'core_papers', k = 100)
+      purrr::map(rl_cp, super_join, lsciPP = lsci1(), spltcr = spltcr())
+    })
+    cr <- reactive({scimeetr::scilist(lsci1(), 
+                                      reading_list = 'core_residual',
+                                      k = 20)})
+    cy <- reactive({scimeetr::scilist(lsci1(), 
+                                      reading_list = 'core_yr',
+                                      k = input$nb_paper_yr)})
+    cmo <- reactive({scimeetr::scilist(lsci1(), 
+                                       reading_list = 'cite_most_others',
+                                       k = 20)})
     
     observe({
       choicelist <- as.list(1:length(names(lsci1())))
@@ -241,54 +273,12 @@ scishine <- function(){
         compare_scimap(list(lsci(), lsci1()))
       })
     
-    output$plot_sum_com_so <- renderPlot(
-      if(is.null(lsci())){
-        plot(1:3,1:3)
-      } else {
-        plot(r(), "so")
-      })
-    
-    output$plot_sum_com_ab <- renderPlot(
-      if(is.null(lsci())){
-        plot(1:3,1:3)
-      } else {
-        plot(r(), "ab", node_size = 1)
-      })
-    
-    output$plot_sum_com_ti <- renderPlot(
-      if(is.null(lsci())){
-        plot(1:3,1:3)
-      } else {
-        plot(r(), "ti")
-      })
-    
-    output$plot_sum_com_size <- renderPlot(
-      if(is.null(lsci())){
-        plot(1:3,1:3)
-      } else {
-        plot(r(), "size")
-      })
-    
-    output$plot_sum_com_au <- renderPlot(
-      if(is.null(lsci())){
-        plot(1:3,1:3)
-      } else {
-        plot(r(), "au")
-      })
-    
-    output$plot_sum_com_id <- renderPlot(
-      if(is.null(lsci())){
-        plot(1:3,1:3)
-      } else {
-        plot(r(), "id")
-      })
-    
     output$kw <- DT::renderDataTable(
       if(is.null(lsci())){
         data.frame("Keywords" = NA,
                    "Frequency" = NA)
       } else {
-        scimeetr::characterize_kw(lsci1())[[as.numeric(input$coms)]]
+        kw()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 6
@@ -300,7 +290,7 @@ scishine <- function(){
         data.frame("Keywords" = NA,
                    "Frequency" = NA)
       } else {
-        au <- scimeetr::characterize_au(lsci1())[[as.numeric(input$coms)]]
+        au()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 6
@@ -311,7 +301,7 @@ scishine <- function(){
         data.frame("Journals" = NA,
                    "Frequency" = NA)
       } else {
-        scimeetr::characterize_jo(lsci1())[[as.numeric(input$coms)]]
+        jo()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 6
@@ -322,7 +312,7 @@ scishine <- function(){
         data.frame("Title words" = NA,
                    "Frequency" = NA)
       } else {
-        scimeetr::characterize_ti(lsci1())[[as.numeric(input$coms)]]
+        ti()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 6
@@ -333,7 +323,7 @@ scishine <- function(){
         data.frame("Abstractwords" = NA,
                    "Frequency" = NA)
       } else {
-        scimeetr::characterize_ab(lsci1())[[as.numeric(input$coms)]]
+        ab()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 6
@@ -344,7 +334,7 @@ scishine <- function(){
         data.frame("Countries" = NA,
                    "Frequency" = NA)
       } else {
-        scimeetr::characterize_co(lsci1())[[as.numeric(input$coms)]]
+        co()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 6
@@ -355,7 +345,7 @@ scishine <- function(){
         data.frame("Universities" = NA,
                    "Frequency" = NA)
       } else {
-        scimeetr::characterize_un(lsci1())[[as.numeric(input$coms)]]
+        un()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 6
@@ -366,22 +356,18 @@ scishine <- function(){
         data.frame("Paper" = NA,
                    "Citation number" = NA)
       } else {
-        scimeetr::scilist(lsci1(), 
-                          reading_list = 'core_papers',
-                          k = 100)[[as.numeric(input$coms)]]
+        dplyr::select(cp()[[as.numeric(input$coms)]], 'publication','metric', 'doi','TI')
       },
       options = list(
         pageLength = 20
-      ))
+      ),escape = FALSE)
     
     output$rl_core_yr <- DT::renderDataTable(
       if(is.null(lsci())){
         data.frame("Paper" = NA,
                    "Citation number" = NA)
       } else {
-        scimeetr::scilist(lsci1(), 
-                          reading_list = 'core_yr',
-                          k = input$nb_paper_yr)[[as.numeric(input$coms)]]
+        cy()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 20
@@ -392,9 +378,7 @@ scishine <- function(){
         data.frame("Paper" = NA,
                    "Citation number" = NA)
       } else {
-        scimeetr::scilist(lsci1(), 
-                          reading_list = 'core_residual',
-                          k = 20)[[as.numeric(input$coms)]]
+        cr()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 20
@@ -405,9 +389,7 @@ scishine <- function(){
         data.frame("Paper" = NA,
                    "Citation number" = NA)
       } else {
-        scimeetr::scilist(lsci1(), 
-                          reading_list = 'cite_most_others',
-                          k = 20)[[as.numeric(input$coms)]]
+        cmo()[[as.numeric(input$coms)]]
       },
       options = list(
         pageLength = 20
