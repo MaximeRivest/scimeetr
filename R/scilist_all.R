@@ -16,7 +16,7 @@ scilist_all <- function(scimeetr_data, length_list = 1, verbose = T, except_bet_
   splt_cr_freq <- map2(rep(list(splt_cr), length(scimeetr_data)), map(scimeetr_data, 'cr'), inner_join, by = c('ID'))
 
   if(!any(names(scimeetr_data$com1) == 'graph')) {
-    scimeetr_data$com1$graph <- scimeetr::coupling(scimeetr_data$com1$dfsci)
+    scimeetr_data$com1$graph <- scimeetr:::coupling(scimeetr_data$com1$dfsci)
   }
 
   scimeetr_data <- map(scimeetr_data, function(com_i, par_com = scimeetr_data$com1){
