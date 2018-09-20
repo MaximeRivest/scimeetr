@@ -24,6 +24,16 @@ scishine <- function(){
           inputId = 'file_directory',
           label = NULL,multiple = T,buttonLabel = 'Browse',
           placeholder = "Text file"),
+        shiny::selectInput("couple_by", "Coupling by:",
+                           c("References" = "bic",
+                             "Keywords" = "kec",
+                             "Title words" = "tic",
+                             "Abstract words" = "abc",
+                             "Journals" = "joc",
+                             "Authors" = "auc",
+                             "All words" = "woc",
+                             "References & Keywords" = "bickec",
+                             "References & Keywords & Titles & Journals" = "bickecticjoc")),
         shiny::radioButtons(
           inputId = 'coms',
           label = 'Select Community',
@@ -34,21 +44,22 @@ scishine <- function(){
         tabItem("summary",
                 # Boxes need to be put in a row (or column)
                 fluidRow(
-                  box(visNetwork::visNetworkOutput("subcomplot"), 
-                      width = 4),
-                  box(DT::dataTableOutput("comlegend"), width = 8)
-                ),
-                fluidRow(
                   valueBoxOutput("nb_papers"),
                   valueBoxOutput("nb_ref"),
                   valueBoxOutput("avg_nb_ref"),
                   valueBoxOutput("mean_nb_citation"),
                   valueBoxOutput("med_nb_citation"),
-                  valueBoxOutput("nb_subcom")
+                  valueBoxOutput("nb_subcom"),
+                  valueBoxOutput("modularity")
                 ),
                 fluidRow(
                   box(networkD3::sankeyNetworkOutput("plot_sum_com_tag"),
                       width = 12)
+                ),
+                fluidRow(
+                  box(visNetwork::visNetworkOutput("subcomplot"), 
+                      width = 4),
+                  box(DT::dataTableOutput("comlegend"), width = 8)
                 )
         ),
         tabItem("characterize",
@@ -118,9 +129,9 @@ scishine <- function(){
                   )
                 )
         )
-      ), skin = "purple"
+      ), skin = "blue"
     ),
-    skin = "purple"
+    skin = "blue"
   )
   
   # Define server logic required to draw a histogram ----
@@ -147,7 +158,7 @@ scishine <- function(){
       if(is.null(lsci())){
         lsci1 <- NULL
       } else {
-        scimap(lsci())
+        scimap(lsci(), coupling_by = input$couple_by)
       }
     })
     
@@ -168,18 +179,31 @@ scishine <- function(){
     ti <-  reactive({scimeetr::characterize_ti(lsci1())})
     ab <-  reactive({scimeetr::characterize_ab(lsci1())})
     cp <- reactive({
-      rl_cp <- scimeetr::scilist(lsci1(),reading_list = 'core_papers', k = 100)
+      rl_cp <- scimeetr::scilist(lsci1(),
+                                 reading_list = 'core_papers',
+                                 k = 100)
       purrr::map(rl_cp, super_join, lsciPP = lsci1(), spltcr = spltcr())
     })
-    cr <- reactive({scimeetr::scilist(lsci1(), 
-                                      reading_list = 'core_residual',
-                                      k = 20)})
-    cy <- reactive({scimeetr::scilist(lsci1(), 
-                                      reading_list = 'core_yr',
-                                      k = input$nb_paper_yr)})
-    cmo <- reactive({scimeetr::scilist(lsci1(), 
-                                       reading_list = 'cite_most_others',
-                                       k = 20)})
+    cr <- reactive({purrr::map(
+      scimeetr::scilist(lsci1(), 
+                        reading_list = 'core_residual',
+                        k = 20),
+      super_join, lsciPP = lsci1(), spltcr = spltcr())
+    })
+    cy <- reactive({
+      purrr::map(
+        scimeetr::scilist(lsci1(), 
+                          reading_list = 'core_yr',
+                          k = input$nb_paper_yr),
+        super_join, lsciPP = lsci1(), spltcr = spltcr())
+    })
+    cmo <- reactive({
+      purrr::map(
+        scimeetr::scilist(lsci1(), 
+                          reading_list = 'cite_most_others',
+                          k = 20),
+        super_join, lsciPP = lsci1(), spltcr = spltcr())
+    })
     
     observe({
       choicelist <- as.list(1:length(names(lsci1())))
@@ -203,49 +227,56 @@ scishine <- function(){
     output$tst <- renderValueBox({
       valueBox(
         input$coms, "papers", icon = icon("article"),
-        color = "purple", width = 1
+        color = "blue", width = 1
       )
     })
     
     output$nb_papers <- renderValueBox({
       valueBox(
         r()$nb_papers, "papers", icon = icon("article"),
-        color = "purple", width = 1
+        color = "blue", width = 1
       )
     })
     
     output$nb_ref <- renderValueBox({
       valueBox(
         r()$nb_ref, "unique references", icon = icon("article"),
-        color = "purple", width = 1
+        color = "blue", width = 1
       )
     })
     
     output$avg_nb_ref <- renderValueBox({
       valueBox(
         r()$avg_nb_ref, "reference per paper on average", icon = icon("article"),
-        color = "purple", width = 1
+        color = "blue", width = 1
       )
     })
     
     output$mean_nb_citation <- renderValueBox({
       valueBox(
         round(r()$mean_nb_citation[1]), "citation per paper on average", icon = icon("article"),
-        color = "purple", width = 1
+        color = "blue", width = 1
       )
     })
     
     output$med_nb_citation <- renderValueBox({
       valueBox(
         median(r()$quant_nb_citation[3]), "citation per paper on median", icon = icon("article"),
-        color = "purple", width = 1
+        color = "blue", width = 1
       )
     })
     
     output$nb_subcom <- renderValueBox({
       valueBox(
         length(lsci1())-1, "communities", icon = icon("article"),
-        color = "purple", width = 1
+        color = "blue", width = 1
+      )
+    })
+    
+    output$modularity <- renderValueBox({
+      valueBox(
+        round(igraph::modularity(lsci1()$com1$coms), digits = 2), "modularity", icon = icon("article"),
+        color = "blue", width = 1
       )
     })
     
@@ -263,7 +294,7 @@ scishine <- function(){
         r()$ltag
       },
       options = list(
-        pageLength = 7
+        pageLength = 100
       ))
     
     output$plot_sum_com_tag <- networkD3::renderSankeyNetwork(
@@ -281,7 +312,7 @@ scishine <- function(){
         kw()[[as.numeric(input$coms)]]
       },
       options = list(
-        pageLength = 6
+        pageLength = 25
       ))
     
     output$au <- DT::renderDataTable(
@@ -293,7 +324,7 @@ scishine <- function(){
         au()[[as.numeric(input$coms)]]
       },
       options = list(
-        pageLength = 6
+        pageLength = 25
       ))
     
     output$jo <- DT::renderDataTable(
@@ -304,7 +335,7 @@ scishine <- function(){
         jo()[[as.numeric(input$coms)]]
       },
       options = list(
-        pageLength = 6
+        pageLength = 25
       ))
     
     output$ti <- DT::renderDataTable(
@@ -315,7 +346,7 @@ scishine <- function(){
         ti()[[as.numeric(input$coms)]]
       },
       options = list(
-        pageLength = 6
+        pageLength = 25
       ))
     
     output$ab <- DT::renderDataTable(
@@ -326,7 +357,7 @@ scishine <- function(){
         ab()[[as.numeric(input$coms)]]
       },
       options = list(
-        pageLength = 6
+        pageLength = 25
       ))
     
     output$co <- DT::renderDataTable(
@@ -337,7 +368,7 @@ scishine <- function(){
         co()[[as.numeric(input$coms)]]
       },
       options = list(
-        pageLength = 6
+        pageLength = 25
       ))
     
     output$un <- DT::renderDataTable(
@@ -348,7 +379,7 @@ scishine <- function(){
         un()[[as.numeric(input$coms)]]
       },
       options = list(
-        pageLength = 6
+        pageLength = 25
       ))
     
     output$rl_core_papers <- DT::renderDataTable(
@@ -367,33 +398,33 @@ scishine <- function(){
         data.frame("Paper" = NA,
                    "Citation number" = NA)
       } else {
-        cy()[[as.numeric(input$coms)]]
+        dplyr::select(cy()[[as.numeric(input$coms)]], 'publication','metric', 'doi','TI')
       },
       options = list(
         pageLength = 20
-      ))
+      ),escape = FALSE)
     
     output$rl_classics <- DT::renderDataTable(
       if(is.null(lsci())){
         data.frame("Paper" = NA,
                    "Citation number" = NA)
       } else {
-        cr()[[as.numeric(input$coms)]]
+        dplyr::select(cr()[[as.numeric(input$coms)]], 'publication','metric', 'doi','TI')
       },
       options = list(
         pageLength = 20
-      ))
+      ),escape = FALSE)
     
     output$rl_reviews <- DT::renderDataTable(
       if(is.null(lsci())){
         data.frame("Paper" = NA,
                    "Citation number" = NA)
       } else {
-        cmo()[[as.numeric(input$coms)]]
+        dplyr::select(cmo()[[as.numeric(input$coms)]], 'publication','metric', 'doi','TI')
       },
       options = list(
         pageLength = 20
-      ))
+      ),escape = FALSE)
   }
   
   return(shinyApp(ui, server))
