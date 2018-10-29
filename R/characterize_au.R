@@ -48,6 +48,11 @@ characterize_au <- function(scimeetr_data, lambda = 0.7) {
         return(z)
       }) %>%
         unlist()
+      # find top 10 cut off
+      tc_tresh <- quantile(dfsci_mod$TC, c(0.90), na.rm = T)
+      lc_tresh <- quantile(dfsci_mod$Frequency.x, c(0.90), na.rm = T)
+      
+      # ----------------
       audf <- data.frame('AU' = toupper(unlist(au_list)),
                          'UT' = rep(dfsci_mod$UT, sapply(au_list, length)),
                          'TC' = rep(dfsci_mod$TC, sapply(au_list, length)),
@@ -56,13 +61,20 @@ characterize_au <- function(scimeetr_data, lambda = 0.7) {
                          'LC' = rep(dfsci_mod$Frequency.x, sapply(au_list, length)),
                          'PO' = na.omit(position),
                          'LG' = rep(sapply(au_list, length), sapply(au_list, length)),
+                         'tc_tresh' = as.numeric(tc_tresh[1]),
+                         'lc_tresh' = as.numeric(lc_tresh[1]),
                          stringsAsFactors=F)
+      audf$LC[is.na(audf$LC)] <- 0
       audf1 <- audf %>%
-        mutate(worth = suppressWarnings(((1/1)/(sum(1/c(1:LG))))/((1/PO)/(sum(1/c(1:LG))))),
+        mutate(worth = suppressWarnings(((1/PO)/(sum(1/c(1:LG))))/((1/1)/(sum(1/c(1:LG))))),
                LCC = LC * worth,
-               TCC = TC * worth) %>%
+               TCC = TC * worth,
+               is_lc_highly_cited = LC > lc_tresh,
+               is_tc_highly_cited = TC > tc_tresh
+          ) %>%
         group_by(AU) %>%
-        filter(n() > 1) %>%
+        mutate(res_n = n()) %>%
+        #filter(res_n >= 1) %>%
         mutate(rank_LCC = rank(desc(LCC)),
                HHL = LCC > rank_LCC,
                rank_TCC = rank(desc(TCC)),
@@ -78,12 +90,14 @@ characterize_au <- function(scimeetr_data, lambda = 0.7) {
                   H = sum(H, na.rm = T),
                   Local_cit = sum(LC, na.rm = T),
                   Global_cit = sum(TC, na.rm = T),
-                  nb_papers = n()) %>%
-        filter(H>1) %>%
+                  nb_papers = n(),
+                  nb_highly_cited_papers_TC = sum(is_tc_highly_cited),
+                  nb_highly_cited_papers_LC = sum(is_lc_highly_cited)) %>%
+        #filter(H>=1) %>%
         ungroup() %>%
         mutate(local2global = Local_cit / Global_cit) %>%
         arrange(desc(HHL))
-      audf1 <- na.omit(audf1)
+      audf1 <- audf1[!is.na(audf1$AU),]
       audf1$AU <- stringr::str_replace_all(audf1$AU, ',', '')
       first_au <- group_by(dfsci_mod, author) %>%
         summarise(fa_nb_paper_cited = n(),
